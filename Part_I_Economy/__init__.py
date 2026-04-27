@@ -17,6 +17,7 @@ class C(CommonConstants):
     PLAYERS_PER_GROUP = 3       # real groups of 3 matched in Practice WaitPage
     NUM_ROUNDS = 10
 
+
     Instructions_general_path = "_templates/global/Instructions.html"
     Instructions_practice_1 = "_templates/global/Instructions_Practice_1.html"
     Part_II_Instructions_template = "_templates/global/Part_II_Instructions_template.html"
@@ -214,9 +215,9 @@ class Player(BasePlayer):
 
     Comprehension_question_4_WS = models.BooleanField(
         choices=[
-             [False, 'My score equals the sum of correct answers in the Intelligence Test.'],
-            [True,  'My score equals the sum of correct answers in the Intelligence Test plus a flat bonus of 50.'],
-            [False, 'My score equals the sum of the correct answers in the Intelligence Test minus the scores of others.'],
+             [False, 'My score equals my performance in the Intelligence Test.'],
+            [True,  'My score equals my performance in the Intelligence Test plus the average performance of the three group members.'],
+            [False, 'My score equals my performance in the Intelligence Test the average performance of the three group members.'],
         ],
         label='[DEBUG: WELFARE STATE] Your score determines your share of the pie. But how is your score determined?',
         widget=widgets.RadioSelect)
@@ -343,8 +344,7 @@ def _multiplier_reminder(treatment):
                 'the best performer received &times;7 and the worst performer &times;3.')
     elif treatment == 'Aristocracy':
         return ('Remember that these multipliers were assigned <strong>randomly</strong> '
-                'at the start of the experiment — they are therefore the result of '
-                '<strong>pure luck!</strong>')
+                'at the start of the experiment.')
     elif treatment == 'Welfare_State':
         return ''   # no multiplier table shown for this treatment
     return ''
@@ -385,21 +385,20 @@ def _score_formula_vars(treatment):
     if treatment == 'Perfect_Meritocracy':
         return {
             'score_formula_html':   '<strong>Score = number of correct answers</strong>',
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;&nbsp;#answers',
+            'pictogram_score_text': 'Score&nbsp;=&nbsp;&nbsp;performance',
         }
     elif treatment == 'Welfare_State':
         return {
             'score_formula_html': (
-                '<strong>Score = number of correct answers </strong>'
-                '<br>&emsp;<strong>+ 50 points</strong>'
-                ' (flat bonus added to every member\'s score)'
+                '<strong>Score = number of correct answers +</strong>'
+                '<strong> average number of correct answers in your group</strong>'
             ),
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;#answers&nbsp;&nbsp;+&nbsp;50',
+            'pictogram_score_text': 'Score&nbsp;=&nbsp;performance&nbsp;&nbsp;+<br>&nbsp;group\'s average perf.',
         }
     else:  # Excessive_Meritocracy, Aristocracy
         return {
             'score_formula_html':   '<strong>Score = number of correct answers &times; your multiplier</strong>',
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;#answers&nbsp;&times;&nbsp;multiplier',
+            'pictogram_score_text': 'Score&nbsp;=&nbsp;performance&nbsp;&times;&nbsp;multiplier',
         }
 
 
@@ -871,7 +870,7 @@ class PGG_Beliefs(MyBasePage):
         variables = MyBasePage.vars_for_template(player)
         r = player.round_number  # 10
 
-        performances, accumulated, multipliers_list = _per_player_data(player, r)
+        performances, _, accumulated, multipliers_list = _per_player_data(player, r)
 
         own_pgg_total = sum(
             getattr(player.in_round(rr), f'PGG_contribution_{rr}')

@@ -74,9 +74,9 @@ class CommonConstants(BaseConstants):
     Explanation_Welfare_State = (
         '<p>You have been placed in a group with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>Each round, all three members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share is determined purely by how many questions you answer correctly compared to the other two members.</p>'
-        '<p>In addition, a flat <strong>bonus of 50 points</strong> is added to every member\'s score '
-        'before shares are calculated — so even a lower-scoring member still receives a meaningful share of the pot.</p>'
+        'Your share depends on your score.</p>'
+        'The score is calculated as performance in the round plus the average performance of the three players.'
+        
     )
 
     Explanation_Aristocracy = (
@@ -89,6 +89,8 @@ class CommonConstants(BaseConstants):
     )
     
     Welfare_check_text = '<br>&emsp;<strong>+ 50 points</strong> (flat bonus added to every member\'s score)'
+    # Welfare_check_text = '<br>&emsp;<strong>+ average number of correct answers in your group</strong> (the same is added to every member\'s score)'
+
 
     EC_exchange_rate = 100  # 100 EC = 1 EUR
 
@@ -161,12 +163,13 @@ def compute_pie_share(player_score, player_multiplier,
     """
     weighted = [s * m for s, m in zip(group_scores, group_multipliers)]
     if treatment == 'Welfare_State':
-        weighted = [w + welfare_check for w in weighted]
+        avg_weighted = sum(weighted) / len(weighted)
+        weighted = [w + avg_weighted for w in weighted] #this adds to each person's score the average score of the three.
 
     total    = sum(weighted)
     player_w = player_score * player_multiplier
     if treatment == 'Welfare_State':
-        player_w += welfare_check
+        player_w += avg_weighted
 
     payoff = (player_w / total) * economy_pie if total > 0 else 0.0
     return payoff, player_w, total
