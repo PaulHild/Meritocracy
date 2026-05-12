@@ -217,7 +217,7 @@ class Player(BasePlayer):
         choices=[
              [False, 'My score equals my performance in the Intelligence Test.'],
             [True,  'My score equals my performance in the Intelligence Test plus the average performance of the three group members.'],
-            [False, 'My score equals my performance in the Intelligence Test the average performance of the three group members.'],
+            [False, 'My score equals my performance in the Intelligence Test minus the average performance of the three group members.'],
         ],
         label='[DEBUG: WELFARE STATE] Your score determines your share of the pie. But how is your score determined?',
         widget=widgets.RadioSelect)
@@ -385,7 +385,7 @@ def _score_formula_vars(treatment):
     if treatment == 'Perfect_Meritocracy':
         return {
             'score_formula_html':   '<strong>Score = number of correct answers</strong>',
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;&nbsp;performance',
+            'pictogram_score_text': 'Your score&nbsp;=&nbsp;&nbsp;Your performance',
         }
     elif treatment == 'Welfare_State':
         return {
@@ -393,12 +393,12 @@ def _score_formula_vars(treatment):
                 '<strong>Score = number of correct answers +</strong>'
                 '<strong> average number of correct answers in your group</strong>'
             ),
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;performance&nbsp;&nbsp;+<br>&nbsp;group\'s average perf.',
+            'pictogram_score_text': 'Your score&nbsp;=&nbsp;Your performance&nbsp;&nbsp;+<br>&nbsp;group\'s average performance',
         }
     else:  # Excessive_Meritocracy, Aristocracy
         return {
             'score_formula_html':   '<strong>Score = number of correct answers &times; your multiplier</strong>',
-            'pictogram_score_text': 'Score&nbsp;=&nbsp;performance&nbsp;&times;&nbsp;multiplier',
+            'pictogram_score_text': 'Your score&nbsp;=&nbsp;Your performance&nbsp;&times;&nbsp;multiplier',
         }
 
 

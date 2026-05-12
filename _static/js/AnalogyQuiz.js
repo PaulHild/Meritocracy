@@ -212,31 +212,35 @@ function aConfirmAnswer() {
 // ---------------------------------------------------------------------------
 function aShowTutorialFeedback(idx, isCorrect, q) {
     const feedback = document.getElementById('analogy-feedback');
-
     const choicesDiv = document.getElementById('analogy-choices');
     const confirmBtn = document.getElementById('analogy-confirm-btn');
-    if (choicesDiv) choicesDiv.style.display = 'none';
-    if (confirmBtn) confirmBtn.style.display = 'none';
 
     let html = '';
     if (isCorrect) {
-        html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';
-    } else {
-        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect &mdash; the correct answer was <strong>' + ANALOGY_LETTERS[q.correct] + ' (' + q.options[q.correct] + ')</strong>.</div>';
-    }
-    if (idx === 0 && q.explanation) {
-        html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
-    }
+        // Correct: lock choices, show success + Next button
+        if (choicesDiv) choicesDiv.style.display = 'none';
+        if (confirmBtn) confirmBtn.style.display = 'none';
 
-    const isLast = (idx + 1 >= ANALOGY_TOTAL);
-    const btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
-    html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="aAdvanceTutorial()">' + btnLabel + '</button>';
+        html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';
+        if (q.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
+        }
+        const isLast = (idx + 1 >= ANALOGY_TOTAL);
+        const btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
+        html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="aAdvanceTutorial()">' + btnLabel + '</button>';
+    } else {
+        // Incorrect: keep choices visible so participant can retry
+        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect &mdash; the correct answer was <strong>' + ANALOGY_LETTERS[q.correct] + ' (' + q.options[q.correct] + ')</strong>. Try again.</div>';
+        if (q.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
+        }
+    }
 
     if (feedback) {
         feedback.innerHTML = html;
         feedback.style.display = 'block';
     } else {
-        aAdvanceTutorial();
+        if (isCorrect) aAdvanceTutorial();
     }
 }
 

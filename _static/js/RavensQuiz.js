@@ -125,10 +125,16 @@ function showPuzzle(index) {
         choicesDiv.style.display = '';
         puzzle.answers.forEach(function (filename, i) {
             const letter = OPTION_LETTERS[i];
+            
             const btn = document.createElement('button');
             btn.type = 'button';
             btn.className = 'choice-btn';
             btn.dataset.letter = letter;
+
+            const label = document.createElement('span');
+            label.className = 'choice-label';
+            label.textContent = letter;
+            btn.appendChild(label);
 
             const ansImg = document.createElement('img');
             ansImg.src = imgBase + filename;
@@ -218,33 +224,36 @@ function confirmAnswer() {
 // ---------------------------------------------------------------------------
 function showTutorialFeedback(idx, isCorrect, puzzle) {
     const feedback = document.getElementById('raven-feedback');
-
-    // Hide quiz interaction controls
     const choicesDiv = document.getElementById('choices');
     const confirmBtn = document.getElementById('confirm-btn');
-    if (choicesDiv) choicesDiv.style.display = 'none';
-    if (confirmBtn) confirmBtn.style.display = 'none';
 
     let html = '';
     if (isCorrect) {
-        html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';
-    } else {
-        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect &mdash; the correct answer was <strong>' + puzzle.correct + '</strong>.</div>';
-    }
-    if (idx === 0 && puzzle.explanation) {
-        html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + puzzle.explanation + '</p>';
-    }
+        // Correct: lock choices, show success + Next button
+        if (choicesDiv) choicesDiv.style.display = 'none';
+        if (confirmBtn) confirmBtn.style.display = 'none';
 
-    const isLast = (idx + 1 >= TOTAL);
-    const btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
-    html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="advanceTutorial()">' + btnLabel + '</button>';
+        html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';
+        if (puzzle.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + puzzle.explanation + '</p>';
+        }
+        const isLast = (idx + 1 >= TOTAL);
+        const btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
+        html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="advanceTutorial()">' + btnLabel + '</button>';
+    } else {
+        // Incorrect: keep choices visible so participant can retry
+        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect &mdash; the correct answer was <strong>' + puzzle.correct + '</strong>. Try again.</div>';
+        if (puzzle.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + puzzle.explanation + '</p>';
+        }
+    }
 
     if (feedback) {
         feedback.innerHTML = html;
         feedback.style.display = 'block';
     } else {
         // Fallback: no feedback div — just advance
-        advanceTutorial();
+        if (isCorrect) advanceTutorial();
     }
 }
 

@@ -355,38 +355,42 @@ function mConfirmAnswer() {
 // ---------------------------------------------------------------------------
 function mShowTutorialFeedback(idx, allCorrect, q, playerAnswers) {
     var feedback = document.getElementById('math-feedback');
-
     var gridDiv = document.getElementById('math-grid');
     var confirmBtn = document.getElementById('math-confirm-btn');
-    if (gridDiv) gridDiv.style.display = 'none';
-    if (confirmBtn) confirmBtn.style.display = 'none';
 
     var html = '';
     if (allCorrect) {
+        // Correct: lock grid, show success + Next button
+        if (gridDiv) gridDiv.style.display = 'none';
+        if (confirmBtn) confirmBtn.style.display = 'none';
+
         html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';
+        if (q.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
+        }
+        var isLast = (idx + 1 >= MATH_TOTAL);
+        var btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
+        html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="mAdvanceTutorial()">' + btnLabel + '</button>';
     } else {
+        // Incorrect: keep grid visible so participant can retry
         var correctParts = [];
         for (var key in q.answers) {
             if (q.answers.hasOwnProperty(key)) {
                 correctParts.push(q.answers[key]);
             }
         }
-        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect.</div>';
+        html += '<div style="color:#c62828;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10007; Incorrect. Try again.</div>';
         html += '<div style="font-size:0.92em;color:#444;margin-bottom:6px;">Correct answer: ' + correctParts.join(', ') + '.</div>';
+        if (q.explanation) {
+            html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
+        }
     }
-    if (idx === 0 && q.explanation) {
-        html += '<p style="margin:8px 0 0;color:#444;font-size:0.95em;">' + q.explanation + '</p>';
-    }
-
-    var isLast = (idx + 1 >= MATH_TOTAL);
-    var btnLabel = isLast ? 'Finish &rarr;' : 'Next question &rarr;';
-    html += '<button type="button" class="btn btn-primary" style="margin-top:14px;" onclick="mAdvanceTutorial()">' + btnLabel + '</button>';
 
     if (feedback) {
         feedback.innerHTML = html;
         feedback.style.display = 'block';
     } else {
-        mAdvanceTutorial();
+        if (allCorrect) mAdvanceTutorial();
     }
 }
 

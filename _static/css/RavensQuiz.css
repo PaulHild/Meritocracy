@@ -1,3 +1,26 @@
+.choice-btn {
+    position: relative;
+    /* your existing styles */
+}
+
+.choice-label {
+    position: absolute;
+    top: 4px;
+    left: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: #fff;
+    background: rgba(0, 0, 0, 0.55);
+    border-radius: 3px;
+    padding: 1px 5px;
+    line-height: 1.4;
+    pointer-events: none;   /* clicks pass through to the button */
+    user-select: none;
+    z-index: 1;
+}
+
+
+
 #RavensQuiz-container {
     width: 100%;
     max-width: 700px;
@@ -29,7 +52,7 @@
 }
 
 .choice-btn {
-    background: #fff;
+    background: #e0e0e0;
     border: 3px solid #ccc;
     border-radius: 6px;
     padding: 4px;

@@ -3,7 +3,7 @@
 const QUESTIONS = [
     { question: "net : tennis = hoop : ?", options: ["ring", "earring", "basketball", "jump", "circle"], correct: 2, explanation: 'A net is the essential scoring target in tennis — the ball must pass over it. A hoop is the essential scoring target in basketball — the ball must pass through it. So "hoop : basketball" mirrors "net : tennis".' },
     { question: "harbor : ship = garage : ?", options: ["door", "park", "car", "tool", "house"], correct: 2 },
-    { question: "baton : conductor = gavel : ?", options: ["hammer", "judge", "court", "wood", "hit"], correct: 1 },
+    { question: "baton : conductor = brush : ?", options: ["electrician", "painter", "cobbler", "smith", "hunter"], correct: 1 },
     { question: "chorus : song = refrain : ?", options: ["stop", "sing", "poem", "repeat", "music"], correct: 2 },
     { question: "chrysalis : moth = egg : ?", options: ["hen", "shell", "reptile", "hatch", "nest"], correct: 2 },
     { question: "sapling : tree = foal : ?", options: ["young", "stable", "horse", "colt", "pony"], correct: 2 },

@@ -17,7 +17,7 @@ class CommonConstants(BaseConstants):
     Round_length = 6000          # legacy; use Economy_round_length / Practice_round_length below
     Economy_round_length  = 45   # seconds per quiz part in economy rounds
     Practice_round_length = 90   # seconds per quiz part in practice rounds
-    Submit_freeze_duration = 5   # seconds page is frozen before first answer can be confirmed
+    Submit_freeze_duration = 3   # seconds page is frozen before first answer can be confirmed
     Interstitial_length = 3   # seconds for interstitial auto-advance
     Timer_text = "Time left to complete this part:"
     
@@ -53,17 +53,17 @@ class CommonConstants(BaseConstants):
 
     # \u2500\u2500 Treatment explanation texts (shown on Part_II_Instructions) \u2500\u2500\u2500\u2500
     Explanation_Perfect_Meritocracy = (
-        '<p>You have been placed in a group with two other participants. The three of you form a <strong>Group</strong>.</p>'
-        '<p>Each round, all three members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share of the pot depends on how well you perform relative to the others in your group.</p>'
+        '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
+        'Your share of the pot depends on your score in the Intelligence Test.</p>'
         '<p>All three members of your Group are treated identically — '
         'your share is determined purely by how many questions you answer correctly compared to the other two members.</p>'
     )
 
     Explanation_Excessive_Meritocracy = (
-        '<p>You have been placed in a group with two other participants. The three of you form a <strong>Group</strong>.</p>'
-        '<p>Each round, all three members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share depends on your score and your <strong>multiplier</strong>.</p>'
+        '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
+        'Your share depends on your score in the Intelligence Test and on your <strong>multiplier</strong>.</p>'
         '<p>Multipliers were assigned based on relative performance in the practice rounds: '
         'the top performer received <strong>&times;7</strong>, '
         'the middle performer <strong>&times;5</strong>, '
@@ -72,16 +72,16 @@ class CommonConstants(BaseConstants):
     )
 
     Explanation_Welfare_State = (
-        '<p>You have been placed in a group with two other participants. The three of you form a <strong>Group</strong>.</p>'
-        '<p>Each round, all three members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share depends on your score.</p>'
+        '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
+        'Your share depends on your score in the Intelligence Test.</p>'
         'The score is calculated as performance in the round plus the average performance of the three players.'
         
     )
 
     Explanation_Aristocracy = (
-        '<p>You have been placed in a group with two other participants. The three of you form a <strong>Group</strong>.</p>'
-        '<p>Each round, all three members compete over a pot of <strong>500 ECs</strong>. '
+        '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
         'Your share depends on your score and your <strong>multiplier</strong>.</p>'
         '<p>Multipliers were assigned <strong>randomly</strong> among the three members of your Group: '
         'one member received <strong>&times;7</strong>, one <strong>&times;5</strong>, and one <strong>&times;3</strong>.</p>'

@@ -7,7 +7,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-info">
-    <h2 class="section-title">Introductory instructions</h2>
+    <h2 class="section-title">Introductory Instructions</h2>
     <hr class="section-divider">
 
     {{ include C.Instructions_general_path }}
@@ -28,10 +28,13 @@
   </div>
            <ul>
           <li>On the next few pages, you will play two rounds of the Intelligence Test. </li>
+            <ul>
+              <li>In each question, for the first 3 seconds, you are not able to submit an answer.</li>
+            </ul>
           <li>In both of these rounds, each correct answer will earn you <strong>{{C.Practice_ECs}} ECs</strong>.</li>
           <ul>
             <!-- TODO: clarify the payment: do these also accumulate? -->
-            <li>Remember that accumulated ECs will be exchanged into Euros at the end.</li>
+            <li>Remember that accumulated ECs will be converted to Euros at the end.</li>
           </ul>
       </ul>
   </div>
@@ -44,8 +47,8 @@
        <ul>
     <li>After the first two rounds, you will be grouped with 2 other participants. </li>
     <li>Grouping is based on how you perform in these two rounds. </li>
-    <li>At this point, we will not explain how the grouping works, but you should know that it is in your interest to perform your best.</li>
-    <li>In other words, in addition to earning you ECs, <strong>your performance in the these rounds affect your earnings later in the experiment.</strong></li>
+    <li>At this point, we will not explain how the grouping works, but you should know that it is in your interest to perform at your best.</li>
+    <li>In other words, in addition to earning you ECs right now, <strong>your performance in the these rounds affect your earnings later in the experiment.</strong></li>
     <li>It is in your best interest to perform as well as you can.</li>
   </ul>
   </div>
@@ -79,7 +82,7 @@
   </div>
 
     <div class="buttons-container">
-        <a id="myBtn" onclick="open_modal(1)" class="btn btn-info">Introductory Instructions</a>
+        <a id="myBtn" onclick="open_modal(1)" class="btn btn-info">Introductory instructions</a>
         <button id="NextButton" class="btn btn-primary">Start first round</button>
     </div>
 </div>

@@ -150,243 +150,219 @@ const MATH_QUESTIONS = [
         answers: {"0_1": 5, "1_0": 5}
     },
     {
-        // Q9. [2x3, 4 blanks]
-        // [?] -  8 - [?] = 4
-        //  +    +    ×
-        // 10 × [?] - [?] = 48
-        //  =    =    =
-        // 23   14   12
-        rows: 2,
-        cols: 3,
+        // Q9. [2x2, 2 blanks]
+        // 12 + [?] = 19
+        //  +    +
+        // [?] +  9 = 14
+        //  =    =
+        // 17   16
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: 8, blank: false}, {value: null, blank: true}],
-            [{value: 10, blank: false}, {value: null, blank: true}, {value: null, blank: true}]
+            [{value: 12, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 9, blank: false}]
         ],
-        row_ops: [['-', '-'], ['*', '-']],
-        col_ops: [['+'], ['+'], ['*']],
-        row_results: [4, 48],
-        col_results: [23, 14, 12],
-        answers: {"0_0": 13, "0_2": 1, "1_1": 6, "1_2": 12}
+        row_ops: [['+'], ['+']],
+        col_ops: [['+'], ['+']],
+        row_results: [19, 14],
+        col_results: [17, 16],
+        answers: {"0_1": 7, "1_0": 5}
     },
     {
-        // Q10. [2x3, 4 blanks]
-        // [?] + 13 + [?] = 36
-        //  -    -    +
-        // [?] × 10 - [?] = 36
-        //  =    =    =
-        // 10    3   13
-        rows: 2,
-        cols: 3,
+        // Q10. [2x2, 2 blanks]
+        // [?] + 15 = 23
+        //  +    +
+        //  6 + [?] = 17
+        //  =    =
+        // 14   26
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: 13, blank: false}, {value: null, blank: true}],
-            [{value: null, blank: true}, {value: 10, blank: false}, {value: null, blank: true}]
+            [{value: null, blank: true}, {value: 15, blank: false}],
+            [{value: 6, blank: false}, {value: null, blank: true}]
         ],
-        row_ops: [['+', '+'], ['*', '-']],
-        col_ops: [['-'], ['-'], ['+']],
-        row_results: [36, 36],
-        col_results: [10, 3, 13],
-        answers: {"0_0": 14, "0_2": 9, "1_0": 4, "1_2": 4}
+        row_ops: [['+'], ['+']],
+        col_ops: [['+'], ['+']],
+        row_results: [23, 17],
+        col_results: [14, 26],
+        answers: {"0_0": 8, "1_1": 11}
     },
     {
-        // Q11. [2x3, 3 blanks]
-        // [?] : [?] +  6 = 7
-        //  +    :    +
-        // 13 + [?] +  9 = 25
-        //  =    =    =
-        // 25    4   15
-        rows: 2,
-        cols: 3,
+        // Q11. [2x2, 2 blanks]
+        // 20 - [?] = 13
+        //  +    +
+        // [?] +  4 = 13
+        //  =    =
+        // 29   11
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: null, blank: true}, {value: 6, blank: false}],
-            [{value: 13, blank: false}, {value: null, blank: true}, {value: 9, blank: false}]
+            [{value: 20, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 4, blank: false}]
         ],
-        row_ops: [['/', '+'], ['+', '+']],
-        col_ops: [['+'], ['/'], ['+']],
-        row_results: [7, 25],
-        col_results: [25, 4, 15],
-        answers: {"0_0": 12, "0_1": 12, "1_1": 3}
+        row_ops: [['-'], ['+']],
+        col_ops: [['+'], ['+']],
+        row_results: [13, 13],
+        col_results: [29, 11],
+        answers: {"0_1": 7, "1_0": 9}
     },
     {
-        // Q12. [2x3, 3 blanks]
-        //  5 + [?] :  9 = 1
-        //  +    +    +
-        // [?] × [?] :  9 = 12
-        //  =    =    =
-        // 17   13   18
-        rows: 2,
-        cols: 3,
+        // Q12. [2x2, 2 blanks]
+        //  6 × [?] = 24
+        //  +    +
+        // [?] +  5 = 19
+        //  =    =
+        // 20    9
+        rows: 2, cols: 2,
         grid: [
-            [{value: 5, blank: false}, {value: null, blank: true}, {value: 9, blank: false}],
-            [{value: null, blank: true}, {value: null, blank: true}, {value: 9, blank: false}]
+            [{value: 6, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 5, blank: false}]
         ],
-        row_ops: [['+', '/'], ['*', '/']],
-        col_ops: [['+'], ['+'], ['+']],
-        row_results: [1, 12],
-        col_results: [17, 13, 18],
-        answers: {"0_1": 4, "1_0": 12, "1_1": 9}
+        row_ops: [['*'], ['+']],
+        col_ops: [['+'], ['+']],
+        row_results: [24, 19],
+        col_results: [20, 9],
+        answers: {"0_1": 4, "1_0": 14}
     },
     {
-        // Q13. [2x3, 3 blanks]
-        // 14 × [?] : 12 = 14
-        //  +    -    ×
-        // [?] × [?] +  4 = 14
-        //  =    =    =
-        // 24   11   48
-        rows: 2,
-        cols: 3,
+        // Q13. [2x2, 2 blanks]
+        //  5 × [?] = 40
+        //  +    ×
+        // [?] +  6 = 9
+        //  =    =
+        //  8   48
+        rows: 2, cols: 2,
         grid: [
-            [{value: 14, blank: false}, {value: null, blank: true}, {value: 12, blank: false}],
-            [{value: null, blank: true}, {value: null, blank: true}, {value: 4, blank: false}]
+            [{value: 5, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 6, blank: false}]
         ],
-        row_ops: [['*', '/'], ['*', '+']],
-        col_ops: [['+'], ['-'], ['*']],
-        row_results: [14, 14],
-        col_results: [24, 11, 48],
-        answers: {"0_1": 12, "1_0": 10, "1_1": 1}
+        row_ops: [['*'], ['+']],
+        col_ops: [['+'], ['*']],
+        row_results: [40, 9],
+        col_results: [8, 48],
+        answers: {"0_1": 8, "1_0": 3}
     },
     {
-        // Q14. [2x3, 3 blanks]
-        // [?] + 15 - [?] = 16
-        //  -    -    ×
-        //  2 + [?] ×  2 = 28
-        //  =    =    =
-        // 10    3   22
-        rows: 2,
-        cols: 3,
+        // Q14. [2x2, 2 blanks]
+        // [?] +  4 = 13
+        //  ×    +
+        //  3 × [?] = 18
+        //  =    =
+        // 27   10
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: 15, blank: false}, {value: null, blank: true}],
-            [{value: 2, blank: false}, {value: null, blank: true}, {value: 2, blank: false}]
+            [{value: null, blank: true}, {value: 4, blank: false}],
+            [{value: 3, blank: false}, {value: null, blank: true}]
         ],
-        row_ops: [['+', '-'], ['+', '*']],
-        col_ops: [['-'], ['-'], ['*']],
-        row_results: [16, 28],
-        col_results: [10, 3, 22],
-        answers: {"0_0": 12, "0_2": 11, "1_1": 12}
+        row_ops: [['+'], ['*']],
+        col_ops: [['*'], ['+']],
+        row_results: [13, 18],
+        col_results: [27, 10],
+        answers: {"0_0": 9, "1_1": 6}
     },
     {
-        // Q15. [2x3, 4 blanks]
-        // [?] ×  9 - [?] = 30
-        //  +    +    +
-        // [?] -  6 × [?] = 15
-        //  =    =    =
-        // 13   15   11
-        rows: 2,
-        cols: 3,
+        // Q15. [2x2, 2 blanks]
+        //  7 × [?] = 35
+        //  -    ×
+        // [?] +  8 = 10
+        //  =    =
+        //  5   40
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: 9, blank: false}, {value: null, blank: true}],
-            [{value: null, blank: true}, {value: 6, blank: false}, {value: null, blank: true}]
+            [{value: 7, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 8, blank: false}]
         ],
-        row_ops: [['*', '-'], ['-', '*']],
-        col_ops: [['+'], ['+'], ['+']],
-        row_results: [30, 15],
-        col_results: [13, 15, 11],
-        answers: {"0_0": 4, "0_2": 6, "1_0": 9, "1_2": 5}
+        row_ops: [['*'], ['+']],
+        col_ops: [['-'], ['*']],
+        row_results: [35, 10],
+        col_results: [5, 40],
+        answers: {"0_1": 5, "1_0": 2}
     },
     {
-        // Q16. [2x3, 3 blanks]
-        //  7 + 11 + [?] = 31
-        //  +    +    -
-        // 15 - [?] + [?] = 14
-        //  =    =    =
-        // 22   22    3
-        rows: 2,
-        cols: 3,
+        // Q16. [2x2, 2 blanks]
+        // [?] ×  3 = 36
+        //  +    +
+        //  4 + [?] = 13
+        //  =    =
+        // 16   12
+        rows: 2, cols: 2,
         grid: [
-            [{value: 7, blank: false}, {value: 11, blank: false}, {value: null, blank: true}],
-            [{value: 15, blank: false}, {value: null, blank: true}, {value: null, blank: true}]
+            [{value: null, blank: true}, {value: 3, blank: false}],
+            [{value: 4, blank: false}, {value: null, blank: true}]
         ],
-        row_ops: [['+', '+'], ['-', '+']],
-        col_ops: [['+'], ['+'], ['-']],
-        row_results: [31, 14],
-        col_results: [22, 22, 3],
-        answers: {"0_2": 13, "1_1": 11, "1_2": 10}
+        row_ops: [['*'], ['+']],
+        col_ops: [['+'], ['+']],
+        row_results: [36, 13],
+        col_results: [16, 12],
+        answers: {"0_0": 12, "1_1": 9}
     },
     {
-        // Q17. [3x3, 5 blanks]
-        // [?] + 12 + [?] = 12
-        //  :    :    +
-        // [?] :  1 × [?] = 45
-        //  +    -    -
-        // 12 :  6 + [?] = 3
-        //  =    =    =
-        // 12    6    4
-        rows: 3,
-        cols: 3,
+        // Q17. [2x2, 2 blanks]
+        //  6 × [?] = 24
+        //  +    +
+        // [?] ×  7 = 14
+        //  =    =
+        //  8   11
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: 12, blank: false}, {value: null, blank: true}],
-            [{value: null, blank: true}, {value: 1, blank: false}, {value: null, blank: true}],
-            [{value: 12, blank: false}, {value: 6, blank: false}, {value: null, blank: true}]
+            [{value: 6, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 7, blank: false}]
         ],
-        row_ops: [['+', '+'], ['/', '*'], ['/', '+']],
-        col_ops: [['/', '+'], ['/', '-'], ['+', '-']],
-        row_results: [12, 45, 3],
-        col_results: [12, 6, 4],
-        answers: {"0_0": 0, "0_2": 0, "1_0": 9, "1_2": 5, "2_2": 1}
+        row_ops: [['*'], ['*']],
+        col_ops: [['+'], ['+']],
+        row_results: [24, 14],
+        col_results: [8, 11],
+        answers: {"0_1": 4, "1_0": 2}
     },
     {
-        // Q18. [3x3, 5 blanks]
-        // [?] + [?] - [?] = 8
-        //  ×    +    +
-        // 11 +  7 : [?] = 6
-        //  -    +    ×
-        // [?] -  5 +  7 = 10
-        //  =    =    =
-        // 36   20   49
-        rows: 3,
-        cols: 3,
+        // Q18. [2x2, 2 blanks]
+        // [?] :  5 =  3
+        //  ×    +
+        //  3 × [?] = 30
+        //  =    =
+        // 45   15
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: null, blank: true}, {value: null, blank: true}],
-            [{value: 11, blank: false}, {value: 7, blank: false}, {value: null, blank: true}],
-            [{value: null, blank: true}, {value: 5, blank: false}, {value: 7, blank: false}]
+            [{value: null, blank: true}, {value: 5, blank: false}],
+            [{value: 3, blank: false}, {value: null, blank: true}]
         ],
-        row_ops: [['+', '-'], ['+', '/'], ['-', '+']],
-        col_ops: [['*', '-'], ['+', '+'], ['+', '*']],
-        row_results: [8, 6, 10],
-        col_results: [36, 20, 49],
-        answers: {"0_0": 4, "0_1": 8, "0_2": 4, "1_2": 3, "2_0": 8}
+        row_ops: [['/'], ['*']],
+        col_ops: [['*'], ['+']],
+        row_results: [3, 30],
+        col_results: [45, 15],
+        answers: {"0_0": 15, "1_1": 10}
     },
     {
-        // Q19. [3x3, 5 blanks]
-        // [?] × [?] +  1 = 1
-        //  +    -    ×
-        //  6 + [?] + [?] = 20
-        //  :    ×    :
-        //  2 × [?] :  2 = 6
-        //  =    =    =
-        //  3   36    5
-        rows: 3,
-        cols: 3,
+        // Q19. [2x2, 2 blanks]
+        //  8 × [?] = 48
+        //  ×    ×
+        // [?] +  9 = 13
+        //  =    =
+        // 32   54
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: null, blank: true}, {value: 1, blank: false}],
-            [{value: 6, blank: false}, {value: null, blank: true}, {value: null, blank: true}],
-            [{value: 2, blank: false}, {value: null, blank: true}, {value: 2, blank: false}]
+            [{value: 8, blank: false}, {value: null, blank: true}],
+            [{value: null, blank: true}, {value: 9, blank: false}]
         ],
-        row_ops: [['*', '+'], ['+', '+'], ['*', '/']],
-        col_ops: [['+', '/'], ['-', '*'], ['*', '/']],
-        row_results: [1, 20, 6],
-        col_results: [3, 36, 5],
-        answers: {"0_0": 0, "0_1": 10, "1_1": 4, "1_2": 10, "2_1": 6}
+        row_ops: [['*'], ['+']],
+        col_ops: [['*'], ['*']],
+        row_results: [48, 13],
+        col_results: [32, 54],
+        answers: {"0_1": 6, "1_0": 4}
     },
     {
-        // Q20. [3x3, 6 blanks]
-        // [?] + [?] × [?] = 28
-        //  ×    +    ×
-        //  1 + [?] × [?] = 9
-        //  +    -    -
-        // [?] :  7 +  4 = 4
-        //  =    =    =
-        //  7    0   14
-        rows: 3,
-        cols: 3,
+        // Q20. [2x2, 2 blanks]
+        // [?] ×  4 = 48
+        //  ×    +
+        //  3 × [?] = 24
+        //  =    =
+        // 36   12
+        rows: 2, cols: 2,
         grid: [
-            [{value: null, blank: true}, {value: null, blank: true}, {value: null, blank: true}],
-            [{value: 1, blank: false}, {value: null, blank: true}, {value: null, blank: true}],
-            [{value: null, blank: true}, {value: 7, blank: false}, {value: 4, blank: false}]
+            [{value: null, blank: true}, {value: 4, blank: false}],
+            [{value: 3, blank: false}, {value: null, blank: true}]
         ],
-        row_ops: [['+', '*'], ['+', '*'], ['/', '+']],
-        col_ops: [['*', '+'], ['+', '-'], ['*', '-']],
-        row_results: [28, 9, 4],
-        col_results: [7, 0, 14],
-        answers: {"0_0": 7, "0_1": 7, "0_2": 2, "1_1": 0, "1_2": 9, "2_0": 0}
+        row_ops: [['*'], ['*']],
+        col_ops: [['*'], ['+']],
+        row_results: [48, 24],
+        col_results: [36, 12],
+        answers: {"0_0": 12, "1_1": 8}
     }
 ];

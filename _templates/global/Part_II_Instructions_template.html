@@ -13,7 +13,10 @@
             Welcome to the main part of the experiment — your earnings here will make up the largest share of your payment.
         </p>
         <p>
-            You will play <strong>{{ C.Economy_num_rounds }} rounds</strong>. In each round, you will first play the Intelligence Test, then take part in a "Group project". 
+            You will play <strong>{{ C.Economy_num_rounds }} rounds</strong>. 
+            <br><br>
+            
+            In each round, you will first play the Intelligence Test, and then take part in a "Group project". 
         </p>
         <!-- <ol>
             <li><strong>Competition</strong> — Perform the intelligence test. Your score determines your share of a pot of ECs.</li>
@@ -100,9 +103,9 @@
                 <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Competition</div>
                 <hr style="border:none; border-top:1px solid #bcd8f0; margin:10px 0;">
                 <ul style="text-align:left; font-size:0.83em; color:#333; padding-left:18px; margin:0; line-height:1.8;">
-                    <li>3 quiz blocks ({{C.Economy_round_length}} seconds each)</li>
+                    <li>Perform in the Intelligence Test ({{C.Economy_round_length}} seconds for each of the 3 blocks)</li>
                     <li>{{ pictogram_score_text|safe }}</li>
-                    <li>Win a share of the <strong>{{ C.Economy_pie }} EC</strong> pot</li>
+                    <li>Scores determine each group member's share of the <strong>{{ C.Economy_pie }} EC</strong> pot</li>
                 </ul>
             </div>
 
@@ -207,7 +210,7 @@
         
         {% if show_multiplier %}
         <p style="color:#555; font-size:0.95em;">
-            <em>Remember that your score depends on your performance and your multiplier.</em>
+            <em>Remember that your score depends on your performance and on your multiplier.</em>
         </p>
         {% endif %}
     </div>
@@ -272,10 +275,10 @@
             </ul>
         </p>
         <p>
-            At the end of the experiment, all ECs are converted to EUR  at the rate exchange rate of {{ C.EC_exchange_rate }} EC = 1 EUR.
+            At the end of the experiment, all ECs are converted to EUR  at the rate conversion rate of {{ C.EC_exchange_rate }} EC = 1 EUR.
         </p>
         <p style="color:#555; font-size:0.95em;">
-            <!-- TODO: double check the exchange rate -->
+            <!-- TODO: double check the conversion rate -->
             <em>For example, if you earn 1500 ECs you will be paid 15 EUR.</em><br>
         </p>
     </div>
