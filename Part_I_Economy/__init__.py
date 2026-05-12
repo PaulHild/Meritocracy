@@ -161,6 +161,10 @@ class Player(BasePlayer):
                              max=  C.PGG_investible * C.Economy_num_rounds)
     pgg_belief_bonus   = models.BooleanField(initial=False)
 
+    # ── Calculator interaction counts ────────────────────────────────────────
+    competition_calc_interactions = models.IntegerField(initial=0)
+    pgg_calc_interactions         = models.IntegerField(initial=0)
+
     # ── Treatment & multiplier (copied from participant for easy export) ───
     treatment  = models.StringField(initial='')
     multiplier = models.IntegerField(initial=0)
@@ -341,7 +345,7 @@ def _multiplier_reminder(treatment):
         return ''   # no multiplier table shown for this treatment
     elif treatment == 'Excessive_Meritocracy':
         return ('Remember that multipliers were assigned based on <strong>performance from the practice stage</strong>: '
-                'the best performer received &times;7 and the worst performer &times;3.')
+                'the best performer received &times;4 and the worst performer &times;1.')
     elif treatment == 'Aristocracy':
         return ('Remember that these multipliers were assigned <strong>randomly</strong> '
                 'at the start of the experiment.')
@@ -704,6 +708,28 @@ class Round_Feedback(MyBasePage):
         return variables
 
 
+# ── PGG Scenario Calculator (round 1 only) ────────────────────────────────────────────
+class PGG_Calculator(MyBasePage):
+    form_fields = ['pgg_calc_interactions']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        variables = MyBasePage.vars_for_template(player)
+        variables['hidden_fields'] = ['pgg_calc_interactions']
+        return variables
+
+    @staticmethod
+    def js_vars(player: Player):
+        return {
+            'pgg_endowment': C.PGG_endowment,
+            'pgg_commons':   C.PGG_Commons,
+        }
+
+
 # ── Stage 3: Public Goods Game ─────────────────────────────────────────────────────
 class Round_PublicGoods(MyBasePage):
     """Slider to decide how many tokens to place in the common pool.
@@ -738,9 +764,43 @@ class Round_PublicGoods(MyBasePage):
 
 
 
+# ── Competition Scenario Calculator (round 1 only) ───────────────────────────────────
+class Competition_Calculator(MyBasePage):
+    form_fields = ['competition_calc_interactions']
+
+    @staticmethod
+    def is_displayed(player: Player):
+        return player.round_number == 1
+
+    @staticmethod
+    def vars_for_template(player: Player):
+        variables = MyBasePage.vars_for_template(player)
+        treatment = player.participant.Treatment
+        others = [p for p in player.group.get_players() if p.id_in_group != player.id_in_group]
+        member_multipliers = [player.participant.multiplier] + [p.participant.multiplier for p in others]
+        variables['hidden_fields']      = ['competition_calc_interactions']
+        variables['show_multipliers']   = treatment in ('Excessive_Meritocracy', 'Aristocracy')
+        variables['player_multiplier']  = player.participant.multiplier
+        variables['member_multipliers'] = member_multipliers
+        variables.update(_instruction_vars(player))   # needed to render Part_II modal
+        return variables
+
+    @staticmethod
+    def js_vars(player: Player):
+        treatment = player.participant.Treatment
+        others = [p for p in player.group.get_players() if p.id_in_group != player.id_in_group]
+        member_multipliers = [player.participant.multiplier] + [p.participant.multiplier for p in others]
+        return {
+            'treatment':          treatment,
+            'economy_pie':        C.Economy_pie,
+            'show_multipliers':   treatment in ('Excessive_Meritocracy', 'Aristocracy'),
+            'member_multipliers': member_multipliers,
+        }
+
+
 # ── Comprehension question pages (visible only first round) ────────────────────────────────────────────────────────────────────────────
 
-            
+
 class Comprehension_check_1(MyBasePage):
 
     @staticmethod
@@ -1017,6 +1077,7 @@ class Final_Results(MyBasePage):
 page_sequence = [
     Grouping_WaitPage,       # round 1 only: form oTree groups from participant.group_id
     Part_II_Instructions,    # round 1 only: show treatment explanation + multiplier
+    Competition_Calculator,  # round 1 only: interactive competition earnings calculator
     Comprehension_check_1,   # round 1 only: first attempt (3 + 1 treatment-specific questions)
     Comprehension_check_2,   # round 1 only: second attempt (if first failed)
     Comprehension_check_3,   # round 1 only: forced re-entry if both attempts failed
@@ -1030,6 +1091,7 @@ page_sequence = [
     # Sync and feedback
     Round_WaitPage,          # sync: wait for all group members' scores before feedback
     Round_Feedback,
+    PGG_Calculator,          # round 1 only: interactive token transfer calculator
     Round_PublicGoods,
     PGG_Beliefs,         # round 10 only: belief elicitation about group members' PGG totals
     # Final results (round 10 only)

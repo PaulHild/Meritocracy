@@ -30,8 +30,8 @@
         <p style="text-align: center; font-size: 1em; color: #333; margin-bottom: 16px;">
             <strong>Example Question</strong> 
             <br>
-            [Explanation] In the first two rows, the same shape appears in all 3 boxes, but the number of shapes varies. In the last row, there are only rectangles. 
-            Following this logic, the correct answer here is <strong style="color:#1a73e8;">B</strong>.
+            [Explanation] In the first two forws, the same shape and pattern repeats itself. In the bottom row, there are three pentagrams arranged in a particular shape. 
+            Both B and A fit this shape, however, B's color doesn't match the pentagrams' in the bottom row. Therefore, the correct answer is <strong style="color:#1a73e8;">A</strong>.
         </p>
 
         <div style="width:100%; max-width:700px; margin:0 auto; text-align:center;">
@@ -46,24 +46,25 @@
 
                 <!-- A — correct, shown as selected -->
                 <div style="position:relative; width:100%; max-width:280px;">
-                    <button class="choice-btn" style="pointer-events:none; width:100%;">
-                        <img src="{{ static 'puzzles/Set1/answers_001A_F.png' }}" alt="Option C"
-                             style="width:100%; max-height:130px; object-fit:contain; display:block;">
-                    </button>
-                    <span style="position:absolute; top:6px; left:6px; background:#aaa; color:#fff;
-                                 font-weight:bold; font-size:0.85em; padding:2px 7px;
-                                 border-radius:4px;">A</span>
-                </div>
-
-                <!-- B -->
-                <div style="position:relative; width:100%; max-width:280px;">
                     <button class="choice-btn selected" style="pointer-events:none; width:100%;">
-                        <img src="{{ static 'puzzles/Set1/answers_001B_T.png' }}" alt="Option B"
+                        <img src="{{ static 'puzzles/Set1/answers_001A_T.png' }}" alt="Option C"
                              style="width:100%; max-height:130px; object-fit:contain; display:block;">
                     </button>
                     <span style="position:absolute; top:6px; left:6px; background:#1a73e8; color:#fff;
                                  font-weight:bold; font-size:0.85em; padding:2px 7px;
-                                 border-radius:4px;">B ✅</span>
+                                 border-radius:4px;">A ✅</span>
+                </div>
+
+
+                <!-- B -->
+                <div style="position:relative; width:100%; max-width:280px;">
+                    <button class="choice-btn" style="pointer-events:none; width:100%;">
+                        <img src="{{ static 'puzzles/Set1/answers_001B_F.png' }}" alt="Option C"
+                             style="width:100%; max-height:130px; object-fit:contain; display:block;">
+                    </button>
+                    <span style="position:absolute; top:6px; left:6px; background:#aaa; color:#fff;
+                                 font-weight:bold; font-size:0.85em; padding:2px 7px;
+                                 border-radius:4px;">B</span>
                 </div>
 
 

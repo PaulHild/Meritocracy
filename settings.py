@@ -30,7 +30,7 @@ PARTICIPANT_FIELDS = [
     'Treatment',    # str: 'Perfect_Meritocracy' | 'Excessive_Meritocracy' | 'Welfare_State' | 'Aristocracy'
     'group_id',     # int: unique group index within this session (1 … n/3)
     'role',         # str: 'high' | 'mid' | 'low'  (performance tier)
-    'multiplier',   # int: 7 | 5 | 3
+    'multiplier',   # int: 4 | 2 | 1
     'Practice_ECs_total',  # float: total ECs earned in both practice rounds
     # ── Part I → Part II cross-app ───────────────────────────────────────────
     'Part_I_total_ECs',    # float: Total_bonus_ECs from Part I (for tier ranking in Part II)

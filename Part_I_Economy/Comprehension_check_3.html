@@ -36,13 +36,29 @@
             </li><br>
             <li>
                 <!-- TODO: replace with real Question 2 text -->
-                <strong>Question 2:</strong> [Cooperation stage] What maximizes the total ECs earned <strong>by the group</strong> in the cooperation stage?<br>
+                <strong>Question 2:</strong> [Transferring tokens] What maximizes the total ECs earned <strong>by the group</strong> in the Transferring tokens?<br>
                 <strong>Correct answer:</strong> The total ECs earned by the group is maximized when all players contribute 100 ECs.
             </li><br>
             <li>
                 <!-- TODO: replace with real Question 3 text -->
-                <strong>Question 3:</strong> [Cooperation stage] What maximizes the total ECs earned <strong>by you</strong> in the cooperation stage?<br>
+                <strong>Question 3:</strong> [Transferring tokens] What maximizes the total ECs earned <strong>by you</strong> in the Transferring tokens?<br>
                 <strong>Correct answer:</strong> The total ECs earned by me is maximized when I contribute 0 ECs and others contribute 100.
+            </li><br>
+            <li>
+                <strong>Question 4:</strong>
+                {% if Treatment == 'Perfect_Meritocracy' %}
+                    What is true about how earnings are determined in your group?<br>
+                    <strong>Correct answer:</strong> Everyone in my group is treated identically — earnings depend purely on relative performance.
+                {% elif Treatment == 'Excessive_Meritocracy' %}
+                    How were multipliers assigned in your group?<br>
+                    <strong>Correct answer:</strong> Multipliers are assigned based on performance in the first two rounds.
+                {% elif Treatment == 'Welfare_State' %}
+                    Your score determines your share of the pie. But how is your score determined?<br>
+                    <strong>Correct answer:</strong> My score equals my performance in the Intelligence Test plus the average performance of the three group members.
+                {% elif Treatment == 'Aristocracy' %}
+                    How were multipliers assigned in your group?<br>
+                    <strong>Correct answer:</strong> Multipliers were assigned randomly at the start of the experiment.
+                {% endif %}
             </li>
         </ul>
     </div>

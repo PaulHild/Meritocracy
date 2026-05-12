@@ -41,107 +41,80 @@ def colorize_image(img, shape_color=SHAPE_COLOR):
     return Image.fromarray(out.astype(np.uint8))
 
 
+def _answers_are_distinct(imgs, min_distinct_fraction=0.08):
+    """
+    True if every pair of answer tiles differs on at least min_distinct_fraction
+    of pixels (threshold: >30 gray levels). Catches near-identical alternatives.
+    """
+    arrays = [np.array(img.convert('L')).astype(np.int16) for img in imgs]
+    for i in range(len(arrays)):
+        for j in range(i + 1, len(arrays)):
+            if np.mean(np.abs(arrays[i] - arrays[j]) > 30) < min_distinct_fraction:
+                return False
+    return True
+
+
 def create_puzzle_and_answers(matrix_id, temp_dir="temp_matrices", output_dir="puzzles_3x3x4"):
-    """
-    Generate separate images for a 2x2 matrix puzzle:
-    1. puzzle_XXX.png - 2x2 matrix with missing bottom-right piece
-    2. answers_XXXA_T.png, answers_XXXB_F.png, etc. - Individual answer options
-    
-    Args:
-        matrix_id: Unique identifier for the puzzle
-    
-    Returns: dict with correct_answer ('A', 'B', 'C', or 'D')
-    """
-    
-    # Use 2x2 settings
     matrix_types = simple_2x2_matrix_types
     ruleset = simple_2x2_ruleset
-    n_alternatives = 3  # 4 total options (A, B, C, D)
-    
-    # Create directories
+    n_alternatives = 3
+
     os.makedirs(temp_dir, exist_ok=True)
     os.makedirs(output_dir, exist_ok=True)
-    
-    # Generate matrix
-    matrix_type = np.random.choice(matrix_types)
-    rpm = Matrix.make(matrix_type, ruleset=ruleset, n_alternatives=n_alternatives)
-    rpm.save(temp_dir, f"temp_{matrix_id:03d}")
-    
-    # Load the complete correct matrix
-    answer_path = os.path.join(temp_dir, f"temp_{matrix_id:03d}_answer.png")
-    img = Image.open(answer_path)
-    width, height = img.size
-    
-    # For 2x2 matrix: divide into 2 columns and 2 rows
-    cell_width = width // 2
-    cell_height = height // 2
-    
-    # Extract the correct answer (bottom-right cell)
-    # For 2x2: bottom-right starts at (cell_width, cell_height) and ends at (width, height)
-    correct_answer_img = img.crop((323, 323, 479, 479))
-    
-    # Extract incorrect answers from the same bottom-right position
-    incorrect_answers = []
-    for i in range(n_alternatives):
-        alt_path = os.path.join(temp_dir, f"temp_{matrix_id:03d}_alternative_{i}.png")
-        alt_img = Image.open(alt_path)
-        # Crop from the same position: bottom-right cell
-        incorrect_answer = alt_img.crop((323, 323, 480, 480))
-        incorrect_answers.append(incorrect_answer)
-    
-    # Create list of all answers with labels
-    all_answers = [(correct_answer_img, True)] + [(img, False) for img in incorrect_answers]
+
+    # Retry until all 4 answer options are visually distinct from each other.
+    for _ in range(50):
+        matrix_type = np.random.choice(matrix_types)
+        rpm = Matrix.make(matrix_type, ruleset=ruleset, n_alternatives=n_alternatives)
+        rpm.save(temp_dir, f"temp_{matrix_id:03d}")
+
+        answer_path = os.path.join(temp_dir, f"temp_{matrix_id:03d}_answer.png")
+        img = Image.open(answer_path)
+        width, height = img.size
+        cell_width = width // 2
+
+        correct_answer_img = img.crop((323, 323, 479, 479))
+        incorrect_answers = []
+        for i in range(n_alternatives):
+            alt_path = os.path.join(temp_dir, f"temp_{matrix_id:03d}_alternative_{i}.png")
+            alt_img = Image.open(alt_path)
+            incorrect_answers.append(alt_img.crop((323, 323, 479, 479)))
+
+        if _answers_are_distinct([correct_answer_img] + incorrect_answers):
+            break
+
+    all_answers = [(correct_answer_img, True)] + [(a, False) for a in incorrect_answers]
     random.shuffle(all_answers)
-    
-    # Find which position is correct
-    correct_index = [i for i, (_, is_correct) in enumerate(all_answers) if is_correct][0]
-    
-    # Labels for 4 options
+    correct_index = next(i for i, (_, ok) in enumerate(all_answers) if ok)
     labels = ['A', 'B', 'C', 'D']
     correct_letter = labels[correct_index]
-    
+
     # ===== CREATE PUZZLE IMAGE =====
     puzzle = img.copy()
     draw = ImageDraw.Draw(puzzle)
-    
-    # White out bottom-right cell
     draw.rectangle([(323, 323), (479, 479)], fill='white')
 
-    #print(f"Total image size: {width} x {height}")
-    #print(f"Cell size: {cell_width} x {cell_height}")
-    #print(f"White rectangle from ({cell_width}, {cell_height}) to ({width}, {height})")
-    
-    # Add "?" in missing cell (smaller size)
     try:
-        font_large = ImageFont.truetype("arial.ttf", size=cell_width // 4)  # Made smaller
-    except:
+        font_large = ImageFont.truetype("arial.ttf", size=cell_width // 4)
+    except Exception:
         font_large = ImageFont.load_default()
-    
+
     bbox = draw.textbbox((0, 0), "?", font=font_large)
-    text_width = bbox[2] - bbox[0]
-    text_height = bbox[3] - bbox[1]
-    cell_x_start, cell_y_start = 323, 323
-    text_x = cell_x_start + (156 - text_width) // 2
-    text_y = cell_y_start + (156 - text_height) // 2
+    text_x = 323 + (156 - (bbox[2] - bbox[0])) // 2
+    text_y = 323 + (156 - (bbox[3] - bbox[1])) // 2
     draw.text((text_x, text_y), "?", fill='black', font=font_large)
-    
-    # Save puzzle image (colorized)
+
     puzzle_path = os.path.join(output_dir, f"puzzle_{matrix_id:03d}.png")
     colorize_image(puzzle).save(puzzle_path)
 
     # ===== CREATE INDIVIDUAL ANSWER IMAGES =====
     answer_files = []
-    for idx, ((answer_img, is_correct), label) in enumerate(zip(all_answers, labels)):
-        # Determine if this is the correct answer
+    for (answer_img, is_correct), label in zip(all_answers, labels):
         correctness = 'T' if is_correct else 'F'
-
-        # Save individual answer image (colorized)
         answer_filename = f"answers_{matrix_id:03d}{label}_{correctness}.png"
-        answer_path = os.path.join(output_dir, answer_filename)
-        colorize_image(answer_img).save(answer_path)
-        
+        colorize_image(answer_img).save(os.path.join(output_dir, answer_filename))
         answer_files.append(answer_filename)
-    
+
     return {
         'puzzle_id': matrix_id,
         'matrix_size': '2x2',

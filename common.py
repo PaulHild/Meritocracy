@@ -46,9 +46,9 @@ class CommonConstants(BaseConstants):
     
 
     # \u2500\u2500 Multipliers \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-    M_high   = 7   # high-performer   (Excessive Meritocracy / Aristocracy)
-    M_medium = 5   # medium-performer (all treatments as base)
-    M_low    = 3   # low-performer    (Excessive Meritocracy / Aristocracy)
+    M_high   = 4   # high-performer   (Excessive Meritocracy / Aristocracy)
+    M_medium = 2   # medium-performer (all treatments as base)
+    M_low    = 1   # low-performer    (Excessive Meritocracy / Aristocracy)
 
     # \u2500\u2500 Treatment names \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     TREATMENTS = ['Perfect_Meritocracy', 'Excessive_Meritocracy', 'Welfare_State', 'Aristocracy']
@@ -66,10 +66,10 @@ class CommonConstants(BaseConstants):
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
         'Your share depends on your score in the Intelligence Test and on your <strong>multiplier</strong>.</p>'
-        '<p>Multipliers were assigned based on relative performance in the practice rounds: '
-        'the top performer received <strong>&times;7</strong>, '
-        'the middle performer <strong>&times;5</strong>, '
-        'and the bottom performer <strong>&times;3</strong>.</p>'
+        '<p>Multipliers <strong>were assigned based on relative performance</strong> in the practice rounds: '
+        'the top performer received <strong>&times;4</strong>, '
+        'the middle performer <strong>&times;2</strong>, '
+        'and the bottom performer <strong>&times;1</strong>.</p>'
         '<p>Your personal multiplier is shown below.</p>'
     )
 
@@ -86,7 +86,7 @@ class CommonConstants(BaseConstants):
         '<p>In each round, the ghree group members compete over a pot of <strong>500 ECs</strong>. '
         'Your share depends on your score and your <strong>multiplier</strong>.</p>'
         '<p>Multipliers were assigned <strong>randomly</strong> among the three members of your Group: '
-        'one member received <strong>&times;7</strong>, one <strong>&times;5</strong>, and one <strong>&times;3</strong>.</p>'
+        'one member received <strong>&times;4</strong>, one <strong>&times;2</strong>, and one <strong>&times;1</strong>.</p>'
         '<p>Your personal multiplier is shown below.</p>'
     )
     

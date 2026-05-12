@@ -1,0 +1,181 @@
+{{ block title }}{{ endblock }}
+
+{{ block content }}
+<link rel="stylesheet" href="{{ static 'css/css.css' }}">
+<link rel="stylesheet" href="{{ static 'css/modal.css' }}">
+<script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
+
+<div class="content-box box-info">
+    <h2 class="section-title">Try it out: Competition Earnings Calculator</h2>
+    <hr class="section-divider">
+
+    {% if C.DEBUG %}
+    <div style="padding:10px 16px; background:#fff8e1; border:2px dashed #f0ad00; border-radius:6px; font-size:0.88em; color:#333; margin-bottom:12px;">
+        <strong style="color:#b8860b;">&#128027; DEBUG</strong> — Treatment: <strong>{{ Treatment }}</strong>
+    </div>
+    {% endif %}
+
+    <div class="section-box box-calm">
+        <div class="section-header">
+            <div class="icon">🧮</div>
+            <h3>How do scores translate to earnings?</h3>
+        </div>
+        <p>
+            To better understand how performance will translate into ECs earned, we provide you with a scenario calculator.
+            
+            Enter hypothetical scores and press <strong>Calculate</strong> to see how the
+            <strong>{{ C.Economy_pie }} EC</strong> pot would be divided among the three group members.
+            You can try as many combinations as you like. 
+        </p>
+        {% if show_multipliers %}
+        <p style="color:#555; font-size:0.92em;">
+            <em>Each group member's multiplier is fixed and shown in the table. Enter hypothetical performance scores to explore how the earnings would be divided.</em>
+        </p>
+        {% endif %}
+    </div>
+
+    <div class="section-box box-neutral" style="margin-top:16px;">
+        <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
+            <thead>
+                <tr style="border-bottom:2px solid #ddd; background:#f7f7f7;">
+                    <th style="padding:10px 12px; text-align:left;"></th>
+                    <th style="padding:10px 12px; text-align:center;">Performance<br><span style="font-weight:normal; font-size:0.8em; color:#666;">(correct answers)</span></th>
+                    {% if show_multipliers %}
+                    <th style="padding:10px 12px; text-align:center;">Multiplier</th>
+                    {% endif %}
+                    <th style="padding:10px 12px; text-align:center;">ECs earned</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 12px; font-weight:bold;">You</td>
+                    <td style="padding:10px 12px; text-align:center;">
+                        <input type="number" id="score1" min="0" value="10"
+                               style="width:80px; text-align:center; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:1em;">
+                    </td>
+                    {% if show_multipliers %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.1em;">
+                        &times;{{ member_multipliers.0 }}
+                    </td>
+                    {% endif %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result1">—</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 12px; font-weight:bold;">Member 2</td>
+                    <td style="padding:10px 12px; text-align:center;">
+                        <input type="number" id="score2" min="0" value="10"
+                               style="width:80px; text-align:center; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:1em;">
+                    </td>
+                    {% if show_multipliers %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.1em;">
+                        &times;{{ member_multipliers.1 }}
+                    </td>
+                    {% endif %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result2">—</td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 12px; font-weight:bold;">Member 3</td>
+                    <td style="padding:10px 12px; text-align:center;">
+                        <input type="number" id="score3" min="0" value="10"
+                               style="width:80px; text-align:center; padding:6px; border:1px solid #ccc; border-radius:4px; font-size:1em;">
+                    </td>
+                    {% if show_multipliers %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.1em;">
+                        &times;{{ member_multipliers.2 }}
+                    </td>
+                    {% endif %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result3">—</td>
+                </tr>
+            </tbody>
+        </table>
+
+        {% if Treatment == 'Welfare_State' %}
+        <div id="ws-avg-note" style="display:none; margin-top:14px; padding:10px 16px; background:#fff8e1; border:1px solid #f0ad00; border-radius:6px; font-size:0.92em;">
+            Average performance of all players: <strong id="ws-avg">—</strong> is added to everyone's performance, before shares are calculated.
+        </div>
+        {% endif %}
+
+        <div style="text-align:center; margin-top:20px;">
+            <button onclick="calculate()" type="button" class="btn btn-info" style="padding:10px 32px; font-size:1em;">
+                Calculate
+            </button>
+        </div>
+
+        <div id="results-note" style="display:none; margin-top:12px; text-align:center; color:#388E3C; font-size:0.9em;">
+            Results updated above. Try a different combination!
+        </div>
+    </div>
+
+    <!-- Hidden: interaction counter -->
+    <div style="display:none">
+        {{ formfield 'competition_calc_interactions' }}
+    </div>
+
+    <div class="buttons-container">
+        <a onclick="open_modal(1)" class="btn btn-info">Instructions</a>
+        <button id="NextButton" class="btn btn-primary">Continue &rarr;</button>
+    </div>
+</div>
+
+<!-- Modal: full instructions -->
+<div id="myModal1" class="modal">
+    <div class="modal-content modal-content-wide">
+        <div class="modal-header">
+            <h2>Instructions</h2>
+            <span class="close" onclick="span_click(1)">&times;</span>
+        </div>
+        <p style="padding:0px">
+            {{ include C.Part_II_Instructions_template }}
+        </p>
+    </div>
+</div>
+
+<script>
+    var clicks = 0;
+    var TREATMENT   = js_vars.treatment;
+    var PIE         = js_vars.economy_pie;
+    var SHOW_MULT   = js_vars.show_multipliers;
+
+    function calculate() {
+        clicks++;
+        var field = document.getElementById('id_competition_calc_interactions');
+        if (field) field.value = clicks;
+
+        var s1 = parseFloat(document.getElementById('score1').value) || 0;
+        var s2 = parseFloat(document.getElementById('score2').value) || 0;
+        var s3 = parseFloat(document.getElementById('score3').value) || 0;
+
+        var MULTS = js_vars.member_multipliers;
+        var m1 = SHOW_MULT ? MULTS[0] : 1;
+        var m2 = SHOW_MULT ? MULTS[1] : 1;
+        var m3 = SHOW_MULT ? MULTS[2] : 1;
+
+        var w1 = s1 * m1, w2 = s2 * m2, w3 = s3 * m3;
+
+        if (TREATMENT === 'Welfare_State') {
+            var avg = (w1 + w2 + w3) / 3;
+            w1 += avg; w2 += avg; w3 += avg;
+            var wsAvgEl = document.getElementById('ws-avg');
+            var wsNoteEl = document.getElementById('ws-avg-note');
+            if (wsAvgEl) wsAvgEl.textContent = Math.round(avg * 10) / 10;
+            if (wsNoteEl) wsNoteEl.style.display = 'block';
+        }
+
+        var total = w1 + w2 + w3;
+        var e1, e2, e3;
+        if (total === 0) {
+            e1 = e2 = e3 = PIE / 3;
+        } else {
+            e1 = (w1 / total) * PIE;
+            e2 = (w2 / total) * PIE;
+            e3 = (w3 / total) * PIE;
+        }
+
+        document.getElementById('result1').textContent = Math.round(e1) + ' ECs';
+        document.getElementById('result2').textContent = Math.round(e2) + ' ECs';
+        document.getElementById('result3').textContent = Math.round(e3) + ' ECs';
+        document.getElementById('results-note').style.display = 'block';
+    }
+</script>
+
+{{ endblock }}

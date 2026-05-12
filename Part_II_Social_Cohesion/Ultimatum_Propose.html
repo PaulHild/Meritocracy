@@ -207,7 +207,7 @@
             var keep  = dictatorEC - offer;
             display.textContent = offer + ' ECs';
             display.classList.remove('offer-untouched');
-            sub.textContent = 'You keep: ' + keep + ' ECs\u00a0|\u00a0You offer: ' + offer + ' ECs';
+            if (sub) sub.textContent = 'You keep: ' + keep + ' ECs\u00a0|\u00a0You offer: ' + offer + ' ECs';
             badge.textContent = 'Set \u2713';
             badge.className   = 'slider-badge badge-set';
             if (hidden) hidden.value = offer;
