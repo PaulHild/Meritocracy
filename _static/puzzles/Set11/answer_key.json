@@ -6,7 +6,7 @@
     "matrix_type": "MatrixType.FOUR_SHAPE",
     "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_000.png",
     "answer_files": [
       "answers_000A_T.png",
@@ -20,13 +20,13 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "B",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_001.png",
     "answer_files": [
-      "answers_001A_F.png",
-      "answers_001B_T.png",
+      "answers_001A_T.png",
+      "answers_001B_F.png",
       "answers_001C_F.png",
       "answers_001D_F.png"
     ]
@@ -38,7 +38,7 @@
     "matrix_type": "MatrixType.FOUR_SHAPE",
     "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(1))\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-2))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_002.png",
     "answer_files": [
       "answers_002A_T.png",
@@ -54,7 +54,7 @@
     "matrix_type": "MatrixType.FOUR_SHAPE",
     "correct_answer": "C",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-2))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_003.png",
     "answer_files": [
       "answers_003A_F.png",
@@ -68,15 +68,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "D",
+    "correct_answer": "C",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(1))\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_004.png",
     "answer_files": [
       "answers_004A_F.png",
       "answers_004B_F.png",
-      "answers_004C_F.png",
-      "answers_004D_T.png"
+      "answers_004C_T.png",
+      "answers_004D_F.png"
     ]
   },
   {
@@ -84,13 +84,13 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "A",
+    "correct_answer": "B",
     "num_options": 4,
-    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nArithmetic(name=<RuleType.ARITHMETIC: 3>, attr=<AttributeType.POSITION: 7>, params=[-1, 1], value=np.int64(-1))\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_005.png",
     "answer_files": [
-      "answers_005A_T.png",
-      "answers_005B_F.png",
+      "answers_005A_F.png",
+      "answers_005B_T.png",
       "answers_005C_F.png",
       "answers_005D_F.png"
     ]
@@ -100,15 +100,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "C",
+    "correct_answer": "D",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_006.png",
     "answer_files": [
       "answers_006A_F.png",
       "answers_006B_F.png",
-      "answers_006C_T.png",
-      "answers_006D_F.png"
+      "answers_006C_F.png",
+      "answers_006D_T.png"
     ]
   },
   {
@@ -116,15 +116,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "B",
+    "correct_answer": "D",
     "num_options": 4,
-    "rules": "\nArithmetic(name=<RuleType.ARITHMETIC: 3>, attr=<AttributeType.POSITION: 7>, params=[-1, 1], value=np.int64(-1))\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_007.png",
     "answer_files": [
       "answers_007A_F.png",
-      "answers_007B_T.png",
+      "answers_007B_F.png",
       "answers_007C_F.png",
-      "answers_007D_F.png"
+      "answers_007D_T.png"
     ]
   },
   {
@@ -132,14 +132,14 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "C",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_008.png",
     "answer_files": [
-      "answers_008A_F.png",
+      "answers_008A_T.png",
       "answers_008B_F.png",
-      "answers_008C_T.png",
+      "answers_008C_F.png",
       "answers_008D_F.png"
     ]
   },
@@ -148,15 +148,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "D",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(-1))\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nArithmetic(name=<RuleType.ARITHMETIC: 3>, attr=<AttributeType.POSITION: 7>, params=[-1, 1], value=np.int64(-1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_009.png",
     "answer_files": [
-      "answers_009A_F.png",
+      "answers_009A_T.png",
       "answers_009B_F.png",
       "answers_009C_F.png",
-      "answers_009D_T.png"
+      "answers_009D_F.png"
     ]
   },
   {
@@ -164,14 +164,14 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "C",
+    "correct_answer": "B",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(-1))\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_010.png",
     "answer_files": [
       "answers_010A_F.png",
-      "answers_010B_F.png",
-      "answers_010C_T.png",
+      "answers_010B_T.png",
+      "answers_010C_F.png",
       "answers_010D_F.png"
     ]
   },
@@ -180,15 +180,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "D",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.POSITION: 7>, params=[-2, -1, 1, 2], value=np.int64(1))\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_011.png",
     "answer_files": [
-      "answers_011A_F.png",
+      "answers_011A_T.png",
       "answers_011B_F.png",
       "answers_011C_F.png",
-      "answers_011D_T.png"
+      "answers_011D_F.png"
     ]
   },
   {
@@ -196,14 +196,14 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "B",
+    "correct_answer": "C",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_012.png",
     "answer_files": [
       "answers_012A_F.png",
-      "answers_012B_T.png",
-      "answers_012C_F.png",
+      "answers_012B_F.png",
+      "answers_012C_T.png",
       "answers_012D_F.png"
     ]
   },
@@ -228,13 +228,13 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "B",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(2))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nArithmetic(name=<RuleType.ARITHMETIC: 3>, attr=<AttributeType.POSITION: 7>, params=[-1, 1], value=np.int64(1))\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_014.png",
     "answer_files": [
-      "answers_014A_F.png",
-      "answers_014B_T.png",
+      "answers_014A_T.png",
+      "answers_014B_F.png",
       "answers_014C_F.png",
       "answers_014D_F.png"
     ]
@@ -244,15 +244,15 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "D",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-2))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_015.png",
     "answer_files": [
-      "answers_015A_F.png",
+      "answers_015A_T.png",
       "answers_015B_F.png",
       "answers_015C_F.png",
-      "answers_015D_T.png"
+      "answers_015D_F.png"
     ]
   },
   {
@@ -260,14 +260,14 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "C",
+    "correct_answer": "A",
     "num_options": 4,
-    "rules": "\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.POSITION: 7>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_016.png",
     "answer_files": [
-      "answers_016A_F.png",
+      "answers_016A_T.png",
       "answers_016B_F.png",
-      "answers_016C_T.png",
+      "answers_016C_F.png",
       "answers_016D_F.png"
     ]
   },
@@ -276,15 +276,47 @@
     "matrix_size": "2x2",
     "shapes_per_cell": 4,
     "matrix_type": "MatrixType.FOUR_SHAPE",
-    "correct_answer": "A",
+    "correct_answer": "B",
     "num_options": 4,
-    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(-2))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "rules": "\nArithmetic(name=<RuleType.ARITHMETIC: 3>, attr=<AttributeType.POSITION: 7>, params=[-1, 1], value=np.int64(-1))\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
     "puzzle_file": "puzzle_017.png",
     "answer_files": [
-      "answers_017A_T.png",
-      "answers_017B_F.png",
+      "answers_017A_F.png",
+      "answers_017B_T.png",
       "answers_017C_F.png",
       "answers_017D_F.png"
+    ]
+  },
+  {
+    "puzzle_id": 18,
+    "matrix_size": "2x2",
+    "shapes_per_cell": 4,
+    "matrix_type": "MatrixType.FOUR_SHAPE",
+    "correct_answer": "B",
+    "num_options": 4,
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nDistributeThree(name=<RuleType.DISTRIBUTE_THREE: 4>, attr=<AttributeType.SHAPE: 2>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "puzzle_file": "puzzle_018.png",
+    "answer_files": [
+      "answers_018A_F.png",
+      "answers_018B_T.png",
+      "answers_018C_F.png",
+      "answers_018D_F.png"
+    ]
+  },
+  {
+    "puzzle_id": 19,
+    "matrix_size": "2x2",
+    "shapes_per_cell": 4,
+    "matrix_type": "MatrixType.FOUR_SHAPE",
+    "correct_answer": "A",
+    "num_options": 4,
+    "rules": "\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.CONFIGURATION: 8>, params=None, value=None)\nProgression(name=<RuleType.PROGRESSION: 2>, attr=<AttributeType.SHAPE: 2>, params=[-2, -1, 1, 2], value=np.int64(1))\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.SIZE: 3>, params=None, value=None)\nConstant(name=<RuleType.CONSTANT: 1>, attr=<AttributeType.COLOR: 4>, params=None, value=None)\n",
+    "puzzle_file": "puzzle_019.png",
+    "answer_files": [
+      "answers_019A_T.png",
+      "answers_019B_F.png",
+      "answers_019C_F.png",
+      "answers_019D_F.png"
     ]
   }
 ]
