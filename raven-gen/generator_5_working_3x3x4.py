@@ -6,8 +6,8 @@ import os
 import json
 # ===== CONFIGURATION =====
 
-NUM_SETS = 12          # Number of sets of puzzles to generate
-PUZZLES_PER_SET = 18  # Puzzles per set #TODO: if the timer is more than 90 seconds in each round, we need more than 18 puzzles.
+NUM_SETS = 12  # Number of sets of puzzles to generate
+# Sets 1-2 get 40 puzzles; sets 3-12 get 20 puzzles.
 
 # Output directory (relative to this script's location)
 # Resolves to: <repo_root>/_static/puzzles/Set{N}/
@@ -155,6 +155,49 @@ def create_puzzle_and_answers(matrix_id, temp_dir="temp_matrices", output_dir="p
     }
 
 
+def create_merged_image(puzzle_path, answer_paths, correct_letter, output_path):
+    """
+    Puzzle image on top; 4 answer tiles in a row below.
+    Correct tile gets a green border and a '✓' label.
+    """
+    GAP = 12
+    BORDER = 4
+    LABEL_HEIGHT = 22
+    GREEN = (34, 197, 94)
+    GRAY = (80, 80, 80)
+
+    puzzle_img = Image.open(puzzle_path)
+    pw, ph = puzzle_img.size
+    tile_w = pw // 4
+
+    labels = ['A', 'B', 'C', 'D']
+    answer_imgs = [Image.open(p).resize((tile_w, tile_w), Image.LANCZOS) for p in answer_paths]
+
+    total_h = ph + GAP + tile_w + LABEL_HEIGHT
+    merged = Image.new('RGB', (pw, total_h), (255, 255, 255))
+    merged.paste(puzzle_img, (0, 0))
+
+    draw = ImageDraw.Draw(merged)
+    try:
+        font = ImageFont.truetype("arial.ttf", 13)
+    except Exception:
+        font = ImageFont.load_default()
+
+    for i, (label, tile) in enumerate(zip(labels, answer_imgs)):
+        x, y = i * tile_w, ph + GAP
+        merged.paste(tile, (x, y))
+        is_correct = label == correct_letter
+        if is_correct:
+            draw.rectangle([(x, y), (x + tile_w - 1, y + tile_w - 1)], outline=GREEN, width=BORDER)
+        label_text = f"{label} ✓" if is_correct else label
+        color = GREEN if is_correct else GRAY
+        bbox = draw.textbbox((0, 0), label_text, font=font)
+        tw = bbox[2] - bbox[0]
+        draw.text((x + (tile_w - tw) // 2, y + tile_w + 3), label_text, fill=color, font=font)
+
+    merged.save(output_path)
+
+
 def build_answer_key_js(puzzle_info: list) -> str:
     """Build a JS file containing const PUZZLES = [...] for a set."""
     labels = ['A', 'B', 'C', 'D']
@@ -184,16 +227,22 @@ if __name__ == "__main__":
     temp_dir = os.path.join(SCRIPT_DIR, "temp_matrices")
 
     for set_num in range(1, NUM_SETS + 1):
+        puzzles_this_set = 40 if set_num <= 2 else 20
         set_dir = os.path.join(OUTPUT_BASE, f"Set{set_num}")
+        inspection_dir = os.path.join(OUTPUT_BASE, "inspection", f"Set{set_num}")
         os.makedirs(set_dir, exist_ok=True)
+        os.makedirs(inspection_dir, exist_ok=True)
 
-        #print(f"\n=== Generating Set {set_num} / {NUM_SETS} ({PUZZLES_PER_SET} puzzles) ===")
         puzzle_info = []
 
-        for puzzle_id in range(PUZZLES_PER_SET):
+        for puzzle_id in range(puzzles_this_set):
             info = create_puzzle_and_answers(puzzle_id, temp_dir=temp_dir, output_dir=set_dir)
             puzzle_info.append(info)
-            #print(f"  Puzzle {puzzle_id:03d}: correct = {info['correct_answer']}")
+
+            puzzle_path = os.path.join(set_dir, info['puzzle_file'])
+            answer_paths = [os.path.join(set_dir, f) for f in info['answer_files']]
+            merged_path = os.path.join(inspection_dir, f"merged_puzzle_{puzzle_id:03d}.png")
+            create_merged_image(puzzle_path, answer_paths, info['correct_answer'], merged_path)
 
         # Save JSON answer key
         json_path = os.path.join(set_dir, "answer_key.json")

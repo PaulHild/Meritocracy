@@ -188,12 +188,12 @@
 
     <!-- ── Player's own cumulative PGG total ──────────────────────────────── -->
     <div style="margin:24px 0 12px; padding:14px 20px; background:#f0f7ff; border-left:4px solid #5B9BD5; border-radius:6px; text-align:center;">
-        💡 So far you and your group has played {{ C.Economy_num_rounds }} rounds of the group project. 
-        Each round, you decided how many ECs to contribute to or take away from the common pool.
+        💡 So far you and your group has played {{ C.Economy_num_rounds }} rounds of the Transferring tokens stage. 
+        Each round, you decided how many tokens to transfer between Private Account and Group Account.
         
         <br><br>
     
-        Here, we want you to <strong>guess how many ECs</strong> the other two group members contributed in total across all rounds. 
+        Here, we want you to <strong>guess how many tokens</strong> the other two group members contributed to the Group Account across all rounds. 
 
 
         
@@ -214,7 +214,7 @@
     <!-- ── Bonus incentive ────────────────────────────────────────────────── -->
     <div style="margin:0 0 24px; padding:12px 20px; background:#fff8e1; border-left:4px solid #FFC107; border-radius:6px; font-size:0.95em;">
         ⭐ <strong>PAYMENT:</strong> If <em>both</em> of your guesses are within
-        <strong>100 ECs</strong> of the true value, you earn an extra
+        <strong>100 tokens</strong> of the true value, you earn an extra
         <strong>{{ pgg_guess_bonus }} ECs</strong>! So, try to guess as accurately as possible.
     </div>
 
@@ -234,7 +234,7 @@
                 <span id="badge-m2" class="slider-badge badge-waiting">Not set</span>
             </h3>
         </div>
-        <div class="belief-display belief-untouched" id="display-m2">&mdash; ECs</div>
+        <div class="belief-display belief-untouched" id="display-m2">&mdash; Tokens</div>
         <div class="belief-sub" id="sub-m2">Click the bar below to enter your guess</div>
         <div class="slider-container">
             <div class="slider-init-overlay" id="init-m2">
@@ -244,9 +244,9 @@
                    min="{{ slider_min }}" max="{{ slider_max }}" step="10" value="0" style="display:none;">
         </div>
         <div class="belief-labels">
-            <span>{{ slider_min }} ECs (always withdrew)</span>
+            <span>{{ slider_min }} Tokens (always withdrew)</span>
             <span style="text-align:center;">0 (neutral)</span>
-            <span>+{{ slider_max }} ECs (always invested)</span>
+            <span>+{{ slider_max }} Tokens (always invested)</span>
         </div>
     </div>
 
@@ -259,7 +259,7 @@
                 <span id="badge-m3" class="slider-badge badge-waiting">Not set</span>
             </h3>
         </div>
-        <div class="belief-display belief-untouched" id="display-m3">&mdash; ECs</div>
+        <div class="belief-display belief-untouched" id="display-m3">&mdash; Tokens</div>
         <div class="belief-sub" id="sub-m3">Click the bar below to enter your guess</div>
         <div class="slider-container">
             <div class="slider-init-overlay" id="init-m3">
@@ -269,9 +269,9 @@
                    min="{{ slider_min }}" max="{{ slider_max }}" step="10" value="0" style="display:none;">
         </div>
         <div class="belief-labels">
-            <span>{{ slider_min }} ECs (always withdrew)</span>
+            <span>{{ slider_min }} Tokens (always withdrew)</span>
             <span style="text-align:center;">0 (neutral)</span>
-            <span>+{{ slider_max }} ECs (always invested)</span>
+            <span>+{{ slider_max }} Tokens (always invested)</span>
         </div>
     </div>
 
@@ -345,16 +345,16 @@
                 var guess = parseInt(val);
                 var displayStr, subStr;
                 if (guess > 0) {
-                    displayStr   = '+' + guess + ' ECs';
-                    subStr       = 'Your guess: +' + guess + ' ECs contributed';
+                    displayStr   = '+' + guess + ' Tokens';
+                    subStr       = 'Your guess: +' + guess + ' Tokens contributed';
                     display.style.color = 'var(--primary, #4CAF50)';
                 } else if (guess < 0) {
-                    displayStr   = guess + ' ECs';
-                    subStr       = 'Your guess: ' + Math.abs(guess) + ' ECs taken out';
+                    displayStr   = guess + ' Tokens';
+                    subStr       = 'Your guess: ' + Math.abs(guess) + ' Tokens taken out';
                     display.style.color = '#c62828';
                 } else {
-                    displayStr   = '0 ECs';
-                    subStr       = 'Your guess: 0 ECs (neutral)';
+                    displayStr   = '0 Tokens';
+                    subStr       = 'Your guess: 0 Tokens (neutral)';
                     display.style.color = '#888';
                 }
                 display.textContent = displayStr;

@@ -1,15 +1,17 @@
-<!-- <h3>📋 Investment Game — Instructions</h3> -->
+<!-- Transferring tokens — modal instructions for PGG2 -->
 
-<p>This is the same "Group project" you played during previous Part.</p>
+<p>This is the same &ldquo;Transferring tokens&rdquo; game you played during the previous part.</p>
 
-<p><strong>You have {{ pgg2_commons }} ECs.</strong> Decide how many to invest in a common pool (any whole number from 0 to {{ pgg2_commons }} ECs).</p>
+<p>You have <strong>100 tokens</strong> in your <strong>Private Account</strong> and <strong>300 tokens</strong> are in the <strong>Group Account</strong>.</p>
 
 <ul>
-    <li>The total invested by all 3 members is <strong>multiplied by 1.5</strong> and divided equally among the three of you.</li>
-    <li>You keep all ECs you did not invest, plus your equal share of the pool return.</li>
+    <li>Each token in your <strong>Private Account</strong> earns you <strong>2 ECs</strong>.</li>
+    <li>Each token in the <strong>Group Account</strong> earns <strong>1 EC for every group member</strong>.</li>
+    <li>You can transfer up to <strong>100 tokens</strong> from the Group Account to your Private Account,
+        or transfer up to <strong>100 tokens</strong> from your Private Account into the Group Account.</li>
 </ul>
 
-<p><strong>Your earnings = ECs kept + (total pool &times; 1.5 &divide; 3)</strong></p>
+<p><strong>Your earnings = (Private Account tokens &times; 2) + Group Account tokens</strong></p>
 
 <p style="margin-top:14px; font-weight:bold; font-size:0.95em;">Examples:</p>
 <table style="width:100%; border-collapse:collapse; margin:8px 0; font-size:0.92em;">
@@ -21,20 +23,20 @@
     </thead>
     <tbody>
         <tr style="border-bottom:1px solid #eee; background:#e6ffe6;">
-            <td style="padding:8px 12px;">Everyone invests 100 ECs</td>
-            <td style="padding:8px 12px; text-align:center;">Pool = 300 &times; 1.5 = 450 &divide; 3 = <strong>150 ECs</strong></td>
+            <td style="padding:8px 12px;">Everyone adds 100 tokens to Group Account</td>
+            <td style="padding:8px 12px; text-align:center;">Private = 0, Group = 600 &rarr; <strong>600 ECs</strong></td>
         </tr>
         <tr style="border-bottom:1px solid #eee; background:#fff8e1;">
-            <td style="padding:8px 12px;">You invest 0; others invest 100 each</td>
-            <td style="padding:8px 12px; text-align:center;">Kept 100 + pool share 100 = <strong>200 ECs</strong></td>
+            <td style="padding:8px 12px;">No one moves any tokens</td>
+            <td style="padding:8px 12px; text-align:center;">Private = 100, Group = 300 &rarr; <strong>500 ECs</strong></td>
         </tr>
         <tr>
-            <td style="padding:8px 12px;">You invest 50; others invest 50 each</td>
-            <td style="padding:8px 12px; text-align:center;">Kept 50 + (150 &times; 1.5 &divide; 3) = 50 + 75 = <strong>125 ECs</strong></td>
+            <td style="padding:8px 12px;">Everyone takes 100 tokens from Group Account</td>
+            <td style="padding:8px 12px; text-align:center;">Private = 200, Group = 0 &rarr; <strong>400 ECs</strong></td>
         </tr>
     </tbody>
 </table>
 
 <p style="margin-top:12px; padding:10px 14px; background:#f0f7ff; border-left:3px solid #5B9BD5; border-radius:4px; font-size:0.93em;">
-    💡 Investing more increases the total pot for everyone, but you personally keep less. Your slider lets you choose any amount from 0 to {{ pgg2_commons }} ECs.
+    💡 Keeping tokens in the Group Account benefits everyone equally. Moving tokens to your Private Account earns more for you personally but reduces the Group Account for all.
 </p>

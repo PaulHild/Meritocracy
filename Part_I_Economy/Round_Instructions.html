@@ -19,11 +19,43 @@
         <p>This round has two stages:</p>
         <ol>
             <li><strong>Intelligence Test</strong> — score as high as you can before the timer runs out. You will have {{C.Economy_round_length}} seconds each for the three parts of the test.</li>
-            <li><strong>Group project</strong> — decide how many of your 100 ECs to invest in the common pool.</li>
+            <li><strong>Transferring tokens</strong> — decide how many tokens to move between your Private Account and the Group Account.</li>
         </ol>
 
         Between the two stages, you will see how your effort and earnigns compare to others in your group.
     </div>
+
+    {% if debug_info %}
+    <div style="margin-top:20px; padding:14px 18px; background:#fff8e1; border:2px dashed #f0ad00; border-radius:6px; font-size:0.88em; color:#333;">
+        <strong style="color:#b8860b;">&#128027; DEBUG — Round {{ debug_info.round }} Token Transfer</strong>
+        <table style="margin-top:10px; border-collapse:collapse; width:100%;">
+            <tr>
+                <td style="padding:3px 10px 3px 0; color:#555;">Your transfer (δ)</td>
+                <td style="padding:3px 0; font-weight:bold;">{{ debug_info.my_contrib }} tokens</td>
+            </tr>
+            <tr>
+                <td style="padding:3px 10px 3px 0; color:#555;">Member 2 transfer (δ)</td>
+                <td style="padding:3px 0; font-weight:bold;">{{ debug_info.m2_contrib }} tokens</td>
+            </tr>
+            <tr>
+                <td style="padding:3px 10px 3px 0; color:#555;">Member 3 transfer (δ)</td>
+                <td style="padding:3px 0; font-weight:bold;">{{ debug_info.m3_contrib }} tokens</td>
+            </tr>
+            <tr style="border-top:1px solid #e0c060; margin-top:4px;">
+                <td style="padding:6px 10px 3px 0; color:#555;">Your Private Account</td>
+                <td style="padding:6px 0; font-weight:bold;">{{ debug_info.private_tokens }} tokens → {{ debug_info.private_ec }} ECs</td>
+            </tr>
+            <tr>
+                <td style="padding:3px 10px 3px 0; color:#555;">Group Account total</td>
+                <td style="padding:3px 0; font-weight:bold;">{{ debug_info.group_total }} tokens → {{ debug_info.group_ec }} ECs</td>
+            </tr>
+            <tr style="border-top:1px solid #e0c060;">
+                <td style="padding:6px 10px 3px 0; color:#555;"><strong>Computed PGG earnings</strong></td>
+                <td style="padding:6px 0; font-weight:bold; color:#b8860b;">{{ debug_info.pgg_earnings }} ECs</td>
+            </tr>
+        </table>
+    </div>
+    {% endif %}
 
     {% for field in form %}
         {% if field.name not in hidden_fields %}

@@ -124,7 +124,7 @@
 
 <div class="content-box box-neutral">
     <h2 class="section-title">
-        Round {{ round_number }} of {{C.Economy_num_rounds}} — Group project
+        Round {{ round_number }} of {{C.Economy_num_rounds}} — Transferring tokens
     </h2>
     <hr class="section-divider">
 
@@ -223,19 +223,20 @@
     <!-- ── Pool info ─────────────────────────────────────────────────── -->
     <div class="section-box box-info">
         <div class="section-header">
-            <div class="icon">🏦</div>
-            <h3>Group project</h3>
+            <div class="icon">🔄</div>
+            <h3>Transferring tokens</h3>
         </div>
         <p>
-            Each of you has {{ pgg_max }} ECs that you can invest in the public pool. There is already <strong>{{ C.PGG_Commons }} ECs </strong>in the pool.
+            You have <strong>100 tokens</strong> in your <strong>Private Account</strong> and
+            <strong>{{ C.PGG_Commons }} tokens</strong> are in the <strong>Group Account</strong>.
             <br><br>
-             If you want, you can <strong> take out</strong> up to {{ pgg_max }} ECs from the pool, or <strong>add more</strong> ECs to it (up to {{ pgg_max }}).
+            Each token in your <strong>Private Account</strong> earns you <strong>2 ECs</strong>.
+            Each token in the <strong>Group Account</strong> earns <strong>1 EC for every group member</strong>.
         </p>
         <p>
-            Use the slider below to make your decision. <strong>Click the bar first to activate it</strong>, then move it <strong>left</strong> to take ECs out or <strong>right</strong> to put more in.
-            <br><br>
-            <strong>Remember:</strong> ECs invested in the pool grow by 50% and are shared equally among group members, 
-            while ECs kept private only benefit their owner. 
+            Use the slider below to transfer tokens. <strong>Click the bar first to activate it</strong>,
+            then move it <strong>left</strong> to take tokens from the Group Account into your Private Account,
+            or <strong>right</strong> to transfer tokens from your Private Account into the Group Account.
         </p>
         <p style="color:#555; font-size:0.95em;">
             <em>Click on the Instruction button below to re-read the instructions for this stage.</em>
@@ -250,19 +251,19 @@
         </div>
 
         <div class="pgg-panels">
-            <div class="pgg-panel pool-neutral" id="pgg-pool-panel">
-                <div class="pgg-panel-value" id="pgg-pool-value">0 ECs</div>
-                <div class="pgg-panel-label" id="pgg-pool-label">invested into the pool</div>
-            </div>
             <div class="pgg-panel private">
-                <div class="pgg-panel-value" id="pgg-private-value">{{ pgg_max }} ECs</div>
-                <div class="pgg-panel-label">kept private</div>
+                <div class="pgg-panel-value" id="pgg-private-value">100 tokens</div>
+                <div class="pgg-panel-label">in your Private Account</div>
+            </div>
+            <div class="pgg-panel pool-neutral" id="pgg-pool-panel">
+                <div class="pgg-panel-value" id="pgg-pool-value">{{ C.PGG_Commons }} tokens</div>
+                <div class="pgg-panel-label" id="pgg-pool-label">in the Group Account</div>
             </div>
         </div>
         <div class="pgg-panels" style="margin-top:0;">
-            <div class="pgg-panel pool-neutral" id="pgg-current-panel" style="flex:none; width:100%;">
-                <div class="pgg-panel-value" id="pgg-current-value">{{ C.PGG_Commons }} ECs</div>
-                <div class="pgg-panel-label">currently in the pool</div>
+            <div class="pgg-panel pool-neutral" id="pgg-transfer-panel" style="flex:none; width:100%;">
+                <div class="pgg-panel-value" id="pgg-transfer-value">0 tokens</div>
+                <div class="pgg-panel-label" id="pgg-transfer-label">transferred (no change)</div>
             </div>
         </div>
 
@@ -282,8 +283,8 @@
                 >
             </div>
             <div class="pgg-labels">
-                <span>← take {{ pgg_max }} out</span>
-                <span>invest {{ pgg_max }} →</span>
+                <span>← take {{ pgg_max }} from Group Account</span>
+                <span>add {{ pgg_max }} to Group Account →</span>
             </div>
         </div>
 
@@ -302,7 +303,7 @@
 
     <div class="buttons-container" style="margin-top:20px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">Group project instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">Transferring tokens instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary" onclick="tryPggSubmit(event)">Confirm Decision</button>
     </div>
@@ -379,35 +380,40 @@
         const PGG_MAX     = {{ pgg_max }};          // 100 — player's personal budget
 
         const slider       = document.getElementById('pgg-slider');
-        const poolPanel      = document.getElementById('pgg-pool-panel');
-        const poolValue      = document.getElementById('pgg-pool-value');
-        const poolLabel      = document.getElementById('pgg-pool-label');
-        const privateValue   = document.getElementById('pgg-private-value');
-        const currentValue   = document.getElementById('pgg-current-value');
-        const hiddenInput    = document.querySelector('input[name="{{ contribution_field }}"]');
+        const privateValue    = document.getElementById('pgg-private-value');
+        const poolPanel       = document.getElementById('pgg-pool-panel');
+        const poolValue       = document.getElementById('pgg-pool-value');
+        const transferPanel   = document.getElementById('pgg-transfer-panel');
+        const transferValue   = document.getElementById('pgg-transfer-value');
+        const transferLabel   = document.getElementById('pgg-transfer-label');
+        const hiddenInput     = document.querySelector('input[name="{{ contribution_field }}"]');
 
         function sync(sliderVal) {
-            const x = sliderVal - PGG_COMMONS;   // delta: + = investing, - = taking out
-            const y = PGG_MAX - x;               // private tokens (own budget ± transfer)
+            const x = sliderVal - PGG_COMMONS;        // delta: + = adding to group, - = taking out
+            const privateTokens = PGG_MAX - x;        // 100 - delta
+            const groupTotal    = PGG_COMMONS + x;    // 300 + delta
 
-            // Left panel — pool
-            poolValue.textContent = Math.abs(x) + ' ECs';
+            // Private Account panel
+            privateValue.textContent = privateTokens + ' tokens';
+
+            // Group Account panel
+            poolValue.textContent = groupTotal + ' tokens';
+            poolPanel.className = x > 0 ? 'pgg-panel pool-positive'
+                                : x < 0 ? 'pgg-panel pool-negative'
+                                :          'pgg-panel pool-neutral';
+
+            // Transfer summary panel
+            transferValue.textContent = Math.abs(x) + ' tokens';
             if (x > 0) {
-                poolLabel.textContent = 'invested into the pool';
-                poolPanel.className = 'pgg-panel pool-positive';
+                transferLabel.textContent = 'transferred to Group Account';
+                transferPanel.className = 'pgg-panel pool-positive';
             } else if (x < 0) {
-                poolLabel.textContent = 'taken from the pool';
-                poolPanel.className = 'pgg-panel pool-negative';
+                transferLabel.textContent = 'taken from Group Account';
+                transferPanel.className = 'pgg-panel pool-negative';
             } else {
-                poolLabel.textContent = 'invested into the pool';
-                poolPanel.className = 'pgg-panel pool-neutral';
+                transferLabel.textContent = 'transferred (no change)';
+                transferPanel.className = 'pgg-panel pool-neutral';
             }
-
-            // Right panel — private
-            privateValue.textContent = y + ' ECs';
-
-            // Third panel — current pool total
-            currentValue.textContent = (PGG_COMMONS + x) + ' ECs';
 
             // Store the delta in the hidden form field
             if (hiddenInput) hiddenInput.value = x;

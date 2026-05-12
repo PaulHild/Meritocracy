@@ -16,7 +16,7 @@
             You will play <strong>{{ C.Economy_num_rounds }} rounds</strong>. 
             <br><br>
             
-            In each round, you will first play the Intelligence Test, and then take part in a "Group project". 
+            In each round, you will first play the Intelligence Test, and then take part in &ldquo;Transferring tokens&rdquo;.
         </p>
         <!-- <ol>
             <li><strong>Competition</strong> — Perform the intelligence test. Your score determines your share of a pot of ECs.</li>
@@ -137,21 +137,21 @@
 
             <!-- Stage II: Cooperation -->
             <div style="
-                flex:1; min-width:185px; max-width:300px;
+                flex:1; min-width:185px; max-width:400px;
                 background:#f0faf0;
                 border:2px solid #4CAF50;
                 border-radius:12px;
                 padding:20px 16px;
                 text-align:center;
             ">
-                <div style="font-size:2.4em; margin-bottom:6px; line-height:1;">🤝</div>
+                <div style="font-size:2.4em; margin-bottom:6px; line-height:1;">🔄</div>
                 <div style="color:#388E3C; font-weight:700; font-size:0.75em; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:3px;">Stage II</div>
-                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Group project</div>
+                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Transferring tokens</div>
                 <hr style="border:none; border-top:1px solid #b8e6b8; margin:10px 0;">
                 <ul style="text-align:left; font-size:0.83em; color:#333; padding-left:18px; margin:0; line-height:1.8;">
-                    <li>Receive <strong>100 ECs</strong></li>
-                    <li>Decide how many of these to invest in the pool</li>
-                    <li>Pool grows by 50%, then shared equally among 3</li>
+                    <li>Start with 100 tokens in your <strong>Private Account</strong> and 300 tokens in a joint <strong>Group Account</strong></li>
+                    <li>Decide how many tokens to transfer between the two accounts</li>
+                    <li>Each token in your Private Account yields <strong>2 ECs for you</strong>, and each token in the joint Group Account yields <strong>1 EC for every group member</strong></li>
                 </ul>
             </div>
         </div><!-- /stage boxes -->
@@ -232,30 +232,42 @@
     <!-- Stage III: Cooperation -->
     <div class="section-box box-info">
         <div class="section-header">
-            <div class="icon">🤝</div>
-            <h3>Stage II: Group project</h3>
+            <div class="icon">🔄</div>
+            <h3>Stage II: Transferring tokens</h3>
         </div>
-        <p>
-            There are <strong>{{ C.PGG_Commons }} ECs</strong> in the the group project. 
-            Additionally, each member receives <strong>{{ C.PGG_investible }} ECs</strong>. 
+       <p>
+            Your task in this stage is to choose how to allocate "tokens" between your individual <strong>Private Account</strong> and a joint <strong>Group Account.</strong>
+            <br><br>
+            At the beginning of this stage, each group member has <strong>100 tokens</strong> in her or his individual Private Account. 
+            In addition to that, there are <strong>300 tokens</strong> in the joint Group Account.
 
-            You choose between investing into the group project or keeping the ECs for yourself.
-            
-            <ul>
-                <li>You can either invest (up to {{ C.PGG_investible }} ECs) or take out (up to {{ C.PGG_investible }} ECs) from the common pool. </li>
-                <li>ECs you <strong>keep</strong> are added directly to your earnings.</li>
-                <li>ECs placed in the <strong>group project</strong> are multiplied by <strong>1.5</strong> and divided equally among all three members.</li>
-            </ul>
 
-            
         </p>
-        <p>
-            Because the pool multiplies contributions by 1.5, the group earns more in total when everyone contributes.
-            However, since the pool is shared equally, each member also benefits from others' contributions regardless of their own contribution.
-        </p>
-            <p style="color:#555; font-size:0.95em;">
-            <em>Example 1: Suppose everyone contributes 100 ECs to the group project. Then, there would be 600 ECs in the pool. Each of you would earn (600 &times; 1.5) &divide; 3 = <strong>300 ECs</strong> from the group project and 0 ECs from keeping.</em><br>
-            <em>Example 2: Suppose everyone keeps their 100 ECs for themselves and additionally everyone takes out 100 ECs from the group project. There would be 0 ECs in the pool. Each of you would earn 0 ECs from the group project and 200 ECs from keeping the ECs for yourselves.</em>
+        <ul>
+            <li>You can either transfer the tokens from your Private Account to the Group Account (up to 100 tokens at most) or transfer tokens from the group Account to your Private Account (also 100 tokens at most).
+                Alternatively, you can also choose not to transfter any tokens.
+            </li>
+            <li>
+                All 3 group members make their transfer decision at the same time. 
+                As soon as everyone has done that, the computer will take stock of how many tokens there are in each Private Account and how many tokens there are in the Group Account.
+            </li>
+            <li>
+                For each token in <strong>your Private Account</strong> the computer will pay you <strong>2 ECs</strong>.
+                Likewise, the other group members will receive 2 ECs for each token in their Private Accounts.
+            </li>
+            <li>
+                For each token in the <strong>Group Account</strong>, the computer will pay <strong>1 EC to EVERY member of your group</strong>.
+            </li>
+        </ul>
+
+        <p style="color:#555; font-size:0.95em;">
+            <em>Example 1: Suppose you and the other two members of your group do not transfer any tokens between the accounts. Then, you would receive 200 ECs from your initial 100 tokens in the Private Account (2 ECs per token). In addition, you would receive 300 ECs from the initial 300 tokens in the joint Group Account (1 EC per token). In total, you would receive 500 ECs.</em><br>
+            <em>
+                Example 2: Suppose you and the other two members of your group all transfer their initial 100 Private Account tokens to the Group Account. 
+                Then, the Group Account balance would be 300 + 3x100 = 600 tokens. Then, you would receive 0 ECs from your Private Account and, 600 600 ECs from the group Group Account.
+            </em><br>
+            <em>Example 3: Suppose that you transfer your initial 100 Private Account tokens to the Group Account, whereas the other two group members each transfer 100 tokens from the Group Account to their Private Accounts. Then, the Group Account balance would be 300 + 100 – 2x100 = 200 tokens. You would therefore receive 0 ECs from your Private Account and 200 ECs from the Group Account.</em><br>
+            <em>Example 4: Suppose that the other two group members transfer their initial 100 Private Account tokens to the Group Account, whereas you transfer 100 tokens from the Group Account to your Private Account. Then, your Private Account balance would be 100 + 100 = 200, and the Group Account balance would be 300 + 2x100 – 100 = 400 tokens. You would therefore receive 400 ECs from your Private Account and 400 ECs from the Group Account (800 ECs in total).</em><br>
         </p>
     </div>
 
@@ -271,7 +283,7 @@
         <p>
             <ul>
                 <li>Your earnings from the competition stage accumulate across all {{ C.Economy_num_rounds }} rounds.</li>
-                <li>For the Group project stage, only one of the {{ C.Economy_num_rounds }} rounds will be randomly chosen at the end to determine your actual payoff from the Group project — the other rounds' decisions will not affect your earnings.</li>
+                <li>For the Transferring tokens stage, only one of the {{ C.Economy_num_rounds }} rounds will be randomly chosen at the end to determine your actual payoff from this stage — the other rounds' decisions will not affect your earnings.</li>
             </ul>
         </p>
         <p>

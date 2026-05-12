@@ -146,7 +146,7 @@ class Player(BasePlayer):
     trust_earnings_outgroup = models.FloatField(initial=0)
 
     # ── PGG2 ────────────────────────────────────────────────────────────────
-    pgg2_contribution = models.IntegerField(min=0, max=100, initial=50)
+    pgg2_contribution = models.IntegerField(min=-100, max=100, initial=0)
     pgg2_earnings     = models.FloatField(initial=0)
 
     # ── SVO (Murphy et al. 2011) — 6 items, each 0–8 (index into 9 options) ─
@@ -398,13 +398,13 @@ class Final_WaitPage(WaitPage):
         pgg2_groups = [shuffled[i:i + 3] for i in range(0, len(shuffled), 3)]
 
         for grp in pgg2_groups:
-            contributions = [p.pgg2_contribution for p in grp]
-            total_pool    = sum(contributions)
-            pool_return   = (total_pool * 1.5) / 3
+            contributions       = [p.pgg2_contribution for p in grp]
+            total_contributions = sum(contributions)
             for i, p in enumerate(grp):
-                p.pgg2_earnings = float(
-                    (C.PGG2_Commons - contributions[i]) + pool_return
-                )
+                private_tokens  = 100 - contributions[i]
+                private_ec      = 2 * private_tokens
+                group_total     = C.PGG_Commons + total_contributions
+                p.pgg2_earnings = float(private_ec + group_total)
                 partners = [g for g in grp if g.participant.code != p.participant.code]
                 p.participant.pgg2_partner1_code = partners[0].participant.code
                 p.participant.pgg2_partner2_code = partners[1].participant.code

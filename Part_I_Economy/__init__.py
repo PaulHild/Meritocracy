@@ -181,16 +181,16 @@ class Player(BasePlayer):
     widget=widgets.RadioSelect)
     
     Comprehension_question_2 = models.BooleanField(choices=[
-            [False, 'The total ECs earned by the group is maximized when all players contribute 0 ECs.'],
-            [True,'The total ECs earned by the group is maximized when all players contribute 100 ECs.'], # Correct answer here
-            [False, 'The total ECs earned by the group is maximized when all players contribute 50 ECs.'],],
-        label = '[Cooperation stage] What maximizes the total ECs earned <strong>by the group</strong> in the cooperation stage?',
+            [False, 'The total ECs earned by the group is maximized when all players contribute 0 tokens.'],
+            [True,'The total ECs earned by the group is maximized when all players contribute 100 tokens.'], # Correct answer here
+            [False, 'The total ECs earned by the group is maximized when all players contribute 50 tokens.'],],
+        label = '[Transferring tokens] What maximizes the total ECs earned <strong>by the group</strong> in the Transferring tokens stage?',
         widget=widgets.RadioSelect)
     Comprehension_question_3 = models.BooleanField(choices=[
-            [True,'The total ECs earned by me is maximized when I contribute 0 ECs and others contribute 100.'], # Correct answer here
-            [False, 'The total ECs earned by me is maximized when I contribute 100 ECs and others contribute 0.'],
-            [False, 'The total ECs earned by me is maximized when I contribute 50 ECs and others contribute 50.'],],
-        label = '[Cooperation stage] What maximizes the total ECs earned <strong>by you</strong> in the cooperation stage?',
+            [True,'The total ECs earned by me is maximized when I contribute 0 tokens and others contribute 100.'], # Correct answer here
+            [False, 'The total ECs earned by me is maximized when I contribute 100 tokens and others contribute 0.'],
+            [False, 'The total ECs earned by me is maximized when I contribute 50 tokens and others contribute 50.'],],
+        label = '[Transferring tokens] What maximizes the total ECs earned <strong>by you</strong> in the Transferring tokens stage?',
         widget=widgets.RadioSelect)
 
     # ── Treatment-specific comprehension question (one shown per treatment) ──
@@ -531,6 +531,30 @@ class Round_Instructions(MyBasePage):
         variables = MyBasePage.vars_for_template(player)
         variables['round_number'] = player.round_number
         variables['Treatment']    = player.participant.Treatment
+
+        debug_info = None
+        if C.DEBUG and player.round_number > 1:
+            prev_r   = player.round_number - 1
+            members  = player.group.get_players()
+            others   = [p for p in members if p.id_in_group != player.id_in_group]
+            my_prev  = player.in_round(prev_r)
+            my_c     = getattr(my_prev, f'PGG_contribution_{prev_r}')
+            o_c      = [getattr(p.in_round(prev_r), f'PGG_contribution_{prev_r}') for p in others]
+            total_c  = my_c + sum(o_c)
+            priv_ec  = 2 * (C.PGG_endowment - my_c)
+            grp_ec   = C.PGG_Commons + total_c
+            debug_info = {
+                'round':          prev_r,
+                'my_contrib':     my_c,
+                'm2_contrib':     o_c[0],
+                'm3_contrib':     o_c[1],
+                'private_tokens': C.PGG_endowment - my_c,
+                'group_total':    C.PGG_Commons + total_c,
+                'private_ec':     priv_ec,
+                'group_ec':       grp_ec,
+                'pgg_earnings':   priv_ec + grp_ec,
+            }
+        variables['debug_info'] = debug_info
         return variables
 
 
@@ -914,15 +938,16 @@ class Final_WaitPage(WaitPage):
             p_in_sel = p.in_round(selected_round)
             contributions.append(getattr(p_in_sel, f'PGG_contribution_{selected_round}'))
 
-        total_pool   = sum(contributions)
-        pool_return  = (total_pool * 1.5) / 3
+        total_contributions = sum(contributions)
 
         for i, p in enumerate(players):
             p.PGG_selected_round = selected_round
 
-            # PGG earnings
-            tokens_kept   = C.PGG_Commons - contributions[i]
-            p.PGG_earnings = tokens_kept + pool_return
+            # PGG earnings: 2 ECs per private token + 1 EC per group token per member
+            private_tokens = C.PGG_endowment - contributions[i]   # 100 - delta_i
+            private_ec     = 2 * private_tokens
+            group_total    = C.PGG_Commons + total_contributions   # 300 + sum(deltas)
+            p.PGG_earnings = float(private_ec + group_total)
 
             # Competition ECs (accumulated across all 10 rounds)
             competition_ecs = sum(
