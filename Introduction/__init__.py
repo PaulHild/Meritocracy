@@ -20,41 +20,13 @@ class C(CommonConstants):
     NAME_IN_URL = 'Introduction'
     PLAYERS_PER_GROUP = None
     NUM_ROUNDS = 1
-    
-
-    # Treatment quotas. This will be copied to the session variable.
-    #TODO: if you have multiple treatments and want to gender balance it use this. if not you can delete this. Make sure these exist in session fields
-    # If instead you want a non-gender balanced treatment assignment with quotas remove one of these and use it for both genders.
-    Female_quotas = {
-    'Treatment1': 0,
-    'Treatment2': 0,
-    'Control': 0,
-    }
-    
-    Male_quotas = {
-    'Treatment1': 0,
-    'Treatment2': 0,
-    'Control': 0,
-    }
 class Subsession(BaseSubsession):
     pass
 
 def creating_session(subsession):
-    '''
-    1. create the quotas for each treatment to be saved to the session variable
-        - make sure that in the settings.py file the SESSION_FIELDS has initialized the session variables
-    2. These quotas are initially zero but as participants are assigned they are incremented. 
-    - It is important to note that although prolific ensures gender balanced sample,
-        we need this balancing to be within treatment level also
-    '''
-    # people in v_1_first see the first version of the vignettes first.
-        
-    subsession.session.Male_quotas = C.Male_quotas.copy()
-    subsession.session.Female_quotas = C.Female_quotas.copy()
-    
     for player in subsession.get_players():
-        player.participant.Comprehension_passed = False 
-        player.participant.Attention_passed= True
+        player.participant.Comprehension_passed = False
+        player.participant.Attention_passed = True
         player.participant.Treatment = 'Default'
         
             
@@ -63,7 +35,6 @@ class Group(BaseGroup):
     pass
 
 class Player(BasePlayer):
-    treatment = models.StringField()
     # Demographics
     prolific_id = models.StringField(default=str("None")) #prolific id, will be fetched automatically.
     age = models.IntegerField(label="Age", min=18, max=100)
@@ -84,9 +55,6 @@ class Player(BasePlayer):
                                      ],)
     # data quality
     browser = models.StringField(blank=True)
-    blur_log = models.LongStringField(blank=True)
-    blur_count = models.IntegerField(initial=0)
-    blur_warned = models.IntegerField(initial=0)
     
     'Comprehension and attention checks'
     #whether the player got the comprehension questions rigt at the first try
@@ -125,37 +93,6 @@ class Player(BasePlayer):
     
     
     
-#%% Functions
-def treatment_assignment(player):
-    session=player.subsession.session
-    
-    #TODO: make sure gender is Male, Female and Other/Prefer not to say
-    if player.gender == 'Male':
-        Quotas = session.Male_quotas
-    elif player.gender == 'Female':
-        Quotas = session.Female_quotas
-    elif player.gender == 'Other/Prefer not to say':
-        Quotas = session.Male_quotas
-    
-    #the line below does: splits the Quotas into two halves, picks one of them randomly from the bottom half.
-    '''
-    Quota/Treatment assignment works as follows:
-    1. get the current quotas
-    2. assign a random treatment from the bottom half of the quotas (i.e. the treatment with the lowest quota)
-    3. update quotas accordingly.
-    '''
-    treatment = random.choice([key for key, value in Quotas.items() if value in sorted(Quotas.values())[:1]])
-    # print('Treatment:', treatment)
-    player.participant.Treatment = treatment
-    player.treatment = treatment
-    if player.gender == 'Male':
-        Quotas.update({treatment: Quotas[treatment]+1})
-        session.Male_quotas = Quotas
-        # print('incrementing male quotas: ', Quotas)
-    elif player.gender == 'Female':
-        Quotas.update({treatment: Quotas[treatment]+1})
-        # print('incrementing female quotas: ', Quotas)
-        session.Female_quotas = Quotas
 
             
 # PAGES
@@ -173,10 +110,6 @@ class Demographics(MyBasePage):
     extra_fields = ['age', 'gender', 'education', 'employment', 'income','browser'] 
     form_fields = MyBasePage.form_fields + extra_fields
 
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened=False):
-        treatment_assignment(player) #assign treatment and update quotas 
-        
     @staticmethod
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)

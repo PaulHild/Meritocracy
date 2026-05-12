@@ -43,10 +43,7 @@ PARTICIPANT_FIELDS = [
     'Part_II_game_selected',  # str: name of the randomly chosen game
     'Part_II_earnings',       # float: ECs earned from the selected game
 ]
-#TODO: add the treatments here
-SESSION_FIELDS = {
-                    'Male_quotas':{}, 'Female_quotas':{} 
-                 }
+SESSION_FIELDS = {}
 
 # ISO-639 code
 # for example: de, fr, ja, ko, zh-hans

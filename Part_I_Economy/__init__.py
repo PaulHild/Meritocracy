@@ -45,107 +45,24 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    # ── Ravens Matrix scores & answers (one pair per round) ──────────────────
-    Raven_score_1 = models.IntegerField(initial=0)
-    Raven_answers_1 = models.LongStringField(initial='{}')
-    Raven_score_2 = models.IntegerField(initial=0)
-    Raven_answers_2 = models.LongStringField(initial='{}')
-    Raven_score_3 = models.IntegerField(initial=0)
-    Raven_answers_3 = models.LongStringField(initial='{}')
-    Raven_score_4 = models.IntegerField(initial=0)
-    Raven_answers_4 = models.LongStringField(initial='{}')
-    Raven_score_5 = models.IntegerField(initial=0)
-    Raven_answers_5 = models.LongStringField(initial='{}')
-    Raven_score_6 = models.IntegerField(initial=0)
-    Raven_answers_6 = models.LongStringField(initial='{}')
-    Raven_score_7 = models.IntegerField(initial=0)
-    Raven_answers_7 = models.LongStringField(initial='{}')
-    Raven_score_8 = models.IntegerField(initial=0)
-    Raven_answers_8 = models.LongStringField(initial='{}')
-    Raven_score_9 = models.IntegerField(initial=0)
-    Raven_answers_9 = models.LongStringField(initial='{}')
-    Raven_score_10 = models.IntegerField(initial=0)
-    Raven_answers_10 = models.LongStringField(initial='{}')
+    # ── Quiz scores & answers (one field per round row — no suffix needed) ────
+    Raven_score   = models.IntegerField(initial=0)
+    Raven_answers = models.LongStringField(initial='{}')
 
-    # ── Analogy scores & answers ─────────────────────────────────────────────
-    Analogy_score_1 = models.IntegerField(initial=0)
-    Analogy_answers_1 = models.LongStringField(initial='{}')
-    Analogy_score_2 = models.IntegerField(initial=0)
-    Analogy_answers_2 = models.LongStringField(initial='{}')
-    Analogy_score_3 = models.IntegerField(initial=0)
-    Analogy_answers_3 = models.LongStringField(initial='{}')
-    Analogy_score_4 = models.IntegerField(initial=0)
-    Analogy_answers_4 = models.LongStringField(initial='{}')
-    Analogy_score_5 = models.IntegerField(initial=0)
-    Analogy_answers_5 = models.LongStringField(initial='{}')
-    Analogy_score_6 = models.IntegerField(initial=0)
-    Analogy_answers_6 = models.LongStringField(initial='{}')
-    Analogy_score_7 = models.IntegerField(initial=0)
-    Analogy_answers_7 = models.LongStringField(initial='{}')
-    Analogy_score_8 = models.IntegerField(initial=0)
-    Analogy_answers_8 = models.LongStringField(initial='{}')
-    Analogy_score_9 = models.IntegerField(initial=0)
-    Analogy_answers_9 = models.LongStringField(initial='{}')
-    Analogy_score_10 = models.IntegerField(initial=0)
-    Analogy_answers_10 = models.LongStringField(initial='{}')
+    Analogy_score   = models.IntegerField(initial=0)
+    Analogy_answers = models.LongStringField(initial='{}')
 
-    # ── Math scores & answers ────────────────────────────────────────────────
-    Math_score_1 = models.IntegerField(initial=0)
-    Math_answers_1 = models.LongStringField(initial='{}')
-    Math_score_2 = models.IntegerField(initial=0)
-    Math_answers_2 = models.LongStringField(initial='{}')
-    Math_score_3 = models.IntegerField(initial=0)
-    Math_answers_3 = models.LongStringField(initial='{}')
-    Math_score_4 = models.IntegerField(initial=0)
-    Math_answers_4 = models.LongStringField(initial='{}')
-    Math_score_5 = models.IntegerField(initial=0)
-    Math_answers_5 = models.LongStringField(initial='{}')
-    Math_score_6 = models.IntegerField(initial=0)
-    Math_answers_6 = models.LongStringField(initial='{}')
-    Math_score_7 = models.IntegerField(initial=0)
-    Math_answers_7 = models.LongStringField(initial='{}')
-    Math_score_8 = models.IntegerField(initial=0)
-    Math_answers_8 = models.LongStringField(initial='{}')
-    Math_score_9 = models.IntegerField(initial=0)
-    Math_answers_9 = models.LongStringField(initial='{}')
-    Math_score_10 = models.IntegerField(initial=0)
-    Math_answers_10 = models.LongStringField(initial='{}')
+    Math_score   = models.IntegerField(initial=0)
+    Math_answers = models.LongStringField(initial='{}')
 
-    # ── Round total scores (sum of Raven + Analogy + Math) ───────────────────
-    Round_score_1  = models.IntegerField(initial=0)
-    Round_score_2  = models.IntegerField(initial=0)
-    Round_score_3  = models.IntegerField(initial=0)
-    Round_score_4  = models.IntegerField(initial=0)
-    Round_score_5  = models.IntegerField(initial=0)
-    Round_score_6  = models.IntegerField(initial=0)
-    Round_score_7  = models.IntegerField(initial=0)
-    Round_score_8  = models.IntegerField(initial=0)
-    Round_score_9  = models.IntegerField(initial=0)
-    Round_score_10 = models.IntegerField(initial=0)
+    # ── Round total score (sum of Raven + Analogy + Math) ────────────────────
+    Round_score = models.IntegerField(initial=0)
 
-    # ── Pie payoffs (ECs earned from Economy_pie each round) ─────────────
-    Pie_payoff_1  = models.FloatField(initial=0)
-    Pie_payoff_2  = models.FloatField(initial=0)
-    Pie_payoff_3  = models.FloatField(initial=0)
-    Pie_payoff_4  = models.FloatField(initial=0)
-    Pie_payoff_5  = models.FloatField(initial=0)
-    Pie_payoff_6  = models.FloatField(initial=0)
-    Pie_payoff_7  = models.FloatField(initial=0)
-    Pie_payoff_8  = models.FloatField(initial=0)
-    Pie_payoff_9  = models.FloatField(initial=0)
-    Pie_payoff_10 = models.FloatField(initial=0)
+    # ── Competition payoff (ECs from Economy_pie this round) ─────────────────
+    Pie_payoff = models.FloatField(initial=0)
 
-    # ── Public goods game: contribution per round ────────────────────
-    PGG_contribution_1  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_2  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_3  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_4  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_5  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_6  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_7  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_8  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_9  = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
-    PGG_contribution_10 = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
+    # ── Public goods game: token transfer this round ──────────────────────────
+    PGG_contribution = models.IntegerField(initial=0, min=-C.PGG_endowment, max=C.PGG_endowment)
 
     # ── Final results (populated on round 10 only) ────────────────
     PGG_selected_round = models.IntegerField(initial=0)
@@ -164,11 +81,6 @@ class Player(BasePlayer):
     # ── Calculator interaction counts ────────────────────────────────────────
     competition_calc_interactions = models.IntegerField(initial=0)
     pgg_calc_interactions         = models.IntegerField(initial=0)
-
-    # ── Treatment & multiplier (copied from participant for easy export) ───
-    treatment  = models.StringField(initial='')
-    multiplier = models.IntegerField(initial=0)
-
 
     'Comprehension and attention checks'
     #whether the player got the comprehension questions rigt at the first try
@@ -237,72 +149,55 @@ class Player(BasePlayer):
 
 
 # ── Helpers ────────────────────────────────────────────────────────────────────────────
-def _round_field(base, round_number):
-    return f'{base}_{round_number}'
 
-
-def _compute_round_sum(player, round_number):
-    """Sum the 3 sub-scores and store in Round_score_N."""
-    raven   = getattr(player, _round_field('Raven_score', round_number))
-    analogy = getattr(player, _round_field('Analogy_score', round_number))
-    math    = getattr(player, _round_field('Math_score', round_number))
-    total = raven + analogy + math
-    setattr(player, _round_field('Round_score', round_number), total)
+def _compute_round_sum(player):
+    """Sum the 3 sub-scores and store in Round_score."""
+    total = player.Raven_score + player.Analogy_score + player.Math_score
+    player.Round_score = total
     return total
 
 
-def _get_group_data(player, round_number):
+def _get_group_data(player):
     """Return (group_scores, group_multipliers) for all members of this player's group."""
     group_members = player.group.get_players()
-    scores = [getattr(p, _round_field('Round_score', round_number)) for p in group_members]
+    scores      = [p.Round_score for p in group_members]
     multipliers = [p.participant.multiplier for p in group_members]
     return scores, multipliers
 
 
-def _compute_and_store_payoff(player, round_number):
+def _compute_and_store_payoff(player):
     """Compute pie payoff for this player this round and store it."""
-    scores, multipliers = _get_group_data(player, round_number)
-    player_score = getattr(player, _round_field('Round_score', round_number))
-    player_mult  = player.participant.multiplier
-    treatment    = player.participant.Treatment
-
+    scores, multipliers = _get_group_data(player)
     payoff, _, _ = compute_pie_share(
-        player_score, player_mult,
+        player.Round_score, player.participant.multiplier,
         scores, multipliers,
-        treatment,
+        player.participant.Treatment,
         welfare_check=C.Welfare_check,
         economy_pie=C.Economy_pie,
     )
-    setattr(player, _round_field('Pie_payoff', round_number), payoff)
+    player.Pie_payoff = payoff
     return payoff
 
 
-def _effort_shares(player, round_number):
+def _effort_shares(player):
     """Return (player_weighted_score, others_total_weighted_score) for effort pie chart."""
-    scores, multipliers = _get_group_data(player, round_number)
-    player_score = getattr(player, _round_field('Round_score', round_number))
-    player_mult  = player.participant.multiplier
-    treatment    = player.participant.Treatment
-
+    scores, multipliers = _get_group_data(player)
     _, player_w, total_w = compute_pie_share(
-        player_score, player_mult,
+        player.Round_score, player.participant.multiplier,
         scores, multipliers,
-        treatment,
+        player.participant.Treatment,
         welfare_check=C.Welfare_check,
         economy_pie=C.Economy_pie,
     )
-    others_w = total_w - player_w
-    return player_w, others_w
+    return player_w, total_w - player_w
 
 
 def _accumulated_payoff_shares(player, up_to_round):
     """Return (player_accumulated, others_accumulated) across rounds 1..up_to_round."""
-    player_total = sum(
-        getattr(player, _round_field('Pie_payoff', r)) for r in range(1, up_to_round + 1)
-    )
+    player_total = sum(player.in_round(r).Pie_payoff for r in range(1, up_to_round + 1))
     group_members = player.group.get_players()
     others_total = sum(
-        sum(getattr(p, _round_field('Pie_payoff', r)) for r in range(1, up_to_round + 1))
+        sum(p.in_round(r).Pie_payoff for r in range(1, up_to_round + 1))
         for p in group_members if p.id_in_group != player.id_in_group
     )
     return player_total, others_total
@@ -319,17 +214,10 @@ def _per_player_data(player, round_number):
     others  = [p for p in group_members if p.id_in_group != player.id_in_group]
     ordered = [player] + others          # You always first
 
-    performances = [
-        int(getattr(p, _round_field('Round_score', round_number)))
-        for p in ordered
-    ]
-    earnings_this_round = [
-        round(getattr(p, _round_field('Pie_payoff', round_number)), 1)
-        for p in ordered
-    ]
+    performances        = [int(p.Round_score) for p in ordered]
+    earnings_this_round = [round(p.Pie_payoff, 1) for p in ordered]
     accumulated = [
-        round(sum(getattr(p, _round_field('Pie_payoff', r))
-                  for r in range(1, round_number + 1)), 1)
+        round(sum(p.in_round(r).Pie_payoff for r in range(1, round_number + 1)), 1)
         for p in ordered
     ]
     multipliers_list = [p.participant.multiplier for p in ordered]
@@ -363,7 +251,7 @@ def _belief_bonus(player):
     m2, m3 = others[0], others[1]
 
     def true_total(p):
-        return sum(getattr(p.in_round(r), f'PGG_contribution_{r}') for r in range(1, C.Economy_num_rounds + 1))
+        return sum(p.in_round(r).PGG_contribution for r in range(1, C.Economy_num_rounds + 1))
 
     def within_100ec(guess, true):
         return abs(guess - true) <= 100
@@ -465,12 +353,6 @@ class Grouping_WaitPage(WaitPage):
         for r in range(2, C.NUM_ROUNDS + 1):
             subsession.in_round(r).group_like_round(1)
 
-        # Write treatment & multiplier onto the player row for every round
-        # so they appear directly in the oTree data export.
-        for r in range(1, C.NUM_ROUNDS + 1):
-            for p in subsession.in_round(r).get_players():
-                p.treatment  = getattr(p.participant, 'Treatment',  '')
-                p.multiplier = getattr(p.participant, 'multiplier', 0)
 
 
 # ── Round WaitPage (sync scores before feedback) ─────────────────────────────────
@@ -483,12 +365,12 @@ class Round_WaitPage(WaitPage):
     body_text = "Waiting for other group members…"
     @staticmethod
     def after_all_players_arrive(group: Group):
-        # All group members have submitted Round_Math, so every Round_score_r
+        # All group members have submitted Round_Math, so every Round_score
         # is now saved. Compute payoffs here to avoid the race condition that
         # occurred when _compute_and_store_payoff ran in before_next_page
         # (where fast finishers saw stale scores of 0 from slow teammates).
         for p in group.get_players():
-            _compute_and_store_payoff(p, p.round_number)
+            _compute_and_store_payoff(p)
 
 
 # ── Part II intro (round 1 only) ───────────────────────────────────────────────────
@@ -542,8 +424,8 @@ class Round_Instructions(MyBasePage):
             members  = player.group.get_players()
             others   = [p for p in members if p.id_in_group != player.id_in_group]
             my_prev  = player.in_round(prev_r)
-            my_c     = getattr(my_prev, f'PGG_contribution_{prev_r}')
-            o_c      = [getattr(p.in_round(prev_r), f'PGG_contribution_{prev_r}') for p in others]
+            my_c     = my_prev.PGG_contribution
+            o_c      = [p.in_round(prev_r).PGG_contribution for p in others]
             total_c  = my_c + sum(o_c)
             priv_ec  = 2 * (C.PGG_endowment - my_c)
             grp_ec   = C.PGG_Commons + total_c
@@ -569,26 +451,23 @@ class Round_RavensMatrix(MyBasePage):
 
     @staticmethod
     def get_form_fields(player):
-        r = player.round_number
-        return [_round_field('Raven_score', r), _round_field('Raven_answers', r)]
+        return ['Raven_score', 'Raven_answers']
 
     @staticmethod
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)
-        r = player.round_number
-        variables['hidden_fields'] = [_round_field('Raven_score', r), _round_field('Raven_answers', r)]
-        variables['round_number']  = r
+        variables['hidden_fields'] = ['Raven_score', 'Raven_answers']
+        variables['round_number']  = player.round_number
         variables['Treatment']     = player.participant.Treatment
         return variables
 
     @staticmethod
     def js_vars(player: Player):
-        r = player.round_number
         return {
-            'score_field':      _round_field('Raven_score', r),
-            'answers_field':    _round_field('Raven_answers', r),
+            'score_field':      'Raven_score',
+            'answers_field':    'Raven_answers',
             'participant_code': player.participant.code,
-            'puzzle_set':       r + 2,   # sets 1-2 used in Practice
+            'puzzle_set':       player.round_number + 2,   # sets 1-2 used in Practice
             'freeze_seconds':   C.Submit_freeze_duration,
         }
 
@@ -613,26 +492,23 @@ class Round_Analogies(MyBasePage):
 
     @staticmethod
     def get_form_fields(player):
-        r = player.round_number
-        return [_round_field('Analogy_score', r), _round_field('Analogy_answers', r)]
+        return ['Analogy_score', 'Analogy_answers']
 
     @staticmethod
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)
-        r = player.round_number
-        variables['hidden_fields'] = [_round_field('Analogy_score', r), _round_field('Analogy_answers', r)]
-        variables['round_number']  = r
+        variables['hidden_fields'] = ['Analogy_score', 'Analogy_answers']
+        variables['round_number']  = player.round_number
         variables['Treatment']     = player.participant.Treatment
         return variables
 
     @staticmethod
     def js_vars(player: Player):
-        r = player.round_number
         return {
-            'analogy_score_field':   _round_field('Analogy_score', r),
-            'analogy_answers_field': _round_field('Analogy_answers', r),
+            'analogy_score_field':   'Analogy_score',
+            'analogy_answers_field': 'Analogy_answers',
             'participant_code':      player.participant.code,
-            'analogy_set':           r + 2,   # sets 1-2 used in Practice
+            'analogy_set':           player.round_number + 2,   # sets 1-2 used in Practice
             'freeze_seconds':        C.Submit_freeze_duration,
         }
 
@@ -657,26 +533,23 @@ class Round_Math(MyBasePage):
 
     @staticmethod
     def get_form_fields(player):
-        r = player.round_number
-        return [_round_field('Math_score', r), _round_field('Math_answers', r)]
+        return ['Math_score', 'Math_answers']
 
     @staticmethod
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)
-        r = player.round_number
-        variables['hidden_fields'] = [_round_field('Math_score', r), _round_field('Math_answers', r)]
-        variables['round_number']  = r
+        variables['hidden_fields'] = ['Math_score', 'Math_answers']
+        variables['round_number']  = player.round_number
         variables['Treatment']     = player.participant.Treatment
         return variables
 
     @staticmethod
     def js_vars(player: Player):
-        r = player.round_number
         return {
-            'math_score_field':   _round_field('Math_score', r),
-            'math_answers_field': _round_field('Math_answers', r),
+            'math_score_field':   'Math_score',
+            'math_answers_field': 'Math_answers',
             'participant_code':   player.participant.code,
-            'math_set':           r + 2,   # sets 1-2 used in Practice
+            'math_set':           player.round_number + 2,   # sets 1-2 used in Practice
             'freeze_seconds':     C.Submit_freeze_duration,
         }
 
@@ -684,8 +557,7 @@ class Round_Math(MyBasePage):
     def before_next_page(player: Player, timeout_happened=False):
         """Compute round sum. Pie payoff is computed in Round_WaitPage once
         all group members have submitted (avoids race condition)."""
-        r = player.round_number
-        _compute_round_sum(player, r)
+        _compute_round_sum(player)
 
 
 # ── Stage 2: Visual Feedback ───────────────────────────────────────────────────────
@@ -737,7 +609,7 @@ class Round_PublicGoods(MyBasePage):
 
     @staticmethod
     def get_form_fields(player):
-        return [_round_field('PGG_contribution', player.round_number)]
+        return ['PGG_contribution']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -746,15 +618,13 @@ class Round_PublicGoods(MyBasePage):
 
         performances, earnings_this_round, accumulated, multipliers_list = _per_player_data(player, r)
 
-
         variables['round_number']       = r
         variables['Treatment']          = player.participant.Treatment
         variables['PGG_Commons']        = C.PGG_Commons
         variables['pgg_max']            = C.Pgg_upper_bound - C.PGG_Commons
-
-        variables['tokens_earned']      = round(getattr(player, _round_field('Pie_payoff', r)))
-        variables['contribution_field'] = _round_field('PGG_contribution', r)
-        variables['hidden_fields']      = [_round_field('PGG_contribution', r)]
+        variables['tokens_earned']      = round(player.Pie_payoff)
+        variables['contribution_field'] = 'PGG_contribution'
+        variables['hidden_fields']      = ['PGG_contribution']
         variables['performances']        = performances           # [you, m2, m3]
         variables['earnings_this_round'] = earnings_this_round   # [you, m2, m3]
         variables['accumulated']         = accumulated            # [you, m2, m3]
@@ -957,7 +827,7 @@ class PGG_Beliefs(MyBasePage):
         performances, _, accumulated, multipliers_list = _per_player_data(player, r)
 
         own_pgg_total = sum(
-            getattr(player.in_round(rr), f'PGG_contribution_{rr}')
+            player.in_round(rr).PGG_contribution
             for rr in range(1, C.Economy_num_rounds + 1)
         )
 
@@ -996,7 +866,7 @@ class Final_WaitPage(WaitPage):
         contributions = []
         for p in players:
             p_in_sel = p.in_round(selected_round)
-            contributions.append(getattr(p_in_sel, f'PGG_contribution_{selected_round}'))
+            contributions.append(p_in_sel.PGG_contribution)
 
         total_contributions = sum(contributions)
 
@@ -1010,10 +880,7 @@ class Final_WaitPage(WaitPage):
             p.PGG_earnings = float(private_ec + group_total)
 
             # Competition ECs (accumulated across all 10 rounds)
-            competition_ecs = sum(
-                getattr(p.in_round(r), f'Pie_payoff_{r}')
-                for r in range(1, 11)
-            )
+            competition_ecs = sum(p.in_round(r).Pie_payoff for r in range(1, 11))
 
             # Practice ECs (stored on participant by Practice app)
             practice_ecs = getattr(p.participant, 'Practice_ECs_total', 0)
@@ -1042,10 +909,7 @@ class Final_Results(MyBasePage):
         variables = MyBasePage.vars_for_template(player)
 
         practice_ecs    = getattr(player.participant, 'Practice_ECs_total', 0)
-        competition_ecs = sum(
-            getattr(player.in_round(r), f'Pie_payoff_{r}')
-            for r in range(1, 11)
-        )
+        competition_ecs = sum(player.in_round(r).Pie_payoff for r in range(1, 11))
         pgg_earnings    = player.PGG_earnings
         total_ecs       = player.Total_bonus_ECs
         eur_amount      = total_ecs / C.EC_exchange_rate

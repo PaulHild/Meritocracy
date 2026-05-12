@@ -23,10 +23,7 @@ class Group(BaseGroup):
 
 
 class Player(BasePlayer):
-    # data quality
-    blur_log = models.LongStringField(blank=True)
-    blur_count = models.IntegerField(initial=0)
-    blur_warned = models.IntegerField(initial=0)
+    pass
 
 
 

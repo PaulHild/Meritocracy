@@ -34,10 +34,6 @@ class Player(BasePlayer):
     Pilot_5 = models.StringField(initial='')
     Pilot_6 = models.StringField(initial='')
     
-    # data quality
-    blur_log = models.LongStringField(blank=True)
-    blur_count = models.IntegerField(initial=0)
-    blur_warned = models.IntegerField(initial=0)
     
 
 #%% Base Pages

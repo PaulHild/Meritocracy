@@ -4,25 +4,28 @@ Bot for the Part_I_Economy app  (10 rounds).
 Per-round page sequence:
   Round 1 only:
     Grouping_WaitPage           (auto)
-    Part_II_Instructions        (is_displayed: r==1, no form)
-    Comprehension_check_1       (is_displayed: r==1, 3 bool fields)
-    Comprehension_check_2       (is_displayed: r==1 AND failed check_1 → skipped)
-    Comprehension_check_3       (is_displayed: r==1 AND failed both  → skipped)
+    Part_II_Instructions        (no form)
+    Competition_Calculator      (competition_calc_interactions — hidden)
+    Comprehension_check_1       (4 bool fields)
+    Comprehension_check_2       (skipped — bot passes check_1)
+    Comprehension_check_3       (skipped — bot passes check_1)
 
   Every round:
     Round_Instructions          (no form)
-    Round_RavensMatrix          (Raven_score_r, Raven_answers_r)
+    Round_RavensMatrix          (Raven_score, Raven_answers)
     Interstitial_Analogy        (no form, timeout)
-    Round_Analogies             (Analogy_score_r, Analogy_answers_r)
+    Round_Analogies             (Analogy_score, Analogy_answers)
     Interstitial_Math           (no form, timeout)
-    Round_Math                  (Math_score_r, Math_answers_r)
+    Round_Math                  (Math_score, Math_answers)
     Round_WaitPage              (auto — syncs scores, then computes payoffs)
     Round_Feedback              (no form)
-    Round_PublicGoods           (PGG_contribution_r)
+    PGG_Calculator              (round 1 only; pgg_calc_interactions — hidden)
+    Round_PublicGoods           (PGG_contribution)
 
   Round 10 only:
+    PGG_Beliefs                 (pgg_belief_member2, pgg_belief_member3)
     Final_WaitPage              (auto — computes final earnings)
-    Final_Results               (is_displayed: r==10, no form)
+    Final_Results               (no form)
 
 Bots submit random but plausible scores (1–5 per sub-test) and randomised
 PGG contributions (multiples of 10 from 0–100) to generate varied mock data.
@@ -51,20 +54,20 @@ class PlayerBot(Bot):
     def play_round(self):
         r = self.round_number
 
-        # ── Round 1: instructions + comprehension check ───────────────────────
+        # ── Round 1: instructions + calculators + comprehension check ─────────
         if r == 1:
-            # Grouping_WaitPage is auto (is_displayed: r==1)
             yield Submission(Part_II_Instructions, {}, check_html=False)
 
+            yield Submission(Competition_Calculator, {
+                'competition_calc_interactions': random.randint(1, 5),
+            }, check_html=False)
+
             # Submit all correct answers → Comprehension_1 = True
-            # Comprehension_check_2 and _3 have is_displayed=False after this,
-            # so oTree will skip them automatically — do not yield them here.
-            # All Q4 variants have correct answer = True; submitting all is harmless
-            # since oTree ignores fields not in the current form (check_html=False).
+            # Comprehension_check_2 and _3 have is_displayed=False after this.
             yield Submission(Comprehension_check_1, {
-                'Comprehension_question_1': True,   # higher score → higher share
-                'Comprehension_question_2': True,   # group max when all contribute 100
-                'Comprehension_question_3': True,   # personal max when I contribute 0
+                'Comprehension_question_1': True,
+                'Comprehension_question_2': True,
+                'Comprehension_question_3': True,
                 'Comprehension_question_4_PM': True,
                 'Comprehension_question_4_EM': True,
                 'Comprehension_question_4_WS': True,
@@ -74,40 +77,47 @@ class PlayerBot(Bot):
         # ── Per-round quiz stages ─────────────────────────────────────────────
         yield Submission(Round_Instructions, {}, check_html=False)
 
-        # Matrix Reasoning (hidden score field populated by JS in real session;
-        # bot injects value directly into the form field)
         yield Submission(Round_RavensMatrix, {
-            f'Raven_score_{r}':   _score(5),
-            f'Raven_answers_{r}': _answers(),
+            'Raven_score':   _score(5),
+            'Raven_answers': _answers(),
         }, check_html=False)
 
         yield Submission(Interstitial_Analogy, {}, check_html=False)
 
-        # Analogies
         yield Submission(Round_Analogies, {
-            f'Analogy_score_{r}':   _score(5),
-            f'Analogy_answers_{r}': _answers(),
+            'Analogy_score':   _score(5),
+            'Analogy_answers': _answers(),
         }, check_html=False)
 
         yield Submission(Interstitial_Math, {}, check_html=False)
 
-        # Mathematics
         yield Submission(Round_Math, {
-            f'Math_score_{r}':   _score(5),
-            f'Math_answers_{r}': _answers(),
+            'Math_score':   _score(5),
+            'Math_answers': _answers(),
         }, check_html=False)
-        # before_next_page → _compute_round_sum stores Round_score_r
-        # Round_WaitPage (auto) → _compute_and_store_payoff stores Pie_payoff_r
+        # before_next_page → _compute_round_sum stores Round_score
+        # Round_WaitPage (auto) → _compute_and_store_payoff stores Pie_payoff
 
-        # Feedback (display-only: bar charts)
         yield Submission(Round_Feedback, {}, check_html=False)
 
-        # Public Goods Game — multiples of 10 only (0–100)
+        # Round 1 only: PGG scenario calculator
+        if r == 1:
+            yield Submission(PGG_Calculator, {
+                'pgg_calc_interactions': random.randint(1, 5),
+            }, check_html=False)
+
+        # Public Goods Game
         yield Submission(Round_PublicGoods, {
-            f'PGG_contribution_{r}': random.choice(range(0, 101, 10)),
+            'PGG_contribution': random.choice(range(0, 101, 10)),
         }, check_html=False)
 
-        # ── Round 10 only: final results ──────────────────────────────────────
+        # ── Round 10 only: belief elicitation + final results ─────────────────
         if r == 10:
-            # Final_WaitPage (auto, is_displayed: r==10) computes all final earnings
+            bound = C.PGG_investible * C.Economy_num_rounds
+            yield Submission(PGG_Beliefs, {
+                'pgg_belief_member2': random.randint(-bound, bound),
+                'pgg_belief_member3': random.randint(-bound, bound),
+            }, check_html=False)
+
+            # Final_WaitPage (auto) computes all final earnings
             yield Submission(Final_Results, {}, check_html=False)
