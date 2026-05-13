@@ -24,15 +24,24 @@
         {{ include C.RavensQuiz_template_path }}
     </div>
 
-    <!-- Hidden form fields (score + answers written by JS) -->
-    <!-- TODO: switch to none -->
-    <div style="display:inline">
+    {% if C.DEBUG %}
+    <div style="margin:12px 0; padding:8px 14px; background:#fff8e1; border:2px dashed #f0ad00; border-radius:6px; font-size:0.82em;">
+        <strong style="color:#b8860b;">&#128027; DEBUG ONLY — form fields</strong>
         {% for field in form %}
             {% if field.name in hidden_fields %}
                 {{ formfield field.name }}
             {% endif %}
         {% endfor %}
     </div>
+    {% else %}
+    <div style="display:none">
+        {% for field in form %}
+            {% if field.name in hidden_fields %}
+                {{ formfield field.name }}
+            {% endif %}
+        {% endfor %}
+    </div>
+    {% endif %}
 
     <div class="buttons-container" style="margin-top: 20px;">
         <div class="Instructions">

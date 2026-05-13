@@ -103,7 +103,7 @@
             </p>
         </div>
 
-        <!-- 3: accumulated competition earnings -->
+        <!-- 3: accumulated Production earnings -->
         <div style="flex:1; min-width:220px; max-width:300px; text-align:center;">
             <h4 style="margin-bottom:6px;">
                 Accumulated Earnings
@@ -147,8 +147,8 @@
     const MEMBERS    = ['You', 'Group member 2', 'Group member 3'];
 
     const performances       = {{ performances }};         // [you, m2, m3] — raw correct answers this round
-    const earningsThisRound  = {{ earnings_this_round }};  // [you, m2, m3] — competition ECs this round
-    const accumulated        = {{ accumulated }};          // [you, m2, m3] — cumulative competition ECs
+    const earningsThisRound  = {{ earnings_this_round }};  // [you, m2, m3] — Production ECs this round
+    const accumulated        = {{ accumulated }};          // [you, m2, m3] — cumulative Production ECs
 
     function makeBarChart(canvasId, data, yLabel) {
         const ctx = document.getElementById(canvasId).getContext('2d');

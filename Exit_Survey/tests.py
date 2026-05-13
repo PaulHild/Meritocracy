@@ -1,27 +1,23 @@
-from otree.api import *
+"""
+Bot for the Exit_Survey app.
+
+page_sequence:
+  Demographics   (prolific_id, age, gender, education, employment, income, browser)
+"""
+from otree.api import Bot, Submission
 from . import *
 import random
+
 
 class PlayerBot(Bot):
 
     def play_round(self):
-        # Assuming the bot is allowed to view the page
-        
-        # Provide responses for the exit survey
-        yield Exit_survey, {
-            'Exit_1': 'This was a rewarding experience.',
-            'Exit_2': 'The instructions were clear.',
-            'Exit_3': 'No difficulties encountered.'
-        }
-
-        # Provide responses for the pilot survey (only if it's a pilot test)
-        yield Pilot, {
-            'Pilot_1': 'Everything was straightforward.',
-            'Pilot_2': 'The timing of the tasks was appropriate.',
-            'Pilot_3': 'I found the tasks engaging.',
-            'Pilot_4': 'There were no technical issues.',
-            'Pilot_5': 'The layout was visually appealing.',
-            'Pilot_6': 'The overall pace was good.'
-        }
-
-    # Optionally define any helper methods here if needed for complex operations
+        yield Submission(Demographics, {
+            'prolific_id': 'test_prolific_id',
+            'age':         random.randint(18, 65),
+            'gender':      random.choice(['Male', 'Female', 'Other/Prefer not to say']),
+            'education':   random.choice(['High school graduate', 'Bachelors', 'Masters']),
+            'employment':  random.choice(['Employed full-time', 'Employed part-time', 'Student']),
+            'income':      random.choice(['$20.000-$30.000', '$30.000-$40.000', '$50.000-$75.000']),
+            'browser':     '',
+        }, check_html=False)

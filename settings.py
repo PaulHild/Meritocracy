@@ -1,8 +1,8 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    dict(name='n_3', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Results'], num_demo_participants=3,),
-    dict(name='n_12', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Results'], num_demo_participants=12,),
+    dict(name='n_3', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Exit_Survey', 'Results'], num_demo_participants=3,),
+    dict(name='n_12', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Exit_Survey', 'Results'], num_demo_participants=12,),
     # dict(name='Practice', app_sequence=['Practice', ], num_demo_participants=3,),
     # dict(name='Part_I_Economy', app_sequence=['Part_I_Economy', ], num_demo_participants=3,),
     # dict(name='Cohesion_battery', app_sequence=['Part_II_Social_Cohesion', ], num_demo_participants=6,),

@@ -58,7 +58,7 @@ class Player(BasePlayer):
     # ── Round total score (sum of Raven + Analogy + Math) ────────────────────
     Round_score = models.IntegerField(initial=0)
 
-    # ── Competition payoff (ECs from Economy_pie this round) ─────────────────
+    # ── Production payoff (ECs from Economy_pie this round) ─────────────────
     Pie_payoff = models.FloatField(initial=0)
 
     # ── Public goods game: token transfer this round ──────────────────────────
@@ -93,7 +93,7 @@ class Player(BasePlayer):
         [False, 'My share of the 500 ECs pot is determined by my score alone, regardless of the scores of the other two.'],
         [True,'The higher my score is compared to the scores of the other two, the higher is my share of the pie.'], # Correct answer here
         [False, 'My share of the 500 ECs is determined by the sum of everones\' scores.'],],
-    label = '[Competition stage] How does the competition over 500 ECs work?',
+    label = '[Production stage] How does the Production over 500 ECs work?',
     widget=widgets.RadioSelect)
     
     Comprehension_question_2 = models.BooleanField(choices=[
@@ -207,8 +207,8 @@ def _per_player_data(player, round_number):
     """Return (performances, earnings_this_round, accumulated, multipliers) as 3-element lists.
     Index 0 = current player ("You"), indices 1 & 2 = the other two members.
     - performances:        raw correct-answer count for this round only
-    - earnings_this_round: competition-stage Pie_payoff for this round only
-    - accumulated:         sum of competition-stage Pie_payoffs across rounds 1..round_number
+    - earnings_this_round: production-stage Pie_payoff for this round only
+    - accumulated:         sum of production-stage Pie_payoffs across rounds 1..round_number
     - multipliers:         each player's score multiplier"""
     group_members = player.group.get_players()
     others  = [p for p in group_members if p.id_in_group != player.id_in_group]
@@ -634,7 +634,7 @@ class Round_PublicGoods(MyBasePage):
 
 
 
-# ── Competition Scenario Calculator (round 1 only) ───────────────────────────────────
+# ── Production Scenario Calculator (round 1 only) ───────────────────────────────────
 class Competition_Calculator(MyBasePage):
     form_fields = ['competition_calc_interactions']
 
@@ -851,7 +851,7 @@ class PGG_Beliefs(MyBasePage):
 # ── Final WaitPage (round 10 only: sync PGG contributions, compute final earnings) ──
 class Final_WaitPage(WaitPage):
     """After the last PGG decision, wait for all group members, then compute
-    final earnings from Practice + Competition + one randomly-selected PGG round."""
+    final earnings from Practice + Production + one randomly-selected PGG round."""
 
     @staticmethod
     def is_displayed(player: Player):
@@ -879,7 +879,7 @@ class Final_WaitPage(WaitPage):
             group_total    = C.PGG_Commons + total_contributions   # 300 + sum(deltas)
             p.PGG_earnings = float(private_ec + group_total)
 
-            # Competition ECs (accumulated across all 10 rounds)
+            # Production ECs (accumulated across all 10 rounds)
             competition_ecs = sum(p.in_round(r).Pie_payoff for r in range(1, 11))
 
             # Practice ECs (stored on participant by Practice app)
@@ -941,7 +941,7 @@ class Final_Results(MyBasePage):
 page_sequence = [
     Grouping_WaitPage,       # round 1 only: form oTree groups from participant.group_id
     Part_II_Instructions,    # round 1 only: show treatment explanation + multiplier
-    Competition_Calculator,  # round 1 only: interactive competition earnings calculator
+    Competition_Calculator,  # round 1 only: interactive Production earnings calculator
     Comprehension_check_1,   # round 1 only: first attempt (3 + 1 treatment-specific questions)
     Comprehension_check_2,   # round 1 only: second attempt (if first failed)
     Comprehension_check_3,   # round 1 only: forced re-entry if both attempts failed
