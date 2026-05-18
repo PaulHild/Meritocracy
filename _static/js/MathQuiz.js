@@ -360,8 +360,7 @@ function mShowTutorialFeedback(idx, allCorrect, q, playerAnswers) {
 
     var html = '';
     if (allCorrect) {
-        // Correct: lock grid, show success + Next button
-        if (gridDiv) gridDiv.style.display = 'none';
+        // Correct: keep grid visible, hide only the confirm button
         if (confirmBtn) confirmBtn.style.display = 'none';
 
         html += '<div style="color:#2e7d32;font-size:1.25em;font-weight:bold;margin-bottom:8px;">&#10003; Correct!</div>';

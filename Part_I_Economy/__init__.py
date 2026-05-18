@@ -100,13 +100,13 @@ class Player(BasePlayer):
             [False, 'The total ECs earned by the group is maximized when all players contribute 0 tokens.'],
             [True,'The total ECs earned by the group is maximized when all players contribute 100 tokens.'], # Correct answer here
             [False, 'The total ECs earned by the group is maximized when all players contribute 50 tokens.'],],
-        label = '[Transferring tokens] What maximizes the total ECs earned <strong>by the group</strong> in the Transferring tokens stage?',
+        label = '[Transferring Tokens] What maximizes the total ECs earned <strong>by the group</strong> in the Transferring Tokens Stage?',
         widget=widgets.RadioSelect)
     Comprehension_question_3 = models.BooleanField(choices=[
             [True,'The total ECs earned by me is maximized when I contribute 0 tokens and others contribute 100.'], # Correct answer here
             [False, 'The total ECs earned by me is maximized when I contribute 100 tokens and others contribute 0.'],
             [False, 'The total ECs earned by me is maximized when I contribute 50 tokens and others contribute 50.'],],
-        label = '[Transferring tokens] What maximizes the total ECs earned <strong>by you</strong> in the Transferring tokens stage?',
+        label = '[Transferring Tokens] What maximizes the total ECs earned <strong>by you</strong> in the Transferring Tokens Stage?',
         widget=widgets.RadioSelect)
 
     # ── Treatment-specific comprehension question (one shown per treatment) ──
@@ -152,7 +152,7 @@ class Player(BasePlayer):
 
 def _compute_round_sum(player):
     """Sum the 3 sub-scores and store in Round_score."""
-    total = player.Raven_score + player.Analogy_score + player.Math_score
+    total = (player.Raven_score or 0) + (player.Analogy_score or 0) + (player.Math_score or 0)
     player.Round_score = total
     return total
 
@@ -753,15 +753,19 @@ class Comprehension_check_2(MyBasePage):
                                        q4_correct)
         wrong_answers = ''
         if not player.Comprehension_question_1:
+            player.Comprehension_question_1 = None   # reset so it doesn't pre-fill check_3
             wrong_answers += 'first question'
         if not player.Comprehension_question_2:
             if wrong_answers: wrong_answers += ', '
+            player.Comprehension_question_2 = None
             wrong_answers += 'second question'
         if not player.Comprehension_question_3:
             if wrong_answers: wrong_answers += ', '
+            player.Comprehension_question_3 = None
             wrong_answers += 'third question'
         if q4 and not q4_correct:
             if wrong_answers: wrong_answers += ', '
+            setattr(player, q4, None)
             wrong_answers += 'fourth question'
         player.Comprehension_wrong_answers = wrong_answers
 

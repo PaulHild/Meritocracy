@@ -113,15 +113,15 @@
                     <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ practice_ecs }} ECs</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px;">Production stage (4 rounds)</td>
+                    <td style="padding:10px 16px;">Production Stage (4 rounds)</td>
                     <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ competition_ecs }} ECs</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px;">Transferring tokens (round {{ pgg_selected_round }} selected)</td>
+                    <td style="padding:10px 16px;">Transferring Tokens (round {{ pgg_selected_round }} selected)</td>
                     <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ pgg_earnings }} ECs</td>
                 </tr>
                 <tr style="border-top:2px solid #333; background:#f8f9fa;">
-                    <td style="padding:12px 16px; font-weight:bold; font-size:1.05em;">Total bonus so far</td>
+                    <td style="padding:12px 16px; font-weight:bold; font-size:1.05em;">Total earnings so far</td>
                     <td style="padding:12px 16px; text-align:right; font-weight:bold; font-size:1.05em;">
                         {{ total_ecs }} ECs 
                     </td>
@@ -129,8 +129,9 @@
             </tbody>
         </table>
         <p style="margin-top:12px; font-size:0.9em; color:#666;">
-            One of the four cooperation rounds was randomly selected for payment (round {{ pgg_selected_round }}).
-            Your bonus will be paid in addition to the completion fee.
+            <!-- TODO: adjust this wording. -->
+            One of the four Transferring Tokens rounds was randomly selected for payment (round {{ pgg_selected_round }}).
+            Your earnings will be paid in addition to the completion fee.
         </p>
     </div>
 
@@ -161,10 +162,10 @@
     const MEMBER_BORDER = ['#388E3C',              '#2E75B6',               '#E8923A'];
     const MEMBERS       = ['You', 'Group member 2', 'Group member 3'];
 
-    // Breakdown colours (practice / competition / cooperation)
+    // Breakdown colours (practice / production / transferring tokens)
     const BREAKDOWN_BG     = ['rgba(91,155,213,0.8)', 'rgba(76,175,80,0.8)', 'rgba(255,179,71,0.8)'];
     const BREAKDOWN_BORDER = ['#2E75B6',               '#388E3C',               '#E8923A'];
-    const BREAKDOWN_LABELS = ['Practice', 'Competition', 'Cooperation'];
+    const BREAKDOWN_LABELS = ['Practice', 'Production', 'Transferring Tokens'];
 
     // Data from Python
     const breakdownData = [{{ practice_ecs }}, {{ competition_ecs }}, {{ pgg_earnings }}];

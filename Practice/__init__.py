@@ -127,7 +127,7 @@ def _compute_practice_sum(player, round_num):
     raven   = getattr(player, f'Practice_score_Raven_{round_num}')
     analogy = getattr(player, f'Practice_score_Analogy_{round_num}')
     math    = getattr(player, f'Practice_score_Math_{round_num}')
-    total = raven + analogy + math
+    total = (raven or 0) + (analogy or 0) + (math or 0)
     setattr(player, f'Practice_score_{round_num}', total)
     return total
 
@@ -483,7 +483,7 @@ class Grouping_WaitPage(WaitPage):
         tier_size = n // 3
 
         # ── Sort by Practice_score_2 descending ──────────────────────────
-        sorted_players = sorted(players, key=lambda p: p.Practice_score_2, reverse=True)
+        sorted_players = sorted(players, key=lambda p: p.Practice_score_2 or 0, reverse=True)
 
         high_tier = sorted_players[:tier_size]
         mid_tier  = sorted_players[tier_size: 2 * tier_size]
@@ -538,7 +538,7 @@ class Grouping_WaitPage(WaitPage):
 
         # ── Store practice ECs for each player ────────────────────────
         for player in players:
-            practice_ecs = (player.Practice_score_1 + player.Practice_score_2) * CC.Practice_ECs
+            practice_ecs = ((player.Practice_score_1 or 0) + (player.Practice_score_2 or 0)) * CC.Practice_ECs
             player.participant.Practice_ECs_total = practice_ecs
 
 

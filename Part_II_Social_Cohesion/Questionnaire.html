@@ -116,6 +116,9 @@
             <span>Strongly disagree</span>
             <span>Strongly agree</span>
         </div>
+        <div id="fairness-error" style="display:none; color:#c62828; font-size:0.9em; margin-top:10px; text-align:center;">
+            Please select an option above before continuing.
+        </div>
     </div>
 
     <!-- Q2: IOS pictogram (Aron et al., 1992) -->
@@ -214,6 +217,10 @@
 
         </div><!-- /ios-pictogram -->
 
+        <div id="ios-error" style="display:none; color:#c62828; font-size:0.9em; margin-top:10px; text-align:center;">
+            Please select one of the pictures above before continuing.
+        </div>
+
         <!-- <div style="display:flex; justify-content:space-between; font-size:0.78em; color:#888; margin-top:10px; max-width:560px; margin-left:auto; margin-right:auto;">
             <span>Not connected at all</span>
             <span>Completely connected</span>
@@ -286,10 +293,44 @@
             }
         });
 
-        // Restore IOS if a value is already stored in the hidden field
-        var iosHidden = document.querySelector('input[name="ios_score"], select[name="ios_score"]');
-        if (iosHidden && iosHidden.value) {
-            var existing = parseInt(iosHidden.value);
+        // Validate both required questions before allowing form submission
+        document.getElementById('NextButton').addEventListener('click', function(e) {
+            var fairnessSelected = document.querySelector('input[name="likert_fairness"]:checked');
+            var iosSelected      = document.querySelector('input[name="ios_score"]:checked');
+            var blocked = false;
+
+            if (!fairnessSelected) {
+                document.getElementById('fairness-error').style.display = 'block';
+                if (!blocked) {
+                    document.getElementById('likert-fairness').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    blocked = true;
+                }
+            }
+            if (!iosSelected) {
+                document.getElementById('ios-error').style.display = 'block';
+                if (!blocked) {
+                    document.getElementById('ios-pictogram').scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    blocked = true;
+                }
+            }
+            if (blocked) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+            }
+        });
+
+        // Hide each error as soon as the user makes a selection
+        document.getElementById('likert-fairness').addEventListener('click', function() {
+            document.getElementById('fairness-error').style.display = 'none';
+        });
+        document.getElementById('ios-pictogram').addEventListener('click', function() {
+            document.getElementById('ios-error').style.display = 'none';
+        });
+
+        // Restore IOS only if the player previously selected an option (radio is checked)
+        var iosChecked = document.querySelector('input[name="ios_score"]:checked');
+        if (iosChecked) {
+            var existing = parseInt(iosChecked.value);
             if (existing >= 1 && existing <= 7) selectIOS(existing);
         }
     });

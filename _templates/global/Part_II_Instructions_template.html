@@ -16,12 +16,12 @@
             You will play <strong>{{ C.Economy_num_rounds }} rounds</strong>. 
             <br><br>
             
-            In each round, you will first play the Intelligence Test, and then take part in &ldquo;Transferring tokens&rdquo;.
+            In each round, you will first play the Intelligence Test, and then take part in &ldquo;Transferring Tokens&rdquo;.
         </p>
         <!-- <ol>
             <li><strong>Production</strong> — Perform the intelligence test. Your score determines your share of a pot of ECs.</li>
             <li><strong>Feedback</strong> — See how your score and earnings compare to the other members of your Economy.</li>
-            <li><strong>Cooperation</strong> — Decide how much to contribute to a shared pool within your Economy.</li>
+            <li><strong>Transferring Tokens</strong> — Decide how much to contribute to a shared pool within your Economy.</li>
         </ol> -->
 
 
@@ -135,7 +135,7 @@
             <!-- Arrow 2 -->
             <div style="display:flex; align-items:center; justify-content:center; padding:0 6px; color:#bbb; font-size:2em; flex-shrink:0; min-width:32px;">▶</div>
 
-            <!-- Stage II: Cooperation -->
+            <!-- Stage II: Transferring Tokens -->
             <div style="
                 flex:1; min-width:185px; max-width:400px;
                 background:#f0faf0;
@@ -146,7 +146,7 @@
             ">
                 <div style="font-size:2.4em; margin-bottom:6px; line-height:1;">🔄</div>
                 <div style="color:#388E3C; font-weight:700; font-size:0.75em; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:3px;">Stage II</div>
-                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Transferring tokens</div>
+                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Transferring Tokens</div>
                 <hr style="border:none; border-top:1px solid #b8e6b8; margin:10px 0;">
                 <ul style="text-align:left; font-size:0.83em; color:#333; padding-left:18px; margin:0; line-height:1.8;">
                     <li>Start with 100 tokens in your <strong>Private Account</strong> and 300 tokens in a joint <strong>Group Account</strong></li>
@@ -229,11 +229,11 @@
         </p>
     </div> -->
 
-    <!-- Stage III: Cooperation -->
+    <!-- Stage III: Transferring Tokens -->
     <div class="section-box box-info">
         <div class="section-header">
             <div class="icon">🔄</div>
-            <h3>Stage II: Transferring tokens</h3>
+            <h3>Stage II: Transferring Tokens</h3>
         </div>
        <p>
             Your task in this stage is to choose how to allocate "tokens" between your individual <strong>Private Account</strong> and a joint <strong>Group Account.</strong>
@@ -244,8 +244,8 @@
 
         </p>
         <ul>
-            <li>You can either transfer the tokens from your Private Account to the Group Account (up to 100 tokens at most) or transfer tokens from the group Account to your Private Account (also 100 tokens at most).
-                Alternatively, you can also choose not to transfter any tokens.
+            <li>You can either transfer the tokens from your Private Account to the Group Account (up to 100 tokens at most) or transfer tokens from the Group Account to your Private Account (also 100 tokens at most).
+                Alternatively, you can also choose not to transfer any tokens.
             </li>
             <li>
                 All 3 group members make their transfer decision at the same time. 
@@ -262,11 +262,14 @@
 
         <p style="color:#555; font-size:0.95em;">
             <em>Example 1: Suppose you and the other two members of your group do not transfer any tokens between the accounts. Then, you would receive 200 ECs from your initial 100 tokens in the Private Account (2 ECs per token). In addition, you would receive 300 ECs from the initial 300 tokens in the joint Group Account (1 EC per token). In total, you would receive 500 ECs.</em><br>
+            <br>
             <em>
                 Example 2: Suppose you and the other two members of your group all transfer their initial 100 Private Account tokens to the Group Account. 
                 Then, the Group Account balance would be 300 + 3x100 = 600 tokens. Then, you would receive 0 ECs from your Private Account and, 600 600 ECs from the group Group Account.
             </em><br>
+            <br>
             <em>Example 3: Suppose that you transfer your initial 100 Private Account tokens to the Group Account, whereas the other two group members each transfer 100 tokens from the Group Account to their Private Accounts. Then, the Group Account balance would be 300 + 100 – 2x100 = 200 tokens. You would therefore receive 0 ECs from your Private Account and 200 ECs from the Group Account.</em><br>
+            <br>
             <em>Example 4: Suppose that the other two group members transfer their initial 100 Private Account tokens to the Group Account, whereas you transfer 100 tokens from the Group Account to your Private Account. Then, your Private Account balance would be 100 + 100 = 200, and the Group Account balance would be 300 + 2x100 – 100 = 400 tokens. You would therefore receive 400 ECs from your Private Account and 400 ECs from the Group Account (800 ECs in total).</em><br>
         </p>
     </div>
@@ -282,8 +285,8 @@
         </div>
         <p>
             <ul>
-                <li>Your earnings from the production stage accumulate across all {{ C.Economy_num_rounds }} rounds.</li>
-                <li>For the Transferring tokens stage, only one of the {{ C.Economy_num_rounds }} rounds will be randomly chosen at the end to determine your actual payoff from this stage — the other rounds' decisions will not affect your earnings.</li>
+                <li>Your earnings from the Production Stage accumulate across all {{ C.Economy_num_rounds }} rounds.</li>
+                <li>For the Transferring Tokens Stage, only one of the {{ C.Economy_num_rounds }} rounds will be randomly chosen at the end to determine your actual payoff from this stage — the other rounds' decisions will not affect your earnings.</li>
             </ul>
         </p>
         <p>
