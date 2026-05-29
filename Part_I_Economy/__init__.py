@@ -1,7 +1,13 @@
 from otree.api import *
 import random
+import json
 from common import *
 from common import compute_pie_share, CommonConstants as CC
+
+
+# Default JSON for the per-round calculator-click tracker (stored on round 1).
+# Keys are stringified round numbers because JSON forces string keys.
+_CALC_ROUNDS_DEFAULT_JSON = json.dumps({str(r): 0 for r in range(1, 11)})
 
 doc = '''
 Part I Economy: Main game.
@@ -58,7 +64,7 @@ class Player(BasePlayer):
     # ── Round total score (sum of Raven + Analogy + Math) ────────────────────
     Round_score = models.IntegerField(initial=0)
 
-    # ── Production payoff (ECs from Economy_pie this round) ─────────────────
+    # ── Competition payoff (ECs from Economy_pie this round) ─────────────────
     Pie_payoff = models.FloatField(initial=0)
 
     # ── Public goods game: token transfer this round ──────────────────────────
@@ -82,6 +88,14 @@ class Player(BasePlayer):
     competition_calc_interactions = models.IntegerField(initial=0)
     pgg_calc_interactions         = models.IntegerField(initial=0)
 
+    # ── PGG calculator: per-round 'opened the calculator modal' tracker ─────
+    # Stored on round 1 only as a JSON dict {"1":0, ..., "10":0}; flipped to 1
+    # whenever the player opens the in-round calculator modal that round.
+    calculator_pgg_rounds = models.LongStringField(initial=_CALC_ROUNDS_DEFAULT_JSON)
+    # Per-round write-target: the JS sets this to True on first click; the
+    # before_next_page hook reads it and updates the round-1 dict.
+    calculator_pgg_clicked = models.BooleanField(initial=False)
+
     'Comprehension and attention checks'
     #whether the player got the comprehension questions rigt at the first try
     Comprehension_1 = models.BooleanField(initial=True) 
@@ -90,34 +104,33 @@ class Player(BasePlayer):
     Comprehension_2 = models.BooleanField(initial=True) 
     
     Comprehension_question_1 = models.BooleanField(choices=[
-        [False, 'My share of the 500 ECs pot is determined by my score alone, regardless of the scores of the other two.'],
+        [False, 'My share of the 500 ECs pot only depends on my score alone, regardless of the scores of the other two.'],
         [True,'The higher my score is compared to the scores of the other two, the higher is my share of the pie.'], # Correct answer here
         [False, 'My share of the 500 ECs is determined by the sum of everones\' scores.'],],
-    label = '[Production stage] How does the Production over 500 ECs work?',
+    label = '[Competition stage] How does the Competition over 500 ECs work?',
     widget=widgets.RadioSelect)
     
     Comprehension_question_2 = models.BooleanField(choices=[
-            [False, 'The total ECs earned by the group is maximized when all players contribute 0 tokens.'],
-            [True,'The total ECs earned by the group is maximized when all players contribute 100 tokens.'], # Correct answer here
-            [False, 'The total ECs earned by the group is maximized when all players contribute 50 tokens.'],],
+            [False, 'The total ECs earned by the group is maximized when all players transfer 100 tokens from the Group Account to their Private Accounts.'],
+            [True,'The total ECs earned by the group is maximized when all players transfer 100 tokens from their Private Accounts to the Group Account.'], # Correct answer here
+            [False, 'The total ECs earned by the group is maximized when nobody transfers any tokens.'],],
         label = '[Transferring Tokens] What maximizes the total ECs earned <strong>by the group</strong> in the Transferring Tokens Stage?',
         widget=widgets.RadioSelect)
     Comprehension_question_3 = models.BooleanField(choices=[
-            [True,'The total ECs earned by me is maximized when I contribute 0 tokens and others contribute 100.'], # Correct answer here
-            [False, 'The total ECs earned by me is maximized when I contribute 100 tokens and others contribute 0.'],
-            [False, 'The total ECs earned by me is maximized when I contribute 50 tokens and others contribute 50.'],],
+            [True,'The total ECs earned by me is maximized when I transfer 100 tokens from the Group Account to my Private Account and the other two transfer 100 tokens from their Private Accounts to the Group Account.'], # Correct answer here
+            [False, 'The total ECs earned by me is maximized when I transfer 100 tokens from my Private Account to the Group Account and the other two each transfer 100 tokens from the Group Account to their Private Accounts.'],
+            [False, 'The total ECs earned by me is maximized when nobody transfers any tokens.'],],
         label = '[Transferring Tokens] What maximizes the total ECs earned <strong>by you</strong> in the Transferring Tokens Stage?',
         widget=widgets.RadioSelect)
 
     # ── Treatment-specific comprehension question (one shown per treatment) ──
-    # TODO: remove DEBUG from the wording
     Comprehension_question_4_PM = models.BooleanField(
         choices=[
             [False, 'The highest performer gets a disproportionately large share of the earnings.'],
             [True,  'Everyone in my group is treated identically — earnings depend purely on relative performance.'],
             [False, 'Earnings are distributed equally among all group members.'],
         ],
-        label='[DEBUG: PERFECT MERITOCRACY] What is true about how earnings are determined in your group?',
+        label='What is true about how earnings are determined in your group?',
         widget=widgets.RadioSelect)
 
     Comprehension_question_4_EM = models.BooleanField(
@@ -126,7 +139,7 @@ class Player(BasePlayer):
             [False, 'Multipliers were assigned randomly at the start of the experiment.'],
             [True,  'Multipliers are assigned based on performance in the first two rounds.'],
         ],
-        label='[DEBUG: EXCESSIVE MERITOCRACY] How were multipliers assigned in your group?',
+        label='How were multipliers assigned in your group?',
         widget=widgets.RadioSelect)
 
     Comprehension_question_4_WS = models.BooleanField(
@@ -135,7 +148,7 @@ class Player(BasePlayer):
             [True,  'My score equals my performance in the Intelligence Test plus the average performance of the three group members.'],
             [False, 'My score equals my performance in the Intelligence Test minus the average performance of the three group members.'],
         ],
-        label='[DEBUG: WELFARE STATE] Your score determines your share of the pie. But how is your score determined?',
+        label='Your score determines your share of the pie. But how is your score determined?',
         widget=widgets.RadioSelect)
 
     Comprehension_question_4_Ar = models.BooleanField(
@@ -144,7 +157,7 @@ class Player(BasePlayer):
             [True, 'Multipliers were assigned randomly at the start of the experiment.'],
             [False,  'Multipliers are assigned based on performance in the first two rounds.'],
         ],
-        label='[DEBUG: Aristocracy] How were multipliers assigned in your group?',
+        label='How were multipliers assigned in your group?',
         widget=widgets.RadioSelect)
 
 
@@ -207,8 +220,8 @@ def _per_player_data(player, round_number):
     """Return (performances, earnings_this_round, accumulated, multipliers) as 3-element lists.
     Index 0 = current player ("You"), indices 1 & 2 = the other two members.
     - performances:        raw correct-answer count for this round only
-    - earnings_this_round: production-stage Pie_payoff for this round only
-    - accumulated:         sum of production-stage Pie_payoffs across rounds 1..round_number
+    - earnings_this_round: competition-stage Pie_payoff for this round only
+    - accumulated:         sum of competition-stage Pie_payoffs across rounds 1..round_number
     - multipliers:         each player's score multiplier"""
     group_members = player.group.get_players()
     others  = [p for p in group_members if p.id_in_group != player.id_in_group]
@@ -242,22 +255,40 @@ def _multiplier_reminder(treatment):
     return ''
 
 
+def _record_calculator_click(player):
+    """If the player opened the PGG calculator modal this round, flip the
+    corresponding key in the round-1 calculator_pgg_rounds JSON dict to 1."""
+    if not player.calculator_pgg_clicked:
+        return
+    r1 = player.in_round(1)
+    try:
+        d = json.loads(r1.calculator_pgg_rounds) if r1.calculator_pgg_rounds else {}
+    except (json.JSONDecodeError, TypeError):
+        d = {}
+    # Ensure all 10 keys exist
+    for r in range(1, 11):
+        d.setdefault(str(r), 0)
+    d[str(player.round_number)] = 1
+    r1.calculator_pgg_rounds = json.dumps(d)
+
+
 def _belief_bonus(player):
-    """Return True if the player's PGG belief guesses are both within 100 ECs of the
-    true cumulative PGG contributions of Group Members 2 and 3.
+    """Return True if the player's PGG belief guesses are both within 10 tokens of the
+    true *average* PGG contribution per round of Group Members 2 and 3.
     Uses the same member ordering as _per_player_data (others in get_players() order)."""
     group_members = player.group.get_players()
     others = [p for p in group_members if p.id_in_group != player.id_in_group]
     m2, m3 = others[0], others[1]
 
-    def true_total(p):
-        return sum(p.in_round(r).PGG_contribution for r in range(1, C.Economy_num_rounds + 1))
+    def true_average(p):
+        total = sum(p.in_round(r).PGG_contribution for r in range(1, C.Economy_num_rounds + 1))
+        return total / C.Economy_num_rounds
 
-    def within_100ec(guess, true):
-        return abs(guess - true) <= 100
+    def within_10(guess, true):
+        return abs(guess - true) <= 10
 
-    return (within_100ec(player.pgg_belief_member2, true_total(m2)) and
-            within_100ec(player.pgg_belief_member3, true_total(m3)))
+    return (within_10(player.pgg_belief_member2, true_average(m2)) and
+            within_10(player.pgg_belief_member3, true_average(m3)))
 
 
 _Q4_FIELD = {
@@ -592,6 +623,8 @@ class PGG_Calculator(MyBasePage):
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)
         variables['hidden_fields'] = ['pgg_calc_interactions']
+        variables['member_rows']   = ['You', 'Member 2', 'Member 3']
+        variables['calc_prefix']   = 'calc'
         return variables
 
     @staticmethod
@@ -609,7 +642,7 @@ class Round_PublicGoods(MyBasePage):
 
     @staticmethod
     def get_form_fields(player):
-        return ['PGG_contribution']
+        return ['PGG_contribution', 'calculator_pgg_clicked']
 
     @staticmethod
     def vars_for_template(player: Player):
@@ -624,17 +657,24 @@ class Round_PublicGoods(MyBasePage):
         variables['pgg_max']            = C.Pgg_upper_bound - C.PGG_Commons
         variables['tokens_earned']      = round(player.Pie_payoff)
         variables['contribution_field'] = 'PGG_contribution'
-        variables['hidden_fields']      = ['PGG_contribution']
+        variables['hidden_fields']      = ['PGG_contribution', 'calculator_pgg_clicked']
         variables['performances']        = performances           # [you, m2, m3]
         variables['earnings_this_round'] = earnings_this_round   # [you, m2, m3]
         variables['accumulated']         = accumulated            # [you, m2, m3]
         variables['multipliers_list']    = multipliers_list  # [you, m2, m3]
         variables['multiplier_reminder'] = _multiplier_reminder(player.participant.Treatment)
+        # Used by the in-round calculator modal (shared body template)
+        variables['member_rows']         = ['You', 'Member 2', 'Member 3']
+        variables['calc_prefix']         = 'pggmodal'
         return variables
 
+    @staticmethod
+    def before_next_page(player: Player, timeout_happened=False):
+        _record_calculator_click(player)
 
 
-# ── Production Scenario Calculator (round 1 only) ───────────────────────────────────
+
+# ── Competition Scenario Calculator (round 1 only) ──────────────────────────────────
 class Competition_Calculator(MyBasePage):
     form_fields = ['competition_calc_interactions']
 
@@ -649,6 +689,7 @@ class Competition_Calculator(MyBasePage):
         others = [p for p in player.group.get_players() if p.id_in_group != player.id_in_group]
         member_multipliers = [player.participant.multiplier] + [p.participant.multiplier for p in others]
         variables['hidden_fields']      = ['competition_calc_interactions']
+        variables['Treatment']          = treatment
         variables['show_multipliers']   = treatment in ('Excessive_Meritocracy', 'Aristocracy')
         variables['player_multiplier']  = player.participant.multiplier
         variables['member_multipliers'] = member_multipliers
@@ -834,8 +875,10 @@ class PGG_Beliefs(MyBasePage):
             player.in_round(rr).PGG_contribution
             for rr in range(1, C.Economy_num_rounds + 1)
         )
+        own_pgg_average = round(own_pgg_total / C.Economy_num_rounds, 1)
 
-        slider_bound = C.PGG_investible * C.Economy_num_rounds  # 1000
+        # Slider now elicits the *average* contribution per round, so bounds are ±PGG_investible
+        slider_bound_avg = C.PGG_investible  # 100
 
         variables.update({
             'round_number':        r,
@@ -843,10 +886,10 @@ class PGG_Beliefs(MyBasePage):
             'accumulated':         accumulated,
             'multipliers_list':    multipliers_list,
             'multiplier_reminder': _multiplier_reminder(player.participant.Treatment),
-            'own_pgg_total':       own_pgg_total,
-            'own_pgg_total_abs':   abs(own_pgg_total),
-            'slider_min':         -slider_bound,
-            'slider_max':          slider_bound,
+            'own_pgg_average':     own_pgg_average,
+            'own_pgg_average_abs': abs(own_pgg_average),
+            'slider_min':         -slider_bound_avg,
+            'slider_max':          slider_bound_avg,
             'pgg_guess_bonus':     C.PGG_Guess_ECs,
         })
         return variables
@@ -855,7 +898,7 @@ class PGG_Beliefs(MyBasePage):
 # ── Final WaitPage (round 10 only: sync PGG contributions, compute final earnings) ──
 class Final_WaitPage(WaitPage):
     """After the last PGG decision, wait for all group members, then compute
-    final earnings from Practice + Production + one randomly-selected PGG round."""
+    final earnings from Practice + Competition + one randomly-selected PGG round."""
 
     @staticmethod
     def is_displayed(player: Player):
@@ -883,7 +926,7 @@ class Final_WaitPage(WaitPage):
             group_total    = C.PGG_Commons + total_contributions   # 300 + sum(deltas)
             p.PGG_earnings = float(private_ec + group_total)
 
-            # Production ECs (accumulated across all 10 rounds)
+            # Competition ECs (accumulated across all 10 rounds)
             competition_ecs = sum(p.in_round(r).Pie_payoff for r in range(1, 11))
 
             # Practice ECs (stored on participant by Practice app)
@@ -891,13 +934,24 @@ class Final_WaitPage(WaitPage):
 
             p.Total_bonus_ECs = practice_ecs + competition_ecs + p.PGG_earnings
 
-            # PGG belief bonus (guessed both group members' totals within 10%)
+            # PGG belief bonus (guessed both group members' averages within 10 tokens)
             p.pgg_belief_bonus = _belief_bonus(p)
             if p.pgg_belief_bonus:
                 p.Total_bonus_ECs += C.PGG_Guess_ECs
 
             # Store for cross-app use in Part_II_Social_Cohesion (tier ranking)
             p.participant.Part_I_total_ECs = p.Total_bonus_ECs
+
+            # Cache Part I components so Part II's Final_Results can show the
+            # full earnings breakdown (Competition + Practice were already
+            # shown in Part I; PGG was withheld until the end of Part II).
+            p.participant.Part_I_practice_ECs    = practice_ecs
+            p.participant.Part_I_competition_ECs = competition_ecs
+            p.participant.Part_I_pgg_earnings    = p.PGG_earnings
+            p.participant.Part_I_pgg_selected_round = p.PGG_selected_round
+            p.participant.Part_I_pgg_belief_bonus   = (
+                C.PGG_Guess_ECs if p.pgg_belief_bonus else 0
+            )
 
 
 # ── Final Results (round 10 only) ─────────────────────────────────────────────────────
@@ -914,26 +968,28 @@ class Final_Results(MyBasePage):
 
         practice_ecs    = getattr(player.participant, 'Practice_ECs_total', 0)
         competition_ecs = sum(player.in_round(r).Pie_payoff for r in range(1, 11))
-        pgg_earnings    = player.PGG_earnings
-        total_ecs       = player.Total_bonus_ECs
-        eur_amount      = total_ecs / C.EC_exchange_rate
+        subtotal_ecs    = practice_ecs + competition_ecs   # PGG withheld until end of Part II
 
-        # Group comparison: total ECs for [You, Member 2, Member 3]
+        # Group comparison: Practice + Competition only for [You, Member 2, Member 3]
+        # (PGG earnings are withheld until the end of Part II)
         group_members = player.group.get_players()
         others  = [p for p in group_members if p.id_in_group != player.id_in_group]
         ordered = [player] + others
-        group_totals = [round(p.Total_bonus_ECs, 1) for p in ordered]
+
+        def _practice_plus_competition(p):
+            pr = getattr(p.participant, 'Practice_ECs_total', 0) or 0
+            cp = sum(p.in_round(r).Pie_payoff for r in range(1, 11))
+            return round(pr + cp, 1)
+
+        group_totals = [_practice_plus_competition(p) for p in ordered]
 
         # Multiplier table data (same as Round_Feedback)
         multipliers_list = [p.participant.multiplier for p in ordered]
 
         variables.update({
-            'practice_ecs':       round(practice_ecs, 1),
-            'competition_ecs':    round(competition_ecs, 1),
-            'pgg_earnings':       round(pgg_earnings, 1),
-            'pgg_selected_round': player.PGG_selected_round,
-            'total_ecs':          round(total_ecs, 1),
-            'eur_amount':         round(eur_amount, 2),
+            'practice_ecs':       int(practice_ecs),
+            'competition_ecs':    int(competition_ecs),
+            'subtotal_ecs':       int(subtotal_ecs),
             'group_totals':       group_totals,
             'multipliers_list':   multipliers_list,
             'multiplier_reminder': _multiplier_reminder(player.participant.Treatment),
@@ -945,7 +1001,7 @@ class Final_Results(MyBasePage):
 page_sequence = [
     Grouping_WaitPage,       # round 1 only: form oTree groups from participant.group_id
     Part_II_Instructions,    # round 1 only: show treatment explanation + multiplier
-    Competition_Calculator,  # round 1 only: interactive Production earnings calculator
+    Competition_Calculator,  # round 1 only: interactive Competition earnings calculator
     Comprehension_check_1,   # round 1 only: first attempt (3 + 1 treatment-specific questions)
     Comprehension_check_2,   # round 1 only: second attempt (if first failed)
     Comprehension_check_3,   # round 1 only: forced re-entry if both attempts failed

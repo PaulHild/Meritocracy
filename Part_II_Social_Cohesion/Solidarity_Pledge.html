@@ -6,12 +6,12 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 1: Your Pledge</h2>
+    <h2 class="section-title">Problem 1: Your Pledge</h2>
     <hr class="section-divider">
 
     <p style="text-align:center; color:#555;">
-        <strong>{{ solidarity_ec }} ECs</strong> will be randomly awarded to 2 of the 3 group members.
-        <br>Decide now how much of this {{ solidarity_ec }} ECs you wish to pledge to the person who does not win.
+        <strong>{{ solidarity_ec }} ECs</strong> will be randomly given to 2 of the 3 group members.
+        <br>Decide now how many of these {{ solidarity_ec }} ECs you wish to pledge, in case that you are one of the winners, to the person who does not win.
     </p>
 
     <div class="section-box box-calm" style="margin-top:24px;">
@@ -39,7 +39,7 @@
 
     <div class="buttons-container" style="margin-top:30px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">📘 Game Instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">📘 Decision problem Instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary">Confirm Pledge &rarr;</button>
     </div>
@@ -48,7 +48,7 @@
 <div id="myModal1" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2><span class="icon">📘</span> Game Instructions</h2>
+            <h2><span class="icon">📘</span> Decision problem Instructions</h2>
             <span class="close" onclick="span_click(1)">&times;</span>
         </div>
         <div class="modal-body">

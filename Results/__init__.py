@@ -53,11 +53,15 @@ class Results(Page):
         part1_ecs    = getattr(p, 'Part_I_total_ECs',      0) or 0
         part2_ecs    = getattr(p, 'Part_II_earnings',      0) or 0
         game_sel     = getattr(p, 'Part_II_game_selected', '—') or '—'
-        total_ecs    = practice_ecs + part1_ecs + part2_ecs
+        # Part_I_total_ECs already INCLUDES Practice_ECs_total (set in
+        # Part_I_Economy/Final_WaitPage). For the breakdown row we show
+        # Part I net of practice so the rows actually sum to the total.
+        part1_ecs_net = part1_ecs - practice_ecs
+        total_ecs    = part1_ecs + part2_ecs
         eur_amount   = round(total_ecs / C.EC_exchange_rate, 2)
         return {
             'practice_ecs':        round(practice_ecs, 1),
-            'part1_ecs':           round(part1_ecs,    1),
+            'part1_ecs':           round(part1_ecs_net, 1),
             'part2_ecs':           round(part2_ecs,    1),
             'game_selected_label': game_sel,
             'total_ecs':           round(total_ecs,    1),

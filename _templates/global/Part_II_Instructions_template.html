@@ -1,5 +1,5 @@
 <div class="content-box box-info">
-    <h2 class="section-title">A Simulated Economy</h2>
+    <h2 class="section-title">Main Part</h2>
     <hr class="section-divider">
 
     
@@ -13,15 +13,15 @@
             Welcome to the main part of the experiment — your earnings here will make up the largest share of your payment.
         </p>
         <p>
-            You will play <strong>{{ C.Economy_num_rounds }} rounds</strong>. 
+            This main part will consist of <strong>{{ C.Economy_num_rounds }} rounds</strong>. 
             <br><br>
             
-            In each round, you will first play the Intelligence Test, and then take part in &ldquo;Transferring Tokens&rdquo;.
+            In each round, you will first play the Intelligence Test, and then be asked to participate in the &ldquo;Transferring Tokens&rdquo; task.
         </p>
         <!-- <ol>
-            <li><strong>Production</strong> — Perform the intelligence test. Your score determines your share of a pot of ECs.</li>
-            <li><strong>Feedback</strong> — See how your score and earnings compare to the other members of your Economy.</li>
-            <li><strong>Transferring Tokens</strong> — Decide how much to contribute to a shared pool within your Economy.</li>
+            <li><strong>Competition</strong> — Perform the Intelligence Test. Your score determines your share of a pot of ECs.</li>
+            <li><strong>Feedback</strong> — See how your score and earnings compare to the other members of your .</li>
+            <li><strong>Transferring Tokens</strong> — Decide how much to contribute to a shared pool within your .</li>
         </ol> -->
 
 
@@ -36,8 +36,10 @@
         <div class="section-header">
             <div class="icon">👥</div>
             <h3>Your Group</h3>
-            <!-- TODO: delete this debug. -->
+            {% if C.DEBUG %}
+            {# TODO: verify that this DEBUG block is hidden when common.py DEBUG = False #}
             <h3>(DEBUG: Treatment: {{Treatment}})</h3>
+            {% endif %}
         </div>
         {{ explanation|safe }}
 
@@ -89,7 +91,7 @@
             gap:0;
             flex-wrap:wrap;
         ">
-            <!-- Stage I: Production -->
+            <!-- Stage I: Competition -->
             <div style="
                 flex:1; min-width:185px; max-width:300px;
                 background:#e8f4fd;
@@ -100,7 +102,7 @@
             ">
                 <div style="font-size:2.4em; margin-bottom:6px; line-height:1;">🧠</div>
                 <div style="color:#2E75B6; font-weight:700; font-size:0.75em; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:3px;">Stage I</div>
-                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Production</div>
+                <div style="font-weight:700; font-size:1.05em; color:#1a1a1a; margin-bottom:10px;">Competition</div>
                 <hr style="border:none; border-top:1px solid #bcd8f0; margin:10px 0;">
                 <ul style="text-align:left; font-size:0.83em; color:#333; padding-left:18px; margin:0; line-height:1.8;">
                     <li>Perform in the Intelligence Test ({{C.Economy_round_length}} seconds for each of the 3 blocks)</li>
@@ -128,7 +130,7 @@
                 <ul style="text-align:left; font-size:0.83em; color:#333; padding-left:18px; margin:0; line-height:1.8;">
                     <li>See your score vs. group</li>
                     <li>See accumulated earnings vs. group</li>
-                    <li>Review multipliers in your Economy</li>
+                    <li>Review multipliers in your </li>
                 </ul>
             </div> -->
 
@@ -165,14 +167,14 @@
     </div>
     <!-- ── /Pictogram ── -->
 
-    <!-- Stage I: Production -->
+    <!-- Stage I: Competition -->
     <div class="section-box box-info">
         <div class="section-header">
             <div class="icon">🧠</div>
-            <h3>Stage I: Production</h3>
+            <h3>Stage I: Competition</h3>
         </div>
         <p>
-            You will perform the full intelligence test — the same three blocks as before (Matrix Reasoning, Analogies, Mathematics), each lasting {{C.Economy_round_length}} seconds.
+            You will perform the full Intelligence Test — the same three blocks as before (Matrix Reasoning, Analogies, Mathematics), each lasting {{C.Economy_round_length}} seconds.
         </p>
         <p>
             Your <strong>round score</strong> is calculated as:
@@ -222,7 +224,7 @@
             <h3>Stage II: Feedback</h3>
         </div>
         <p>
-            After the Production, you will see how you compare to the other two members in your Economy. You will see two bar charts showing:
+            After the Competition, you will see how you compare to the other two members in your . You will see two bar charts showing:
             <ul>
                 <li>Your correct answers compared to the correct answers of the other two.</li>
                 <li>Your earned ECs so far, compared to the earnings of the other two.</li>
@@ -265,7 +267,7 @@
             <br>
             <em>
                 Example 2: Suppose you and the other two members of your group all transfer their initial 100 Private Account tokens to the Group Account. 
-                Then, the Group Account balance would be 300 + 3x100 = 600 tokens. Then, you would receive 0 ECs from your Private Account and, 600 600 ECs from the group Group Account.
+                Then, the Group Account balance would be 300 + 3x100 = 600 tokens. Then, you would receive 0 ECs from your Private Account and, 600 ECs from the group Group Account.
             </em><br>
             <br>
             <em>Example 3: Suppose that you transfer your initial 100 Private Account tokens to the Group Account, whereas the other two group members each transfer 100 tokens from the Group Account to their Private Accounts. Then, the Group Account balance would be 300 + 100 – 2x100 = 200 tokens. You would therefore receive 0 ECs from your Private Account and 200 ECs from the Group Account.</em><br>
@@ -285,7 +287,7 @@
         </div>
         <p>
             <ul>
-                <li>Your earnings from the Production Stage accumulate across all {{ C.Economy_num_rounds }} rounds.</li>
+                <li>Your earnings from the Competition Stage accumulate across all {{ C.Economy_num_rounds }} rounds.</li>
                 <li>For the Transferring Tokens Stage, only one of the {{ C.Economy_num_rounds }} rounds will be randomly chosen at the end to determine your actual payoff from this stage — the other rounds' decisions will not affect your earnings.</li>
             </ul>
         </p>

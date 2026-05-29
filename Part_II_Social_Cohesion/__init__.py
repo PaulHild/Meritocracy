@@ -83,6 +83,8 @@ class C(CC):
         'low':    'Low Earner',
     }
 
+    PGG_endowment = 100 #TODO: Adjust if necessary
+
 
 # ── Models ─────────────────────────────────────────────────────────────────────
 class Subsession(BaseSubsession):
@@ -148,6 +150,8 @@ class Player(BasePlayer):
     # ── PGG2 ────────────────────────────────────────────────────────────────
     pgg2_contribution = models.IntegerField(min=-100, max=100, initial=0)
     pgg2_earnings     = models.FloatField(initial=0)
+    # Whether the player opened the scenario-calculator modal during PGG2
+    calculator_pgg2_clicked = models.BooleanField(initial=False)
 
     # ── SVO (Murphy et al. 2011) — 6 items, each 0–8 (index into 9 options) ─
     svo_choice_1 = models.IntegerField(min=0, max=8)
@@ -936,13 +940,16 @@ class PGG2_Instructions(MyPage):
 
 # ── Page: PGG2 contribute ─────────────────────────────────────────────────────
 class PGG2_Contribute(MyPage):
-    form_fields = ['pgg2_contribution']
+    form_fields = ['pgg2_contribution', 'calculator_pgg2_clicked']
 
     @staticmethod
     def vars_for_template(player: Player):
         v = MyPage.vars_for_template(player)
         v['pgg2_commons']      = C.PGG2_Commons
         v['Instructions_pgg2'] = C.Instructions_pgg2_path
+        # For the in-round calculator modal (shared body template)
+        v['member_rows'] = ['You', 'Member 2', 'Member 3']
+        v['calc_prefix'] = 'pgg2modal'
         tier = player.earner_tier
         if tier == 'high':
             v['ingroup_tier_label']  = 'High Earner'
@@ -992,7 +999,29 @@ class Final_Results(MyPage):
         ]
         v['all_earnings']     = all_earnings_list
         v['all_earnings_js']  = json.dumps(all_earnings_list)   # safe for JS (Python bools → true/false)
-        v['eur_amount'] = round(player.total_part2_earnings / C.EC_exchange_rate, 2)
+
+        # ── Part I breakdown (PGG earnings withheld in Part I are revealed here) ─
+        part1_practice    = getattr(player.participant, 'Part_I_practice_ECs', 0) or 0
+        part1_competition = getattr(player.participant, 'Part_I_competition_ECs', 0) or 0
+        part1_pgg         = getattr(player.participant, 'Part_I_pgg_earnings', 0) or 0
+        part1_pgg_round   = getattr(player.participant, 'Part_I_pgg_selected_round', 0) or 0
+        part1_belief_bonus = getattr(player.participant, 'Part_I_pgg_belief_bonus', 0) or 0
+        part1_total       = getattr(player.participant, 'Part_I_total_ECs', 0) or 0
+
+        grand_total = part1_total + player.total_part2_earnings
+        eur_grand_total = grand_total / C.EC_exchange_rate
+
+        v.update({
+            'part1_practice':     round(part1_practice, 1),
+            'part1_competition':  round(part1_competition, 1),
+            'part1_pgg':          round(part1_pgg, 1),
+            'part1_pgg_round':    part1_pgg_round,
+            'part1_belief_bonus': round(part1_belief_bonus, 1),
+            'part1_total':        round(part1_total, 1),
+            'grand_total':        round(grand_total, 1),
+            'eur_amount':         round(player.total_part2_earnings / C.EC_exchange_rate, 2),
+            'eur_grand_total':    round(eur_grand_total, 2),
+        })
         return v
 
 
@@ -1036,5 +1065,5 @@ page_sequence = [
 
     # ── Final payoff computation and results ──────────────────────────────────
     Final_WaitPage,
-    Final_Results,
+    # Final_Results,
 ]

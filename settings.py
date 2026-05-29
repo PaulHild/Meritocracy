@@ -33,7 +33,12 @@ PARTICIPANT_FIELDS = [
     'multiplier',   # int: 4 | 2 | 1
     'Practice_ECs_total',  # float: total ECs earned in both practice rounds
     # ── Part I → Part II cross-app ───────────────────────────────────────────
-    'Part_I_total_ECs',    # float: Total_bonus_ECs from Part I (for tier ranking in Part II)
+    'Part_I_total_ECs',          # float: Total_bonus_ECs from Part I (for tier ranking in Part II)
+    'Part_I_practice_ECs',       # float: ECs from the practice rounds
+    'Part_I_competition_ECs',    # float: accumulated ECs from the 10 Competition rounds
+    'Part_I_pgg_earnings',       # float: ECs from the randomly-selected PGG round (revealed at end of Part II)
+    'Part_I_pgg_selected_round', # int : which PGG round was selected
+    'Part_I_pgg_belief_bonus',   # float: PGG belief-elicitation bonus (0 or C.PGG_Guess_ECs)
     # ── Part II cross-economy matching ───────────────────────────────────────
     'ingroup_code',        # str: participant.code of cross-economy ingroup partner
     'outgroup_code',       # str: participant.code of cross-economy outgroup partner

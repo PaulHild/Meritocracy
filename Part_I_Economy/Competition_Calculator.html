@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-info">
-    <h2 class="section-title">Production Stage Scenario Calculator</h2>
+    <h2 class="section-title">Competition Stage Scenario Calculator</h2>
     <hr class="section-divider">
 
     {% if C.DEBUG %}
@@ -43,6 +43,16 @@
                     {% if show_multipliers %}
                     <th style="padding:10px 12px; text-align:center;">Multiplier</th>
                     {% endif %}
+                    {% if Treatment != 'Perfect_Meritocracy' %}
+                    <th style="padding:10px 12px; text-align:center;">
+                        Score
+                        {% if Treatment == 'Welfare_State' %}
+                        <br><span style="font-weight:normal; font-size:0.8em; color:#666;">(= performance + group average)</span>
+                        {% else %}
+                        <br><span style="font-weight:normal; font-size:0.8em; color:#666;">(= performance &times; multiplier)</span>
+                        {% endif %}
+                    </th>
+                    {% endif %}
                     <th style="padding:10px 12px; text-align:center;">ECs earned</th>
                 </tr>
             </thead>
@@ -59,6 +69,9 @@
                         &times;{{ member_multipliers.0 }}
                     </td>
                     {% endif %}
+                    {% if Treatment != 'Perfect_Meritocracy' %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em; color:#1a5276;" id="weighted1">—</td>
+                    {% endif %}
                     <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result1">—</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
@@ -73,6 +86,9 @@
                         &times;{{ member_multipliers.1 }}
                     </td>
                     {% endif %}
+                    {% if Treatment != 'Perfect_Meritocracy' %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em; color:#1a5276;" id="weighted2">—</td>
+                    {% endif %}
                     <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result2">—</td>
                 </tr>
                 <tr>
@@ -86,6 +102,9 @@
                     <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.1em;">
                         &times;{{ member_multipliers.2 }}
                     </td>
+                    {% endif %}
+                    {% if Treatment != 'Perfect_Meritocracy' %}
+                    <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em; color:#1a5276;" id="weighted3">—</td>
                     {% endif %}
                     <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="result3">—</td>
                 </tr>
@@ -172,6 +191,17 @@
             e1 = (w1 / total) * PIE;
             e2 = (w2 / total) * PIE;
             e3 = (w3 / total) * PIE;
+        }
+
+        // Populate the new Score column (hidden in Perfect_Meritocracy where score = performance)
+        if (TREATMENT !== 'Perfect_Meritocracy') {
+            var fmt = function (v) { return (Math.round(v * 10) / 10); };
+            var w1el = document.getElementById('weighted1');
+            var w2el = document.getElementById('weighted2');
+            var w3el = document.getElementById('weighted3');
+            if (w1el) w1el.textContent = fmt(w1);
+            if (w2el) w2el.textContent = fmt(w2);
+            if (w3el) w3el.textContent = fmt(w3);
         }
 
         document.getElementById('result1').textContent = Math.round(e1) + ' ECs';

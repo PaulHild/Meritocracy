@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ static 'css/css.css' }}">
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Games with New Partners</h2>
+    <h2 class="section-title">Decision problems with New Partners</h2>
     <hr class="section-divider">
 
     <div class="section-box box-warn" style="text-align:center; margin-top:24px; padding:28px 36px;">
@@ -13,8 +13,9 @@
             <h3 style="margin:0; font-size:1.2em;">New group members!</h3>
         </div>
         <p style="font-size:1.05em; color:#444; margin:0;">
-            You will play the next games with two new participants you have <strong>not interacted with before</strong>.
-            They come from the other groups in this room.
+            From now on, you will interact with two participants you have<strong> not interacted with before</strong>.
+             They come from the other groups in this room and have been randomly selected.
+             As before, neither their identities nor your own identity will be revealed during or after the experiment. All of your choices are completely confidential.
         </p>
     </div>
 
@@ -25,11 +26,11 @@
             <h3>Earnings Based Matching</h3>
         </div>
         <p>
-            Based on the total earnings in Part I, the computer has now dividded all participants in this session into
-            three earning groups: <strong>High Earners</strong>, <strong>Medium Earners</strong>, and <strong>Low Earners</strong>.
+            Based on the total earnings in Part I, the computer has now divided all participants in this session into three earnings groups: 
+             <strong>High Earners</strong>, <strong>Medium Earners</strong>, and <strong>Low Earners</strong>.
         </p>
         <p style="margin-top:10px;">
-            You are a <strong>{{ my_tier_label }}</strong>. For the next game, the computer has matched you with two new partners: a {{ ingroup_tier_label }} and a {{ outgroup_tier_label }}. 
+            You are a <strong>{{ my_tier_label }}</strong>. For the next decision problem, the computer has matched you with two new partners: a {{ ingroup_tier_label }} and a {{ outgroup_tier_label }}. 
         </p>
     </div>
 
@@ -53,14 +54,14 @@
                         <span style="color:#5B9BD5; font-size:1.1em;">●</span>&nbsp;<strong>Partner A </strong>
                     </td>
                     <td style="padding:10px 16px;"><strong>{{ ingroup_tier_label }}</strong></td>
-                    <td style="padding:10px 16px; font-size:0.9em; color:#555;">Same earning level as you</td>
+                    <td style="padding:10px 16px; font-size:0.9em; color:#555;">Same earnings level as you</td>
                 </tr>
                 <tr>
                     <td style="padding:10px 16px; text-align:left;">
                         <span style="color:#FFB347; font-size:1.1em;">●</span>&nbsp;<strong>Partner B </strong>
                     </td>
                     <td style="padding:10px 16px;"><strong>{{ outgroup_tier_label }}</strong></td>
-                    <td style="padding:10px 16px; font-size:0.9em; color:#555;">Different earning level</td>
+                    <td style="padding:10px 16px; font-size:0.9em; color:#555;">Different earnings level</td>
                 </tr>
             </tbody>
         </table>
@@ -69,11 +70,11 @@
     <!-- <div class="section-box box-calm" style="margin-top:20px;">
         <div class="section-header">
             <div class="icon">🎮</div>
-            <h3>Games Ahead</h3>
+            <h3>Decision problems Ahead</h3>
         </div>
         <ol style="padding-left:20px;">
-            <li style="margin-bottom:8px;"><strong>Ultimatum game</strong> — offer splits to each partner; they may accept or reject.</li>
-            <li style="margin-bottom:8px;"><strong>Trust game</strong> — send amounts to each partner; they can return some.</li>
+            <li style="margin-bottom:8px;"><strong>Ultimatum decision problem</strong> — offer splits to each partner; they may accept or reject.</li>
+            <li style="margin-bottom:8px;"><strong>Trust decision problem</strong> — send amounts to each partner; they can return some.</li>
         </ol>
     </div> -->
 

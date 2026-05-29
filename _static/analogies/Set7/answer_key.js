@@ -1,7 +1,7 @@
 // Analogies Set 7 — answer key
 // correct index is 0-based: A=0, B=1, C=2, D=3, E=4
 const QUESTIONS = [
-    { question: "Goal : football = hoop : ?", options: ["ring", "earring", "basketball", "jump", "circle"], correct: 2, explanation: 'A net is the essential scoring target in tennis — the ball must pass over it. A hoop is the essential scoring target in basketball — the ball must pass through it. So "hoop : basketball" mirrors "net : tennis".' },
+    { question: "Goal : football = hoop : ?", options: ["ring", "earring", "basketball", "jump", "circle"], correct: 2, explanation: 'A goal is the essential scoring target in football — the ball must enter it. A hoop is the essential scoring target in basketball — the ball must pass through it. So "hoop : basketball" mirrors "net : tennis".' },
     { question: "harbor : ship = garage : ?", options: ["door", "park", "car", "tool", "house"], correct: 2 },
     { question: "baton : conductor = brush : ?", options: ["electrician", "painter", "cobbler", "smith", "hunter"], correct: 1 },
     { question: "chorus : song = refrain : ?", options: ["stop", "sing", "poem", "repeat", "music"], correct: 2 },

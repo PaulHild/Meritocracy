@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 2 </h2>
+    <h2 class="section-title">Decision problem 2 </h2>
     <hr class="section-divider">
 
     <div class="section-box box-info" style="margin-top:24px;">
@@ -21,32 +21,32 @@
         <table style="width:100%; border-collapse:collapse; margin-top:14px;">
             <thead>
                 <tr style="background:#f5f5f5;">
-                    <th style="padding:12px 16px; border-bottom:2px solid #ddd; text-align:left;">Your choice</th>
+                    <th style="padding:12px 16px; border-bottom:2px solid #ddd; text-align:left;">Outcome</th>
                     <th style="padding:12px 16px; border-bottom:2px solid #ddd; text-align:center;">Your earnings</th>
-                    <th style="padding:12px 16px; border-bottom:2px solid #ddd; text-align:center;">Condition</th>
+                    <!-- <th style="padding:12px 16px; border-bottom:2px solid #ddd; text-align:center;">Condition</th> -->
                 </tr>
             </thead>
             <tbody>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:12px 16px;"><strong>A</strong></td>
+                    <td style="padding:12px 16px;"><strong>All three of you choose A</strong></td>
                     <td style="padding:12px 16px; text-align:center; font-weight:bold; color:#388E3C;">{{ stag_win_ec }} ECs</td>
-                    <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
+                    <!-- <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
                         Only if <strong>all three</strong> choose A
-                    </td>
+                    </td> -->
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:12px 16px;"><strong>A</strong> (but someone defects)</td>
+                    <td style="padding:12px 16px;"><strong>You choose A but at least one of the others chooses B</strong></td>
                     <td style="padding:12px 16px; text-align:center; font-weight:bold; color:#c62828;">0 ECs</td>
-                    <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
+                    <!-- <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
                         If <strong>anyone</strong> chooses B
-                    </td>
+                    </td> -->
                 </tr>
                 <tr>
-                    <td style="padding:12px 16px;"><strong> B</strong></td>
+                    <td style="padding:12px 16px;"><strong>You choose B (it doesn't matter what the others do)</strong></td>
                     <td style="padding:12px 16px; text-align:center; font-weight:bold; color:#E8923A;">{{ hare_safe_ec }} ECs</td>
-                    <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
+                    <!-- <td style="padding:12px 16px; text-align:center; font-size:0.9em; color:#555;">
                         Guaranteed — regardless of others
-                    </td>
+                    </td> -->
                 </tr>
             </tbody>
         </table>
@@ -58,7 +58,7 @@
 
     <div class="buttons-container" style="margin-top:30px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">📘 Game Instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">📘 Decision problem Instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary">Make My Choice &rarr;</button>
     </div>

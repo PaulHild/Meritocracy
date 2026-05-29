@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 4</h2>
+    <h2 class="section-title">Decision problem 4</h2>
     <hr class="section-divider">
 
     <div class="section-box box-info" style="margin-top:24px;">
@@ -15,12 +15,12 @@
             <h3>How It Works</h3>
         </div>
         <p>
-            You will play two simultaneous games — one with your
+            Just like in the previous problem, you will interact with both partners — 
             <strong><span style="color:#5B9BD5;">Partner A ({{ ingroup_tier_label }})</span></strong>
-            and one with your
-            <strong><span style="color:#FFB347;">Partner B ({{ outgroup_tier_label }})</span></strong>.
+            and 
+            <strong><span style="color:#FFB347;">Partner B ({{ outgroup_tier_label }})</span></strong> — simultaneously but separately.
         </p>
-        <p>You have <strong>{{ trust_ec }} ECs</strong> for each game.</p>
+        <p>At the beginning, you receive <strong>{{ trust_ec }} ECs</strong> for each interaction.</p>
 
         <div style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap;">
             <div style="flex:1; min-width:200px; background:#e6f7ff; border:1px solid #99d6f2; border-radius:8px; padding:14px;">
@@ -33,32 +33,41 @@
             </div>
         </div>
 
-        You will first play as the Sender then as the Receiver. Your partners will do the same. Your final earnings will depend on both your and your partners' decisions.
+        You will first make a decision as the Sender and then as the Receiver. Your partners will do the same. Your final earnings will depend on both your and your partners' decisions.
         <p style="margin-top:14px;">
             <strong>Your earnings as Sender:</strong> ({{ trust_ec }} ECs &minus; amount you send) + amount returned to you<br>
             <strong>Your earnings as Receiver:</strong> (tripled received amount) &minus; amount you return
         </p>
 
         <p style="margin-top:12px; padding:10px 14px; background:#f0f7ff; border-left:3px solid #5B9BD5; border-radius:4px; font-size:0.93em;">
-            💡 Total earnings per game = Earnings as Sender + earnings as Receiver.
+            💡 Total earnings per decision problem = Earnings as Sender + earnings as Receiver.
         </p>
     </div>
 
     <div class="section-box box-calm" style="margin-top:20px;">
         <div class="section-header">
             <div class="icon">📝</div>
-            <h3>Example</h3>
+            <h3>Example with you as the sender</h3>
         </div>
-        <p>You send 30 ECs → partner receives 90 ECs → partner returns 40 ECs.</p>
+        <p>You send 30 ECs → Partner receives 90 ECs → Partner returns 40 ECs.</p>
         <ul>
             <li><strong>Your Sender earnings:</strong> (50 &minus; 30) + 40 = <strong>60 ECs</strong></li>
-            <li><strong>Your Receiver earnings</strong> (if partner sent 20 → tripled to 60 → you return 20): 60 &minus; 20 = <strong>40 ECs</strong></li>
+        </ul>
+
+        <div class="section-header">
+            <div class="icon">📝</div>
+            <h3>Example with you as the Receiver</h3>
+
+        </div>
+        <p>Partner sends 20 ECs → You receive 60 ECs → You return 20 ECs.</p>
+        <ul>
+            <li><strong>Your Receiver earnings:</strong> (60 &minus; 20) = <strong>40 ECs</strong></li>
         </ul>
     </div>
 
     <div class="buttons-container" style="margin-top:30px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">📘 Game Instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">📘 Decision problem Instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary">Make My Decisions &rarr;</button>
     </div>
@@ -67,7 +76,7 @@
 <div id="myModal1" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2><span class="icon">📘</span> Game Instructions</h2>
+            <h2><span class="icon">📘</span> Decision problem Instructions</h2>
             <span class="close" onclick="span_click(1)">&times;</span>
         </div>
         <div class="modal-body">

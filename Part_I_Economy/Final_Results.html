@@ -8,10 +8,12 @@
 
 <div class="content-box box-neutral">
     <h2 class="section-title">
-        Economy Complete &mdash; Your Results
+        Main Part Complete &mdash; Your Results
     </h2>
-            <!-- TODO: delete this debug. -->
+            {% if C.DEBUG %}
+            {# TODO: verify that this DEBUG block is hidden when common.py DEBUG = False #}
             <h3>(DEBUG: Treatment: {{Treatment}})</h3>
+            {% endif %}
     <hr class="section-divider">
 
 
@@ -19,7 +21,7 @@
     <!-- <div class="section-box box-neutral" style="margin-top:32px;">
         <div class="section-header">
             <div class="icon">✖️</div>
-            <h3>Multipliers in your Economy</h3>
+            <h3>Multipliers in your </h3>
         </div>
         <table style="width:100%; border-collapse:collapse; text-align:center; margin-top:8px;">
             <thead>
@@ -113,25 +115,23 @@
                     <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ practice_ecs }} ECs</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px;">Production Stage (4 rounds)</td>
+                    <td style="padding:10px 16px;">Competition Stage (all {{ C.Economy_num_rounds }} rounds)</td>
                     <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ competition_ecs }} ECs</td>
                 </tr>
-                <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px;">Transferring Tokens (round {{ pgg_selected_round }} selected)</td>
-                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ pgg_earnings }} ECs</td>
+                <tr style="border-bottom:1px solid #eee; color:#666; font-style:italic;">
+                    <td style="padding:10px 16px;">Transferring Tokens Stage</td>
+                    <td style="padding:10px 16px; text-align:right;">revealed at the end of Part II</td>
                 </tr>
                 <tr style="border-top:2px solid #333; background:#f8f9fa;">
-                    <td style="padding:12px 16px; font-weight:bold; font-size:1.05em;">Total earnings so far</td>
+                    <td style="padding:12px 16px; font-weight:bold; font-size:1.05em;">Earnings so far (Practice + Competition)</td>
                     <td style="padding:12px 16px; text-align:right; font-weight:bold; font-size:1.05em;">
-                        {{ total_ecs }} ECs 
+                        {{ subtotal_ecs }} ECs
                     </td>
                 </tr>
             </tbody>
         </table>
-        <p style="margin-top:12px; font-size:0.9em; color:#666;">
-            <!-- TODO: adjust this wording. -->
-            One of the four Transferring Tokens rounds was randomly selected for payment (round {{ pgg_selected_round }}).
-            Your earnings will be paid in addition to the completion fee.
+        <p style="margin-top:12px; padding:10px 14px; background:#f0f7ff; border-left:3px solid #5B9BD5; border-radius:4px; font-size:0.92em; color:#333;">
+            ℹ️ Your <strong>Transferring Tokens Stage earnings</strong> will be revealed at the end of Part II, together with the rest of your final payment.
         </p>
     </div>
 
@@ -162,13 +162,14 @@
     const MEMBER_BORDER = ['#388E3C',              '#2E75B6',               '#E8923A'];
     const MEMBERS       = ['You', 'Group member 2', 'Group member 3'];
 
-    // Breakdown colours (practice / production / transferring tokens)
-    const BREAKDOWN_BG     = ['rgba(91,155,213,0.8)', 'rgba(76,175,80,0.8)', 'rgba(255,179,71,0.8)'];
-    const BREAKDOWN_BORDER = ['#2E75B6',               '#388E3C',               '#E8923A'];
-    const BREAKDOWN_LABELS = ['Practice', 'Production', 'Transferring Tokens'];
+    // Breakdown colours (practice / competition) — PGG earnings are withheld
+    // until the end of Part II, so they're not shown in this chart.
+    const BREAKDOWN_BG     = ['rgba(91,155,213,0.8)', 'rgba(76,175,80,0.8)'];
+    const BREAKDOWN_BORDER = ['#2E75B6',               '#388E3C'];
+    const BREAKDOWN_LABELS = ['Practice', 'Competition'];
 
     // Data from Python
-    const breakdownData = [{{ practice_ecs }}, {{ competition_ecs }}, {{ pgg_earnings }}];
+    const breakdownData = [{{ practice_ecs }}, {{ competition_ecs }}];
     const groupTotals   = {{ group_totals }};
 
     function makeBarChart(canvasId, labels, data, bgColors, borderColors, yLabel) {

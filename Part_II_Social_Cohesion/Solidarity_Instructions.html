@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 1</h2>
+    <h2 class="section-title">Problem 1</h2>
     <hr class="section-divider">
 
     <div class="section-box box-info" style="margin-top:24px;">
@@ -15,10 +15,10 @@
             <h3>How It Works</h3>
         </div>
 
-        <p>In this game, <strong>2 out of the 3</strong> group members are randomly selected to win <strong>{{ solidarity_ec }} ECs</strong>. The third group member receives nothing.</p>
+        <p>In this problem, <strong>2 out of the 3</strong> group members are randomly selected to win <strong>{{ solidarity_ec }} ECs</strong>. The third group member receives nothing.</p>
 
-        <p><strong>Before you know whether you win or not</strong>, you may pledge some of the {{ solidarity_ec }} ECs to the unlucky person. 
-            In other words, you may decide in advance that you will, in case that you do win, transfer a specific amount to the person who has not worn.</p>
+        <p><strong>Before you know whether you win or not</strong>, you may pledge some of the {{ solidarity_ec }} ECs to the unlucky person.
+            In other words, you may decide in advance that you will, in case that you do win, transfer a specific amount to the person who has not won.</p>
 
         <div style="display:flex; gap:20px; flex-wrap:wrap; margin-top:16px;">
             <div style="flex:1; min-width:220px; background:#e6ffe6; border:1px solid #b3e6b3; border-radius:8px; padding:16px;">
@@ -45,8 +45,8 @@
         </div>
         <p>Suppose you pledge <strong>10 ECs</strong> and the other two members of your group each pledge <strong>20 ECs</strong>.</p>
         <ul>
-            <li>If <strong>you win</strong>: you earn {{ solidarity_ec }} &minus; 10 = <strong>90 ECs</strong>. Your pledged 10 ECs are transferred to the person who hasn't won.</li>
-            <li>If <strong>you don't win</strong>: you receive the pledged 20 + 20 = <strong>40 ECs</strong> from the other two group members. Since you didn't win, your pledged ECs are not taken from you.</li>
+            <li>If <strong>you win</strong>: You earn {{ solidarity_ec }} &minus; 10 = <strong>90 ECs</strong>. Your pledged 10 ECs are transferred to the person who hasn't won.</li>
+            <li>If <strong>you don't win</strong>: You receive the pledged 20 + 20 = <strong>40 ECs</strong> from the other two group members. Since you didn't win, your pledged ECs are not taken from you.</li>
         </ul>
     </div>
 
@@ -61,7 +61,7 @@
 <div id="myModal1" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2><span class="icon">📘</span> Solidarity Game</h2>
+            <h2><span class="icon">📘</span> Solidarity Decision problem</h2>
             <span class="close" onclick="span_click(1)">&times;</span>
         </div>
         <div class="modal-body">

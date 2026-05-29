@@ -1,0 +1,117 @@
+{# ------------------------------------------------------------------ #}
+{# Shared PGG calculator body.                                        #}
+{# Included by Part_I_Economy/PGG_Calculator.html (standalone page)   #}
+{# and by Round_PublicGoods.html / PGG2_Contribute.html (in a modal). #}
+{#                                                                    #}
+{# Element IDs are unique-per-table-instance via the {{ calc_prefix }}#}
+{# variable so a page can include this body more than once (e.g. the  #}
+{# standalone page uses prefix='calc', the modal uses prefix='calcM').#}
+{# ------------------------------------------------------------------ #}
+
+<div class="section-box box-calm">
+    <div class="section-header">
+        <div class="icon">🧮</div>
+        <h3>How do token transfers affect earnings?</h3>
+    </div>
+    <p>
+        Each member starts with <strong>{{ C.PGG_endowment }} tokens</strong> in their Private Account,
+        and there are <strong>{{ C.PGG_Commons }} tokens</strong> in the Group Account.
+
+        Each member can transfer up to 100 tokens between the two accounts.
+        <br><br>
+        Enter hypothetical transfers below and press <strong>Calculate</strong> to see the resulting earnings.
+    </p>
+    <p style="color:#555; font-size:0.92em;">
+        <em>Positive transfer = move tokens from Private Account to Group Account.
+        Negative transfer = take tokens from Group Account into Private Account.</em>
+    </p>
+</div>
+
+<div class="section-box box-neutral" style="margin-top:16px;">
+    <table style="width:100%; border-collapse:collapse; font-size:0.95em;">
+        <thead>
+            <tr style="border-bottom:2px solid #ddd; background:#f7f7f7;">
+                <th style="padding:10px 12px; text-align:left;"></th>
+                <th style="padding:10px 12px; text-align:center;">Transfer (tokens transferred to the Group Account)<br><span style="font-weight:normal; font-size:0.8em; color:#666;">&minus;100 to +100</span></th>
+                <th style="padding:10px 12px; text-align:center;">Private Account</th>
+                <th style="padding:10px 12px; text-align:center;">Group Account</th>
+                <th style="padding:10px 12px; text-align:center;">Total earnings<br><span style="font-weight:normal; font-size:0.8em; color:#666;">ECs</span></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for member in member_rows %}
+            <tr style="border-bottom:1px solid #eee;">
+                <td style="padding:10px 12px; font-weight:bold;">{{ member }}</td>
+                <td style="padding:14px 16px; text-align:center;">
+                    <input type="range" id="{{ calc_prefix }}-delta{{ forloop.counter }}" min="-100" max="100" value="0"
+                           oninput="document.getElementById('{{ calc_prefix }}-val{{ forloop.counter }}').textContent = this.value"
+                           style="width:180px; cursor:pointer; accent-color:#4CAF50;">
+                    <div style="display:flex; justify-content:space-between; width:180px; margin:2px auto 0; font-size:0.75em; color:#999;">
+                        <span>&minus;100</span><span>0</span><span>+100</span>
+                    </div>
+                    <div style="margin-top:4px; font-weight:bold; font-size:1em;" id="{{ calc_prefix }}-val{{ forloop.counter }}">0</div>
+                </td>
+                <td style="padding:10px 12px; text-align:center;" id="{{ calc_prefix }}-priv{{ forloop.counter }}">100</td>
+                <td style="padding:10px 12px; text-align:center;" id="{{ calc_prefix }}-group{{ forloop.counter }}">300</td>
+                <td style="padding:10px 12px; text-align:center; font-weight:bold; font-size:1.05em;" id="{{ calc_prefix }}-earn{{ forloop.counter }}">—</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Group account reminder -->
+    <div style="margin-top:14px; padding:10px 16px; background:#f0f7ff; border:1px solid #5B9BD5; border-radius:6px; font-size:0.92em;">
+        Each token in the Group Account pays <strong>1 EC</strong> to every member. Each token in a Private Account pays <strong>2 ECs</strong> to its owner.
+    </div>
+
+    <div style="text-align:center; margin-top:20px;">
+        <button onclick="runPggCalc_{{ calc_prefix }}()" type="button" class="btn btn-info" style="padding:10px 32px; font-size:1em;">
+            Calculate
+        </button>
+    </div>
+
+    <div id="{{ calc_prefix }}-results-note" style="display:none; margin-top:12px; text-align:center; color:#388E3C; font-size:0.9em;">
+        Results updated above. Try a different combination!
+    </div>
+</div>
+
+<script>
+(function () {
+    var PREFIX    = '{{ calc_prefix }}';
+    var ENDOWMENT = {{ C.PGG_endowment }};
+    var COMMONS   = {{ C.PGG_Commons }};
+
+    function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+    window['runPggCalc_' + PREFIX] = function () {
+        var d1 = clamp(parseInt(document.getElementById(PREFIX + '-delta1').value) || 0, -ENDOWMENT, ENDOWMENT);
+        var d2 = clamp(parseInt(document.getElementById(PREFIX + '-delta2').value) || 0, -ENDOWMENT, ENDOWMENT);
+        var d3 = clamp(parseInt(document.getElementById(PREFIX + '-delta3').value) || 0, -ENDOWMENT, ENDOWMENT);
+
+        var priv1 = ENDOWMENT - d1;
+        var priv2 = ENDOWMENT - d2;
+        var priv3 = ENDOWMENT - d3;
+        var groupTotal = COMMONS + d1 + d2 + d3;
+
+        var earn1 = 2 * priv1 + groupTotal;
+        var earn2 = 2 * priv2 + groupTotal;
+        var earn3 = 2 * priv3 + groupTotal;
+
+        document.getElementById(PREFIX + '-priv1').textContent  = priv1;
+        document.getElementById(PREFIX + '-priv2').textContent  = priv2;
+        document.getElementById(PREFIX + '-priv3').textContent  = priv3;
+        document.getElementById(PREFIX + '-group1').textContent = groupTotal;
+        document.getElementById(PREFIX + '-group2').textContent = groupTotal;
+        document.getElementById(PREFIX + '-group3').textContent = groupTotal;
+        document.getElementById(PREFIX + '-earn1').textContent  = earn1 + ' ECs';
+        document.getElementById(PREFIX + '-earn2').textContent  = earn2 + ' ECs';
+        document.getElementById(PREFIX + '-earn3').textContent  = earn3 + ' ECs';
+        document.getElementById(PREFIX + '-results-note').style.display = 'block';
+
+        // Notify listeners (e.g. interaction counter on the standalone page)
+        if (typeof window['onPggCalcRun_' + PREFIX] === 'function') {
+            window['onPggCalcRun_' + PREFIX]();
+        }
+    };
+})();
+</script>

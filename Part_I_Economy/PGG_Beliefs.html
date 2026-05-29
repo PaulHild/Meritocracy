@@ -102,7 +102,7 @@
 </style>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">📊 Guess how much the others contributed</h2>
+    <h2 class="section-title">📊 Guess the transfer decisions of the other group members</h2>
     <hr class="section-divider">
 
     
@@ -115,7 +115,7 @@
     <!-- <div class="section-box box-neutral" style="margin-top:20px;">
         <div class="section-header">
             <div class="icon">✖️</div>
-            <h3>Multipliers in your Economy</h3>
+            <h3>Multipliers in your </h3>
         </div>
         <table style="width:100%; border-collapse:collapse; text-align:center; margin-top:8px;">
             <thead>
@@ -179,42 +179,34 @@
             </h4>
             <canvas id="earningsChart"></canvas>
             <p style="margin-top:6px; font-size:0.82em; color:#777;">
-                ECs earned from the Production Stage
+                ECs earned from the Competition Stage
             </p>
         </div>
 
     </div> -->
 
 
-    <!-- ── Player's own cumulative PGG total ──────────────────────────────── -->
+    <!-- ── Player's own average PGG contribution ──────────────────────────── -->
     <div style="margin:24px 0 12px; padding:14px 20px; background:#f0f7ff; border-left:4px solid #5B9BD5; border-radius:6px; text-align:center;">
-        💡 So far you and your group have played {{ C.Economy_num_rounds }} rounds of the Transferring Tokens Stage. 
-        Each round, you decided how many tokens to transfer between Private Account and Group Account.
-        
-        <br><br>
-    
-        Here, we want you to <strong>guess how many tokens</strong> the other two group members contributed to the Group Account across all rounds. 
-
-
-        
-        For instance, across the {{ C.Economy_num_rounds }} rounds,
-        {% if own_pgg_total > 0 %}
-            you contributed a total of
-            <strong style=" color:#2E75B6;">{{ own_pgg_total }} ECs</strong>
-            into the pool.
-        {% elif own_pgg_total < 0 %}
-            <strong>your total</strong> contributions were negative — this means you took out
-            <strong style=" color:#c62828;">{{ own_pgg_total_abs }} ECs</strong>
-            from the pool.
+        💡 Here, we want you to <strong>guess how many tokens</strong> each of the other two members of your group transferred from or to the Group Account <strong>on average</strong> (across all rounds).
+        For instance, 
+        {% if own_pgg_average > 0 %}
+            you transferred on average
+            <strong style=" color:#2E75B6;">{{ own_pgg_average }}</strong>
+            from your Private Account to the Group Account
+        {% elif own_pgg_average < 0 %}
+            you transferred on average
+            <strong style=" color:#c62828;">{{ own_pgg_average_abs }}</strong>
+            from your Group Account to the Private Account.
         {% else %}
-            your contributions were exactly neutral — you neither invested into nor took from the pool.
+            your average contribution was exactly neutral — you transferred, on average, 0 tokens between the Group Account and the Private Account.
         {% endif %}
     </div>
 
     <!-- ── Bonus incentive ────────────────────────────────────────────────── -->
     <div style="margin:0 0 24px; padding:12px 20px; background:#fff8e1; border-left:4px solid #FFC107; border-radius:6px; font-size:0.95em;">
         ⭐ <strong>PAYMENT:</strong> If <em>both</em> of your guesses are within
-        <strong>100 tokens</strong> of the true value, you earn an extra
+        <strong>10 tokens</strong> of the true average, you earn an extra
         <strong>{{ pgg_guess_bonus }} ECs</strong>! So, try to guess as accurately as possible.
     </div>
 
@@ -230,23 +222,23 @@
         <div class="section-header">
             <div class="icon" style="color:#5B9BD5;">●</div>
             <h3>
-                Group Member 2's total investment (Your guess)
+                Group Member 2's average transfer (Your guess)
                 <span id="badge-m2" class="slider-badge badge-waiting">Not set</span>
             </h3>
         </div>
-        <div class="belief-display belief-untouched" id="display-m2">&mdash; Tokens</div>
+        <div class="belief-display belief-untouched" id="display-m2">&mdash; Tokens / round</div>
         <div class="belief-sub" id="sub-m2">Click the bar below to enter your guess</div>
         <div class="slider-container">
             <div class="slider-init-overlay" id="init-m2">
                 <span class="slider-init-hint">Click anywhere to set your guess</span>
             </div>
             <input type="range" id="slider-m2" class="belief-slider"
-                   min="{{ slider_min }}" max="{{ slider_max }}" step="10" value="0" style="display:none;">
+                   min="{{ slider_min }}" max="{{ slider_max }}" step="1" value="0" style="display:none;">
         </div>
         <div class="belief-labels">
-            <span>{{ slider_min }} Tokens (always withdrew)</span>
+            <span>{{ slider_min }} Tokens / round (always withdrew)</span>
             <span style="text-align:center;">0 (neutral)</span>
-            <span>+{{ slider_max }} Tokens (always invested)</span>
+            <span>+{{ slider_max }} Tokens / round (always invested)</span>
         </div>
     </div>
 
@@ -255,23 +247,23 @@
         <div class="section-header">
             <div class="icon" style="color:#FFB347;">●</div>
             <h3>
-                Group Member 3's total investment (Your guess)
+                Group Member 3's average transfer (Your guess)
                 <span id="badge-m3" class="slider-badge badge-waiting">Not set</span>
             </h3>
         </div>
-        <div class="belief-display belief-untouched" id="display-m3">&mdash; Tokens</div>
+        <div class="belief-display belief-untouched" id="display-m3">&mdash; Tokens / round</div>
         <div class="belief-sub" id="sub-m3">Click the bar below to enter your guess</div>
         <div class="slider-container">
             <div class="slider-init-overlay" id="init-m3">
                 <span class="slider-init-hint">Click anywhere to set your guess</span>
             </div>
             <input type="range" id="slider-m3" class="belief-slider"
-                   min="{{ slider_min }}" max="{{ slider_max }}" step="10" value="0" style="display:none;">
+                   min="{{ slider_min }}" max="{{ slider_max }}" step="1" value="0" style="display:none;">
         </div>
         <div class="belief-labels">
-            <span>{{ slider_min }} Tokens (always withdrew)</span>
+            <span>{{ slider_min }} Tokens / round (always withdrew)</span>
             <span style="text-align:center;">0 (neutral)</span>
-            <span>+{{ slider_max }} Tokens (always invested)</span>
+            <span>+{{ slider_max }} Tokens / round (always invested)</span>
         </div>
     </div>
 
@@ -328,9 +320,9 @@
 
     // ── Click-to-initialize sliders ───────────────────────────────────────────
     (function () {
-        var sliderMin   = {{ slider_min }};            // -1000
-        var sliderMax   = {{ slider_max }};            // +1000
-        var sliderRange = sliderMax - sliderMin;       // 2000
+        var sliderMin   = {{ slider_min }};            // -100 (per-round average)
+        var sliderMax   = {{ slider_max }};            // +100 (per-round average)
+        var sliderRange = sliderMax - sliderMin;       // 200
         var touched     = { m2: false, m3: false };
 
         function setupBeliefSlider(key, sliderId, overlayId, displayId, subId, badgeId, fieldName) {
@@ -345,15 +337,15 @@
                 var guess = parseInt(val);
                 var displayStr, subStr;
                 if (guess > 0) {
-                    displayStr   = '+' + guess + ' Tokens';
-                    subStr       = 'Your guess: +' + guess + ' Tokens contributed';
+                    displayStr   = '+' + guess + ' Tokens / round';
+                    subStr       = 'Your guess: +' + guess + ' Tokens contributed on average per round';
                     display.style.color = 'var(--primary, #4CAF50)';
                 } else if (guess < 0) {
-                    displayStr   = guess + ' Tokens';
-                    subStr       = 'Your guess: ' + Math.abs(guess) + ' Tokens taken out';
+                    displayStr   = guess + ' Tokens / round';
+                    subStr       = 'Your guess: ' + Math.abs(guess) + ' Tokens taken out on average per round';
                     display.style.color = '#c62828';
                 } else {
-                    displayStr   = '0 Tokens';
+                    displayStr   = '0 Tokens / round';
                     subStr       = 'Your guess: 0 Tokens (neutral)';
                     display.style.color = '#888';
                 }
@@ -370,7 +362,7 @@
                 var rect    = overlay.getBoundingClientRect();
                 var ratio   = (event.clientX - rect.left) / rect.width;
                 ratio       = Math.max(0, Math.min(1, ratio));
-                var stepped = Math.round((sliderMin + ratio * sliderRange) / 10) * 10;
+                var stepped = Math.round(sliderMin + ratio * sliderRange);
                 stepped     = Math.max(sliderMin, Math.min(sliderMax, stepped));
                 slider.value          = stepped;
                 overlay.style.display = 'none';

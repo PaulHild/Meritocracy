@@ -98,15 +98,15 @@
 </style>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 3: Your Offers</h2>
+    <h2 class="section-title">Decision Problem 3: Your Proposals</h2>
     <hr class="section-divider">
 
     <p style="text-align:center; color:#555;">
-        You have <strong>{{ dictator_ec }} ECs</strong> for each game. Decide how much to offer to each partner.
+        You have <strong>{{ dictator_ec }} ECs</strong> for Propose decision (Step 1). Decide how much to offer to each partner.
         Offers must be multiples of 10.
     </p>
     <div style="margin:0 0 8px; padding:10px 16px; background:#fff3cd; border-left:4px solid #ffc107; border-radius:4px; font-size:0.93em; text-align:center;">
-        &#9888; <strong>Reminder:</strong> If your partner rejects your offer, <strong>both</strong> of you earn <strong>0 ECs</strong> from that game.
+        &#9888; <strong>Reminder:</strong> If your partner rejects your offer, <strong>both</strong> of you earn <strong>0 ECs</strong>.
     </div>
     <p style="text-align:center; font-size:0.9em; color:#777; margin-top:6px;">
         Click on the slider to initialize it. Then, move each slider to set your offers. You must set <strong>both</strong> offers before continuing.
@@ -171,7 +171,7 @@
 
     <div class="buttons-container" style="margin-top:30px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">&#128216; Game Instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">&#128216; Decision problem Instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary" onclick="trySubmit(event)">Confirm Offers &rarr;</button>
     </div>
@@ -180,7 +180,7 @@
 <div id="myModal1" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2><span class="icon">&#128216;</span> Game Instructions</h2>
+            <h2><span class="icon">&#128216;</span> Decision problem Instructions</h2>
             <span class="close" onclick="span_click(1)">&times;</span>
         </div>
         <div class="modal-body">

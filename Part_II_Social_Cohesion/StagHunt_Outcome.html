@@ -4,7 +4,7 @@
 <link rel="stylesheet" href="{{ static 'css/css.css' }}">
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 2 &mdash; Game 2: Outcome</h2>
+    <h2 class="section-title">Decision problem 2: Outcome</h2>
     <hr class="section-divider">
 
     <!-- Outcome banner -->
@@ -12,7 +12,7 @@
     <div class="section-box box-calm" style="text-align:center; margin-top:24px; padding:24px;">
         <div class="section-header" style="justify-content:center; margin-bottom:12px;">
             <div class="icon">🎉</div>
-            <h3 style="margin:0;">All three chose <strong>STAG</strong> — cooperation successful!</h3>
+            <h3 style="margin:0;">All three chose <strong>A</strong> — cooperation successful!</h3>
         </div>
         <p style="font-size:1.3em; font-weight:bold; color:#388E3C;">
             Your earnings: {{ stag_earnings }} ECs
@@ -22,7 +22,7 @@
     <div class="section-box box-warn" style="text-align:center; margin-top:24px; padding:24px;">
         <div class="section-header" style="justify-content:center; margin-bottom:12px;">
             <div class="icon">⚠️</div>
-            <h3 style="margin:0;">Not everyone chose Stag.</h3>
+            <h3 style="margin:0;">Not everyone chose A.</h3>
         </div>
         <p style="font-size:1.3em; font-weight:bold; color:#E8923A;">
             Your earnings: {{ stag_earnings }} ECs
@@ -52,9 +52,9 @@
                     </td>
                     <td style="padding:10px 16px;">
                         {% if row.choice == 'stag' %}
-                            🦌 <span style="color:#388E3C; font-weight:bold;">Stag</span>
+                            <span style="color:#388E3C; font-weight:bold;">A</span>
                         {% else %}
-                            🐇 <span style="color:#E8923A; font-weight:bold;">Hare</span>
+                            <span style="color:#E8923A; font-weight:bold;">B</span>
                         {% endif %}
                     </td>
                     <td style="padding:10px 16px; font-weight:bold;">{{ row.earnings }} ECs</td>

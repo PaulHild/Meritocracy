@@ -78,6 +78,68 @@
     .pgg-panel.private       { border-color: #5B9BD5; background: #f0f6ff; }
     .pgg-panel.private       .pgg-panel-value { color: #1a5276; }
 
+    /* ── Opaque-account + transfer arrow ─────────────────────────── */
+    .pgg-transfer-row {
+        display: flex;
+        align-items: stretch;
+        gap: 0;
+        margin: 16px 0 12px;
+    }
+    .pgg-account-box {
+        flex: 1;
+        min-width: 0;
+        padding: 28px 18px;
+        border-radius: 10px;
+        border: 2px solid #bbb;
+        background: #f5f5f5;
+        text-align: center;
+        font-weight: 700;
+        font-size: 1.1em;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 110px;
+    }
+    .pgg-account-box.private { border-color: #5B9BD5; background: #f0f6ff; color: #1a5276; }
+    .pgg-account-box.group   { border-color: #4CAF50; background: #f0faf0; color: #2e7d32; }
+
+    .pgg-arrow-col {
+        flex: 0 0 200px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 0 12px;
+    }
+    .pgg-arrow-label {
+        font-size: 1em;
+        font-weight: 700;
+        margin-bottom: 6px;
+        color: #555;
+        text-align: center;
+        min-height: 1.4em;
+    }
+    .pgg-arrow-svg {
+        width: 100%;
+        height: 38px;
+    }
+    .pgg-arrow-line { stroke-width: 6; stroke-linecap: round; }
+    .pgg-arrow-head { stroke-width: 6; stroke-linecap: round; fill: none; }
+
+    /* Direction-specific colours (set by JS via classes on the wrap) */
+    .pgg-arrow-wrap.dir-right .pgg-arrow-line,
+    .pgg-arrow-wrap.dir-right .pgg-arrow-head { stroke: #4CAF50; }
+    .pgg-arrow-wrap.dir-right .pgg-arrow-label { color: #2e7d32; }
+
+    .pgg-arrow-wrap.dir-left  .pgg-arrow-line,
+    .pgg-arrow-wrap.dir-left  .pgg-arrow-head { stroke: #c62828; }
+    .pgg-arrow-wrap.dir-left  .pgg-arrow-label { color: #c62828; }
+
+    .pgg-arrow-wrap.dir-neutral .pgg-arrow-line,
+    .pgg-arrow-wrap.dir-neutral .pgg-arrow-head { stroke: #888; }
+    .pgg-arrow-wrap.dir-neutral .pgg-arrow-label { color: #777; }
+
     /* ── Click-to-initialize overlay ───────────────────────────── */
     .pgg-slider-container {
         position: relative;
@@ -96,7 +158,7 @@
         display: flex;
         align-items: center;
         justify-content: center;
-        z-index: 10;
+        z-index: 0;
         border-radius: 5px;
     }
     .pgg-init-overlay::before {
@@ -155,7 +217,7 @@
             </p>
         </div>
 
-        <!-- 3: accumulated Production earnings -->
+        <!-- 3: accumulated Competition earnings -->
         <div style="flex:1; min-width:220px; max-width:300px; text-align:center;">
             <h4 style="margin-bottom:6px;">
                 Accumulated Earnings
@@ -227,8 +289,8 @@
             <h3>Transferring Tokens</h3>
         </div>
         <p>
-            You have <strong>100 tokens</strong> in your <strong>Private Account</strong> and
-            <strong>{{ C.PGG_Commons }} tokens</strong> are in the <strong>Group Account</strong>.
+            You have <strong>100 tokens</strong> in your <strong>Private Account</strong>, and there are
+            <strong>{{ C.PGG_Commons }} tokens</strong> in the <strong>Group Account</strong>.
             <br><br>
             Each token in your <strong>Private Account</strong> earns you <strong>2 ECs</strong>.
             Each token in the <strong>Group Account</strong> earns <strong>1 EC for every group member</strong>.
@@ -250,21 +312,23 @@
             <h3>Your Decision</h3>
         </div>
 
-        <div class="pgg-panels">
-            <div class="pgg-panel private">
-                <div class="pgg-panel-value" id="pgg-private-value">100 tokens</div>
-                <div class="pgg-panel-label">in your Private Account</div>
+        <!-- Opaque-account view: the actual token totals are hidden;
+             a colored arrow between the boxes shows the transfer this round. -->
+        <div class="pgg-transfer-row">
+            <div class="pgg-account-box private">Private Account</div>
+            <div class="pgg-arrow-col">
+                <div class="pgg-arrow-wrap dir-neutral" id="pgg-arrow-wrap">
+                    <div class="pgg-arrow-label" id="pgg-arrow-label">0 tokens</div>
+                    <svg class="pgg-arrow-svg" viewBox="0 0 200 38" preserveAspectRatio="none" aria-label="Transfer indicator">
+                        <!-- Bidirectional arrow at neutral; JS rewrites its head positions
+                             into a single-direction arrow when the user moves the slider. -->
+                        <line class="pgg-arrow-line" x1="12" y1="19" x2="188" y2="19"/>
+                        <polyline class="pgg-arrow-head" id="pgg-arrow-head-left"  points="22,8 8,19 22,30"/>
+                        <polyline class="pgg-arrow-head" id="pgg-arrow-head-right" points="178,8 192,19 178,30"/>
+                    </svg>
+                </div>
             </div>
-            <div class="pgg-panel pool-neutral" id="pgg-pool-panel">
-                <div class="pgg-panel-value" id="pgg-pool-value">{{ C.PGG_Commons }} tokens</div>
-                <div class="pgg-panel-label" id="pgg-pool-label">in the Group Account</div>
-            </div>
-        </div>
-        <div class="pgg-panels" style="margin-top:0;">
-            <div class="pgg-panel pool-neutral" id="pgg-transfer-panel" style="flex:none; width:100%;">
-                <div class="pgg-panel-value" id="pgg-transfer-value">0 tokens</div>
-                <div class="pgg-panel-label" id="pgg-transfer-label">transferred (no change)</div>
-            </div>
+            <div class="pgg-account-box group">Group Account</div>
         </div>
 
         <div class="pgg-slider-wrap">
@@ -301,12 +365,14 @@
     </div>
 
     <div class="buttons-container" style="margin-top:20px;">
-        <div class="Instructions">
+        <div class="Instructions" style="display:flex; gap:10px;">
             <a onclick="open_modal(1)" class="btn btn-info">Transferring Tokens instructions</a>
+            <a onclick="openPggCalcModal()" class="btn btn-info">🧮 Open Scenario Calculator</a>
         </div>
         <button id="NextButton" class="btn btn-primary" onclick="tryPggSubmit(event)">Confirm decision</button>
     </div>
 </div>
+
 
 <!-- Modal: Transferring Tokens instructions -->
 <div id="myModal1" class="modal">
@@ -320,6 +386,28 @@
         </div>
     </div>
 </div>
+
+<!-- Modal: PGG scenario calculator -->
+<div id="myModal2" class="modal">
+    <div class="modal-content modal-content-wide">
+        <div class="modal-header">
+            <h2><span class="icon">🧮</span> Token Transfer Calculator</h2>
+            <span class="close" onclick="span_click(2)">&times;</span>
+        </div>
+        <div class="modal-body">
+            {{ include C.PGG_Calculator_body }}
+        </div>
+    </div>
+</div>
+
+<script>
+    // Mark the hidden form field on first open of the calculator modal
+    function openPggCalcModal() {
+        var field = document.getElementById('id_calculator_pgg_clicked');
+        if (field) field.checked = true;   // BooleanField renders as <input type="checkbox">
+        open_modal(2);
+    }
+</script>
 
 <script>
     // ── Bar charts ────────────────────────────────────────────────────
@@ -379,39 +467,34 @@
         const PGG_MAX     = {{ pgg_max }};          // 100 — player's personal budget
 
         const slider       = document.getElementById('pgg-slider');
-        const privateValue    = document.getElementById('pgg-private-value');
-        const poolPanel       = document.getElementById('pgg-pool-panel');
-        const poolValue       = document.getElementById('pgg-pool-value');
-        const transferPanel   = document.getElementById('pgg-transfer-panel');
-        const transferValue   = document.getElementById('pgg-transfer-value');
-        const transferLabel   = document.getElementById('pgg-transfer-label');
-        const hiddenInput     = document.querySelector('input[name="{{ contribution_field }}"]');
+        const arrowWrap    = document.getElementById('pgg-arrow-wrap');
+        const arrowLabel   = document.getElementById('pgg-arrow-label');
+        const arrowHeadL   = document.getElementById('pgg-arrow-head-left');
+        const arrowHeadR   = document.getElementById('pgg-arrow-head-right');
+        const hiddenInput  = document.querySelector('input[name="{{ contribution_field }}"]');
+
+        function setArrowDirection(dirClass, showLeftHead, showRightHead) {
+            arrowWrap.classList.remove('dir-left', 'dir-right', 'dir-neutral');
+            arrowWrap.classList.add(dirClass);
+            arrowHeadL.style.display = showLeftHead  ? '' : 'none';
+            arrowHeadR.style.display = showRightHead ? '' : 'none';
+        }
 
         function sync(sliderVal) {
             const x = sliderVal - PGG_COMMONS;        // delta: + = adding to group, - = taking out
-            const privateTokens = PGG_MAX - x;        // 100 - delta
-            const groupTotal    = PGG_COMMONS + x;    // 300 + delta
 
-            // Private Account panel
-            privateValue.textContent = privateTokens + ' tokens';
-
-            // Group Account panel
-            poolValue.textContent = groupTotal + ' tokens';
-            poolPanel.className = x > 0 ? 'pgg-panel pool-positive'
-                                : x < 0 ? 'pgg-panel pool-negative'
-                                :          'pgg-panel pool-neutral';
-
-            // Transfer summary panel
-            transferValue.textContent = Math.abs(x) + ' tokens';
             if (x > 0) {
-                transferLabel.textContent = 'transferred to Group Account';
-                transferPanel.className = 'pgg-panel pool-positive';
+                // Tokens flowing from Private → Group (right-pointing green arrow)
+                arrowLabel.textContent = x + ' tokens → to Group Account';
+                setArrowDirection('dir-right', false, true);
             } else if (x < 0) {
-                transferLabel.textContent = 'taken from Group Account';
-                transferPanel.className = 'pgg-panel pool-negative';
+                // Tokens flowing from Group → Private (left-pointing red arrow)
+                arrowLabel.textContent = Math.abs(x) + ' tokens → to Private Account';
+                setArrowDirection('dir-left', true, false);
             } else {
-                transferLabel.textContent = 'transferred (no change)';
-                transferPanel.className = 'pgg-panel pool-neutral';
+                // Neutral: bidirectional grey arrow
+                arrowLabel.textContent = '0 tokens';
+                setArrowDirection('dir-neutral', true, true);
             }
 
             // Store the delta in the hidden form field

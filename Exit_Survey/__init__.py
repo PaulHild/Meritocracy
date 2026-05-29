@@ -52,10 +52,10 @@ class Player(BasePlayer):
     income = models.StringField(
         label='Approximately, what was your <strong>total household income</strong> in the last year, before taxes?',
         choices=[
-            '$0-$10.000', '$10.000-$20.000', '$20.000-$30.000',
-            '$30.000-$40.000', '$40.000-$50.000', '$50.000-$60.000',
-            '$50.000-$75.000', '$75.000-$100.000', '$100.000-$150.000',
-            '$150.000-$200.000', '$200.000+', 'Prefer not to answer',
+            '$0-$10,000', '$10,000-$20,000', '$20,000-$30,000',
+            '$30,000-$40,000', '$40,000-$50,000', '$50,000-$60,000',
+            '$60,000-$75,000', '$75,000-$100,000', '$100,000-$150,000',
+            '$150,000-$200,000', '$200,000+', 'Prefer not to answer',
         ])
     browser = models.StringField(blank=True)
 

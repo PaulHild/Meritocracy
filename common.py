@@ -13,6 +13,7 @@ class CommonConstants(BaseConstants):
     Instructions_practice_1 = "_templates/global/Instructions_Practice_1.html"
     Part_II_Instructions_template = "_templates/global/Part_II_Instructions_template.html"
     Instructions_pgg = "_templates/global/Instructions_pgg.html"
+    PGG_Calculator_body = "_templates/global/PGG_Calculator_body.html"
 
     Round_length = 6000          # legacy; use Economy_round_length / Practice_round_length below
     Economy_round_length  = 45   # seconds per quiz part in economy rounds
@@ -56,6 +57,7 @@ class CommonConstants(BaseConstants):
     # \u2500\u2500 Treatment explanation texts (shown on Part_II_Instructions) \u2500\u2500\u2500\u2500
     Explanation_Perfect_Meritocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
         '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
         'Your share of the pot depends on your score in the Intelligence Test.</p>'
         '<p>All three members of your Group are treated identically — '
@@ -64,10 +66,11 @@ class CommonConstants(BaseConstants):
 
     Explanation_Excessive_Meritocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
         '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share depends on your score in the Intelligence Test and on your <strong>multiplier</strong>.</p>'
+        'Your share depends on your score in the Intelligence Test and on your <strong>personal multiplier</strong>.</p>'
         '<p>Multipliers <strong>were assigned based on relative performance</strong> in the practice rounds: '
-        'the top performer received <strong>&times;4</strong>, '
+        'the top performer in each group received <strong>&times;4</strong>, '
         'the middle performer <strong>&times;2</strong>, '
         'and the bottom performer <strong>&times;1</strong>.</p>'
         '<p>Your personal multiplier is shown below.</p>'
@@ -75,6 +78,7 @@ class CommonConstants(BaseConstants):
 
     Explanation_Welfare_State = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
         '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
         'Your share depends on your score in the Intelligence Test.</p>'
         'The score is calculated as performance in the round plus the average performance of the three players.'
@@ -83,15 +87,15 @@ class CommonConstants(BaseConstants):
 
     Explanation_Aristocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
+        '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
         '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
-        'Your share depends on your score and your <strong>multiplier</strong>.</p>'
+        'Your share depends on your score and your <strong>personal multiplier</strong>.</p>'
         '<p>Multipliers were assigned <strong>randomly</strong> among the three members of your Group: '
         'one member received <strong>&times;4</strong>, one <strong>&times;2</strong>, and one <strong>&times;1</strong>.</p>'
         '<p>Your personal multiplier is shown below.</p>'
     )
     
-    Welfare_check_text = '<br>&emsp;<strong>+ 50 points</strong> (flat bonus added to every member\'s score)'
-    # Welfare_check_text = '<br>&emsp;<strong>+ average number of correct answers in your group</strong> (the same is added to every member\'s score)'
+    Welfare_check_text = '<br>&emsp;<strong>+ average number of correct answers in your group</strong> (the same is added to every member\'s score)'
 
 
     EC_exchange_rate = 100  # 100 EC = 1 EUR

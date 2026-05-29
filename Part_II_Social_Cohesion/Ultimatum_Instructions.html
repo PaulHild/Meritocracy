@@ -6,7 +6,7 @@
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Game 3</h2>
+    <h2 class="section-title">Decision problem 3</h2>
     <hr class="section-divider">
 
     <div class="section-box box-info" style="margin-top:24px;">
@@ -15,37 +15,64 @@
             <h3>How It Works</h3>
         </div>
         <p>
-            You will play <strong>two simultaneous games</strong> — one against your
+            You will interact with each of your partners separately — with your 
             <strong><span style="color:#5B9BD5;">new Partner A ({{ ingroup_tier_label }})</span></strong>
-            and one against your
-            <strong><span style="color:#FFB347;">new Partner B ({{ outgroup_tier_label }})</span></strong>.
+            and with your
+            <strong><span style="color:#FFB347;">new Partner B ({{ outgroup_tier_label }})</span></strong>. 
+            The decision problem is the same for both pairings.
         </p>
-        <p>At the beginning, you receive <strong>{{ dictator_ec }} ECs</strong> for each of these two games.</p>
+        <p>At the beginning, you receive <strong>{{ dictator_ec }} ECs</strong> for each interaction. Then, there are two steps:</p>
 
         <div style="margin-top:16px; display:flex; gap:16px; flex-wrap:wrap;">
             <div style="flex:1; min-width:200px; background:#e6f7ff; border:1px solid #99d6f2; border-radius:8px; padding:14px;">
                 <strong>Step 1 — Propose</strong><br>
-                <span style="font-size:0.93em;">Choose how much to <strong>keep</strong> and how much to <strong>offer</strong> to each partner (multiples of 10).</span>
+                <span style="font-size:0.93em;">Choose how much to <strong>keep</strong> and how much to <strong>offer</strong> to your partner (multiples of 10).</span>
             </div>
             <div style="flex:1; min-width:200px; background:#e6ffe6; border:1px solid #b3e6b3; border-radius:8px; padding:14px;">
                 <strong>Step 2 — Respond</strong><br>
-                <span style="font-size:0.93em;">For each possible offer (0–100 ECs), decide whether you would <strong>accept</strong> or <strong>reject</strong> that offer from each partner.</span>
+                <span style="font-size:0.93em;">For each possible offer from your partner (0–100 ECs), decide whether you would <strong>accept</strong> or <strong>reject</strong> that offer.</span>
             </div>
         </div>
 
-        <p style="margin-top:16px;">
-            <strong>If accepted:</strong> You keep your amount, partner receives your offer.<br>
-            <strong>If rejected:</strong> Both of you earn <strong>0 ECs</strong> from that game.
+        You will be paid for both steps and for both pairings.
+
+        <br>
+        <br>
+
+        <p>
+            That is, you will make <strong>one Propose decision (Step 1) for Partner A and another, separate, 
+            Propose decision for Partner B.</strong> Depending on what Partner A and Partner B have chosen in Step 2 (Respond),
+             they will (individually) either accept or reject your proposal.
         </p>
 
+        <p style="margin-top:16px;">
+            <strong>If your offer is accepted:</strong> The amount that you offered is transferred to the relevant partner. You keep what is left of your 100 ECs after your offer is subtracted.<br>
+            <strong>If your offer is rejected:</strong> The 100 ECs are destroyed, and both of you earn <strong>0 ECs.</strong> 
+        </p>
+
+        <p>
+            The consequences of <strong>your own two Respond decisions (Step 2) for Partner A and Partner B</strong> are exactly the same. If you <strong>accept an offer,</strong> then you receive the relevant amount offered to you. 
+            If you <strong>reject an offer,</strong> then the 100 ECs of the partner who made that offer will be destroyed, and both of you earn 0 ECs.
+            <br>
+            <br>
+            Note that the timing for the Step-2 decision is perhaps not what you might expect. 
+            The computer will <strong>not</strong> show you the offer from either partner and then you decide whether to accept or reject.
+             Instead, you make that decision in advance: 
+             In Step 2 you tell the computer <strong>for every possible amount offered</strong> whether you would accept or reject.
+              Afterwards, the computer will check the actual amounts your partners offered and make the accept/reject decisions for you,
+               as instructed by you in Step 2.
+        </p>
+
+
+
         <p style="margin-top:12px; padding:10px 14px; background:#f0f7ff; border-left:3px solid #5B9BD5; border-radius:4px; font-size:0.93em;">
-            💡 Both steps happen simultaneously. Your total earnings = <strong>proposer earnings + responder earnings</strong> per game.
+            💡 Your total earnings = <strong>proposer earnings + responder earnings</strong> from both interactions.
         </p>
     </div>
 
     <div class="buttons-container" style="margin-top:30px;">
         <div class="Instructions">
-            <a onclick="open_modal(1)" class="btn btn-info">📘 Game Instructions</a>
+            <a onclick="open_modal(1)" class="btn btn-info">📘 Decision problem Instructions</a>
         </div>
         <button id="NextButton" class="btn btn-primary">Make My Offers &rarr;</button>
     </div>
@@ -54,7 +81,7 @@
 <div id="myModal1" class="modal">
     <div class="modal-content">
         <div class="modal-header">
-            <h2><span class="icon">📘</span> Game Instructions</h2>
+            <h2><span class="icon">📘</span> Decision problem Instructions</h2>
             <span class="close" onclick="span_click(1)">&times;</span>
         </div>
         <div class="modal-body">

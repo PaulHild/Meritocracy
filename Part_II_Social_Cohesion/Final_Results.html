@@ -4,14 +4,58 @@
 <link rel="stylesheet" href="{{ static 'css/css.css' }}">
 
 <div class="content-box box-neutral">
-    <h2 class="section-title">Part II &mdash; Your Results</h2>
+    <h2 class="section-title">Experiment Complete &mdash; Your Total Earnings</h2>
     <hr class="section-divider">
 
-    <!-- Selected game highlight -->
-    <div class="section-box box-warn" style="text-align:center; margin-top:24px; padding:28px 36px;">
+    <div class="section-box box-calm" style="margin-top:16px; padding:10px 14px; display:inline-block;">
+        Thank you for participating! Here is a summary of your earnings across all parts of the study.
+    </div>
+
+    <!-- ── Part I: full breakdown (PGG revealed here) ─────────────────────── -->
+    <div class="section-box box-calm" style="margin-top:24px;">
+        <div class="section-header">
+            <div class="icon">🪙</div>
+            <h3>Part I Earnings</h3>
+        </div>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+            <tbody>
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 16px;">Round 1 and 2 of Intelligence Test</td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ part1_practice }} ECs</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 16px;">Competition Stage earnings over all rounds  </td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ part1_competition }} ECs</td>
+                </tr>
+                <tr style="border-bottom:1px solid #eee; background:#fffbeb;">
+                    <td style="padding:10px 16px;">
+                        Transferring Tokens stage
+                        <span style="font-size:0.85em; color:#777;">(round {{ part1_pgg_round }} randomly selected)</span>
+                    </td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ part1_pgg }} ECs</td>
+                </tr>
+                {% if part1_belief_bonus > 0 %}
+                <tr style="border-bottom:1px solid #eee; background:#fff8e1;">
+                    <td style="padding:10px 16px;">
+                        🎯 PGG belief-elicitation bonus
+                        <span style="font-size:0.85em; color:#777;">(both guesses within 10 tokens of true average)</span>
+                    </td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">+{{ part1_belief_bonus }} ECs</td>
+                </tr>
+                {% endif %}
+                <tr style="border-top:2px solid #333; background:#f8f9fa;">
+                    <td style="padding:12px 16px; font-weight:bold; font-size:1.05em;">Part I subtotal</td>
+                    <td style="padding:12px 16px; text-align:right; font-weight:bold; font-size:1.05em;">{{ part1_total }} ECs</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- ── Part II: randomly selected decision problem ────────────────────────────────── -->
+    <div class="section-box box-warn" style="text-align:center; margin-top:24px; padding:24px 36px;">
         <div class="section-header" style="justify-content:center; margin-bottom:12px;">
             <div class="icon">&#127922;</div>
-            <h3 style="margin:0;">Randomly Selected Game for Payment</h3>
+            <h3 style="margin:0;">Part II — Randomly Selected Decision problem for Payment</h3>
         </div>
         <p style="font-size:1.15em; color:#444; margin:8px 0;">
             <strong>{{ game_selected_label }}</strong>
@@ -19,9 +63,16 @@
         <p style="font-size:1.5em; font-weight:bold; color:#388E3C; margin:0;">
             {{ total_part2_earnings }} ECs
         </p>
-        <p style="font-size:0.9em; color:#777; margin-top:6px;">
+        <!-- <p style="font-size:0.9em; color:#777; margin-top:6px;">
             &asymp; &euro;{{ eur_amount }}
-        </p>
+        </p> -->
+    </div>
+
+    <!-- ── Grand total ────────────────────────────────────────────────────── -->
+    <div class="section-box box-info" style="margin-top:24px; padding:22px 28px; text-align:center;">
+        <div style="font-size:0.95em; color:#555; margin-bottom:4px;">Grand total (Part I + Part II)</div>
+        <div style="font-size:2em; font-weight:bold; color:#1a5276;">{{ grand_total }} ECs</div>
+        <div style="font-size:1em; color:#777; margin-top:4px;">&asymp; &euro;{{ eur_grand_total }}</div>
     </div>
 
     <div class="buttons-container" style="margin-top:30px;">

@@ -8,7 +8,7 @@
 
 <div class="content-box box-neutral">
     <h2 class="section-title">
-        Round {{ round_number }} of {{C.Economy_num_rounds}} — Results &amp; Feedback
+        Round {{ round_number }} of {{C.Economy_num_rounds}} — Results 
     </h2>
     <hr class="section-divider">
 
@@ -18,7 +18,7 @@
     <div class="section-box box-neutral" style="margin-top:32px;">
         <div class="section-header">
             <div class="icon">✖️</div>
-            <h3>Multipliers in your Economy</h3>
+            <h3>Multipliers in your Group</h3>
         </div>
         <table style="width:100%; border-collapse:collapse; text-align:center; margin-top:8px;">
             <thead>
@@ -67,13 +67,13 @@
     <!-- ── Welfare note (Welfare State only) ─────────────────────────────── -->
     {% if Treatment == 'Welfare_State' %}
     <div style="margin-top:32px; padding:12px 16px; background:#f0f7ff; border-left:4px solid #5B9BD5; border-radius:6px; font-size:0.93em; color:#333;">
-        ℹ️ Remember: score is calcualted as your performance plus the average performance of all three players.
+        ℹ️ Remember: your score is calculated as your performance plus the average performance of all three players.
     </div>
     {% endif %}
 
     <p style="text-align:center; color:#555;">
         Below you can see how your <strong>performance</strong> and <strong>accumulated earnings</strong>
-        compare to the other members of your Economy.
+        compare to the others.
     </p>
 
     <!-- ── Three bar charts ──────────────────────────────────────────── -->
@@ -103,7 +103,7 @@
             </p>
         </div>
 
-        <!-- 3: accumulated Production earnings -->
+        <!-- 3: accumulated Competition earnings -->
         <div style="flex:1; min-width:220px; max-width:300px; text-align:center;">
             <h4 style="margin-bottom:6px;">
                 Accumulated Earnings
@@ -147,8 +147,8 @@
     const MEMBERS    = ['You', 'Group member 2', 'Group member 3'];
 
     const performances       = {{ performances }};         // [you, m2, m3] — raw correct answers this round
-    const earningsThisRound  = {{ earnings_this_round }};  // [you, m2, m3] — Production ECs this round
-    const accumulated        = {{ accumulated }};          // [you, m2, m3] — cumulative Production ECs
+    const earningsThisRound  = {{ earnings_this_round }};  // [you, m2, m3] — Competition ECs this round
+    const accumulated        = {{ accumulated }};          // [you, m2, m3] — cumulative Competition ECs
 
     function makeBarChart(canvasId, data, yLabel) {
         const ctx = document.getElementById(canvasId).getContext('2d');
