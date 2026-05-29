@@ -158,7 +158,9 @@ class PlayerBot(Bot):
 
         yield Submission(PGG2_Contribute, {
             # Slider goes 0 to PGG2_Commons (50); multiples of 10
-            'pgg2_contribution': random.choice(range(0, 51, 10)),
+            'pgg2_contribution':        random.choice(range(0, 51, 10)),
+            # In form_fields — record varied modal usage instead of always False
+            'calculator_pgg2_clicked':  random.choice([True, False]),
         }, check_html=False)
 
         # ── Non-incentivised surveys ───────────────────────────────────────────
@@ -183,5 +185,8 @@ class PlayerBot(Bot):
 
         # ── Final ──────────────────────────────────────────────────────────────
         # Final_WaitPage (session-level): auto — computes all game payoffs and
-        # randomly selects one game for payment
-        yield Submission(Final_Results, {}, check_html=False)
+        # randomly selects one game for payment.
+        # NOTE: Final_Results is currently commented out of page_sequence in
+        # __init__.py, so the bot must NOT submit it (oTree would raise
+        # "page not in page_sequence"). If Final_Results is re-enabled, add:
+        #     yield Submission(Final_Results, {}, check_html=False)

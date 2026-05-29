@@ -47,6 +47,23 @@ def _answers():
     return json.dumps({})
 
 
+# Map treatment → the single Comprehension_question_4_* field shown that round.
+# Only one of the four Q4 fields appears in the form per player; the other
+# three are populated directly on `self.player` so the dataset never has nulls.
+_Q4_FIELDS_ALL = [
+    'Comprehension_question_4_PM',
+    'Comprehension_question_4_EM',
+    'Comprehension_question_4_WS',
+    'Comprehension_question_4_Ar',
+]
+_Q4_FIELD_BY_TREATMENT = {
+    'Perfect_Meritocracy':   'Comprehension_question_4_PM',
+    'Excessive_Meritocracy': 'Comprehension_question_4_EM',
+    'Welfare_State':         'Comprehension_question_4_WS',
+    'Aristocracy':           'Comprehension_question_4_Ar',
+}
+
+
 # ── Bot ───────────────────────────────────────────────────────────────────────
 
 class PlayerBot(Bot):
@@ -62,17 +79,27 @@ class PlayerBot(Bot):
                 'competition_calc_interactions': random.randint(1, 5),
             }, check_html=False)
 
-            # Submit all correct answers → Comprehension_1 = True
-            # Comprehension_check_2 and _3 have is_displayed=False after this.
-            yield Submission(Comprehension_check_1, {
+            # Only ONE of the four Q4 fields is on the form (treatment-specific
+            # via get_form_fields). Submit the right one to pass validation, and
+            # set the other three directly on the player so the dataset has
+            # no NULL Comprehension_question_4_* cells.
+            treatment = self.player.participant.Treatment
+            q4_field = _Q4_FIELD_BY_TREATMENT.get(treatment)
+            for other in _Q4_FIELDS_ALL:
+                if other != q4_field:
+                    setattr(self.player, other, True)
+
+            submission_data = {
                 'Comprehension_question_1': True,
                 'Comprehension_question_2': True,
                 'Comprehension_question_3': True,
-                'Comprehension_question_4_PM': True,
-                'Comprehension_question_4_EM': True,
-                'Comprehension_question_4_WS': True,
-                'Comprehension_question_4_Ar': True,
-            }, check_html=False)
+            }
+            if q4_field:
+                submission_data[q4_field] = True
+
+            # Submit all correct answers → Comprehension_1 = True
+            # Comprehension_check_2 and _3 have is_displayed=False after this.
+            yield Submission(Comprehension_check_1, submission_data, check_html=False)
 
         # ── Per-round quiz stages ─────────────────────────────────────────────
         yield Submission(Round_Instructions, {}, check_html=False)
@@ -107,8 +134,12 @@ class PlayerBot(Bot):
             }, check_html=False)
 
         # Public Goods Game
+        # `calculator_pgg_clicked` is in get_form_fields and must be submitted;
+        # randomise so calculator_pgg_rounds (round-1 JSON dict) records varied
+        # usage across rounds rather than staying at all-zeros.
         yield Submission(Round_PublicGoods, {
-            'PGG_contribution': random.choice(range(0, 101, 10)),
+            'PGG_contribution':       random.choice(range(0, 101, 10)),
+            'calculator_pgg_clicked': random.choice([True, False]),
         }, check_html=False)
 
         # ── Round 10 only: belief elicitation + final results ─────────────────
