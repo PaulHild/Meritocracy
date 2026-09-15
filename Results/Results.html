@@ -13,7 +13,7 @@
         Thank you for participating! Here is a summary of your earnings across all parts of the study.
     </p>
 
-    <!-- Earnings breakdown table -->
+    <!-- ── Earnings breakdown table ─────────────────────────────────────── -->
     <div class="section-box box-calm" style="margin-top:24px;">
         <div class="section-header">
             <div class="icon">&#129689;</div>
@@ -22,17 +22,32 @@
         <table style="width:100%; border-collapse:collapse; margin-top:8px;">
             <tbody>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px; color:#555;">Round 1 and 2 of Intelligence Test</td>
+                    <td style="padding:10px 16px; color:#555;">Practice rounds of the Intelligence Test</td>
                     <td style="padding:10px 16px; text-align:right;">{{ practice_ecs }} ECs</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
-                    <td style="padding:10px 16px; color:#555;">Part I &mdash; Intelligence Test over rounds</td>
-                    <td style="padding:10px 16px; text-align:right;">{{ part1_ecs }} ECs</td>
+                    <td style="padding:10px 16px; color:#555;">Part I &mdash; Competition Stage, all rounds</td>
+                    <td style="padding:10px 16px; text-align:right;">{{ competition_ecs }} ECs</td>
                 </tr>
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px 16px; color:#555;">
-                        Part II &mdash; Various Decision problems
-                        <!-- <span style="font-size:0.85em; color:#888; margin-left:6px;">({{ game_selected_label }})</span> -->
+                        Part I &mdash; Transferring Tokens
+                        {% if pgg_round %}
+                        <span style="font-size:0.85em; color:#888;">(round {{ pgg_round }}, randomly selected)</span>
+                        {% endif %}
+                    </td>
+                    <td style="padding:10px 16px; text-align:right;">{{ pgg_ecs }} ECs</td>
+                </tr>
+                {% if belief_bonus > 0 %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 16px; color:#555;">&#127919; Bonus for guessing the other members&rsquo; transfers</td>
+                    <td style="padding:10px 16px; text-align:right;">+{{ belief_bonus }} ECs</td>
+                </tr>
+                {% endif %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:10px 16px; color:#555;">
+                        Part II &mdash; {{ part2_label }}
+                        <span style="font-size:0.85em; color:#888;">(randomly selected)</span>
                     </td>
                     <td style="padding:10px 16px; text-align:right;">{{ part2_ecs }} ECs</td>
                 </tr>
@@ -53,6 +68,99 @@
             </p>
         </div>
     </div>
+
+    <!-- ── Part I: the token-transfer round that was drawn ──────────────── -->
+    {% if pgg_detail %}
+    <div class="section-box box-info" style="margin-top:24px;">
+        <div class="section-header">
+            <div class="icon">&#128260;</div>
+            <h3>How your Transferring Tokens payoff came about</h3>
+        </div>
+        <p style="color:#555;">
+            Of the {{ C.Economy_num_rounds }} rounds, <strong>round {{ pgg_detail.round }}</strong>
+            was randomly selected to count. This is what happened in that round:
+        </p>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+            <tbody>
+                {% for line in pgg_detail.lines %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:8px 16px; color:#555;">{{ line.0 }}</td>
+                    <td style="padding:8px 16px; text-align:right;">{{ line.1|safe }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="background:#f8f9fa;">
+                    <td style="padding:10px 16px; font-weight:bold;">Your earnings from this round</td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ pgg_detail.total }} ECs</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    <!-- ── Part I: belief elicitation ───────────────────────────────────── -->
+    {% if belief_detail %}
+    <div class="section-box box-calm" style="margin-top:24px;">
+        <div class="section-header">
+            <div class="icon">&#127919;</div>
+            <h3>Your guesses about the other group members</h3>
+        </div>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+            <thead>
+                <tr style="background:#f5f5f5;">
+                    <th style="padding:8px 16px; border-bottom:2px solid #ddd; text-align:left;">Group member</th>
+                    <th style="padding:8px 16px; border-bottom:2px solid #ddd; text-align:right;">Your guess</th>
+                    <th style="padding:8px 16px; border-bottom:2px solid #ddd; text-align:right;">Actual average</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in belief_detail.rows %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:8px 16px; color:#555;">{{ row.member }}</td>
+                    <td style="padding:8px 16px; text-align:right;">{{ row.guess }} tokens</td>
+                    <td style="padding:8px 16px; text-align:right;"><strong>{{ row.truth }} tokens</strong></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <p style="margin-top:12px; padding:10px 14px; border-left:3px solid #5B9BD5; background:#f0f7ff; border-radius:4px; font-size:0.93em; color:#333;">
+            {% if belief_detail.earned %}
+            &#9989; Both of your guesses were within 10 tokens of the true average, so you earned the
+            <strong>{{ belief_detail.bonus }} EC</strong> bonus.
+            {% else %}
+            The bonus of {{ belief_detail.bonus }} ECs required <strong>both</strong> guesses to be within
+            10 tokens of the true average, so it was not awarded.
+            {% endif %}
+        </p>
+    </div>
+    {% endif %}
+
+    <!-- ── Part II: the task that was drawn ─────────────────────────────── -->
+    {% if part2_detail %}
+    <div class="section-box box-info" style="margin-top:24px;">
+        <div class="section-header">
+            <div class="icon">&#127922;</div>
+            <h3>How your Part II payoff came about</h3>
+        </div>
+        <p style="color:#555;">
+            <strong>{{ part2_detail.label }}</strong> was randomly selected to count for your payment.
+            This is what happened in it:
+        </p>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+            <tbody>
+                {% for line in part2_detail.lines %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:8px 16px; color:#555;">{{ line.0|safe }}</td>
+                    <td style="padding:8px 16px; text-align:right;">{{ line.1|safe }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="background:#f8f9fa;">
+                    <td style="padding:10px 16px; font-weight:bold;">Your earnings from this task</td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ part2_detail.total }} ECs</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
     <!-- Closing message -->
     <div class="section-box box-info" style="margin-top:24px;">

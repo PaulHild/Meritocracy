@@ -512,9 +512,10 @@ class Grouping_WaitPage(WaitPage):
                 mult_low  = CC.M_low
 
             elif treatment == 'Welfare_State':
-                # No multipliers: score = raw performance + welfare_check
-                # Using mult=1 ensures welfare_check adds a true +50 floor,
-                # not a diluted +10 that would result from mult=5.
+                # No multipliers. The redistribution happens in
+                # compute_pie_share, which adds the group's mean weighted score
+                # to every member; mult=1 keeps that addition equal to the
+                # group's mean number of correct answers.
                 mult_high = 1
                 mult_mid  = 1
                 mult_low  = 1

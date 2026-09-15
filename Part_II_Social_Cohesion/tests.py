@@ -157,7 +157,7 @@ class PlayerBot(Bot):
         yield Submission(PGG2_Instructions, {}, check_html=False)
 
         yield Submission(PGG2_Contribute, {
-            # Slider goes 0 to PGG2_Commons (50); multiples of 10
+            # Slider goes -100 to +100; multiples of 10
             'pgg2_contribution':        random.choice(range(0, 51, 10)),
             # In form_fields — record varied modal usage instead of always False
             'calculator_pgg2_clicked':  random.choice([True, False]),

@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ static 'css/modal.css' }}">
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ static 'js/BarCharts.js' }}"></script>
 
 <div class="content-box box-neutral">
     <h2 class="section-title">
@@ -157,11 +158,6 @@
 </div>
 
 <script>
-    // ── Colour constants (matching Round_Feedback) ─────────────────────
-    const MEMBER_BG     = ['rgba(76,175,80,0.8)', 'rgba(91,155,213,0.8)', 'rgba(255,179,71,0.8)'];
-    const MEMBER_BORDER = ['#388E3C',              '#2E75B6',               '#E8923A'];
-    const MEMBERS       = ['You', 'Group member 2', 'Group member 3'];
-
     // Breakdown colours (practice / competition) — PGG earnings are withheld
     // until the end of Part II, so they're not shown in this chart.
     const BREAKDOWN_BG     = ['rgba(91,155,213,0.8)', 'rgba(76,175,80,0.8)'];
@@ -172,45 +168,12 @@
     const breakdownData = [{{ practice_ecs }}, {{ competition_ecs }}];
     const groupTotals   = {{ group_totals }};
 
-    function makeBarChart(canvasId, labels, data, bgColors, borderColors, yLabel) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data:            data,
-                    backgroundColor: bgColors,
-                    borderColor:     borderColors,
-                    borderWidth:     1.5,
-                    borderRadius:    5,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ` ${ctx.parsed.y.toFixed(1)} ${yLabel}`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: yLabel }
-                    }
-                }
-            }
-        });
-    }
-
     document.addEventListener('DOMContentLoaded', function () {
-        makeBarChart('breakdownChart', BREAKDOWN_LABELS, breakdownData,
-                     BREAKDOWN_BG, BREAKDOWN_BORDER, 'ECs');
-        makeBarChart('groupChart', MEMBERS, groupTotals,
-                     MEMBER_BG, MEMBER_BORDER, 'ECs');
+        makeBarChart('breakdownChart', breakdownData, 'ECs', {
+            labels: BREAKDOWN_LABELS, bgColors: BREAKDOWN_BG,
+            borderColors: BREAKDOWN_BORDER,
+        });
+        makeBarChart('groupChart', groupTotals, 'ECs');
     });
 </script>
 

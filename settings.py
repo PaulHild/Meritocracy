@@ -1,7 +1,10 @@
 from os import environ
 
 SESSION_CONFIGS = [
-    dict(name='n_3', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Exit_Survey', 'Results'], num_demo_participants=3,),
+    # NOTE: num_demo_participants must be a multiple of 3 (economy groups) AND
+    # at least 6, so that each of the 3 earner tiers in Part II holds at least
+    # two players and nobody becomes their own cross-economy partner.
+    dict(name='n_6', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Exit_Survey', 'Results'], num_demo_participants=6,),
     dict(name='n_12', app_sequence=['Introduction','Practice','Part_I_Economy', 'Part_II_Social_Cohesion', 'Exit_Survey', 'Results'], num_demo_participants=12,),
     # dict(name='Practice', app_sequence=['Practice', ], num_demo_participants=3,),
     # dict(name='Part_I_Economy', app_sequence=['Part_I_Economy', ], num_demo_participants=3,),
@@ -22,7 +25,7 @@ ROOMS = [
 ]
 
 SESSION_CONFIG_DEFAULTS = dict(
-    real_world_currency_per_point=1.00, participation_fee=0.00, doc="", use_browser_bots=False,
+    real_world_currency_per_point=0.01, participation_fee=0.00, doc="", use_browser_bots=False,
 )
 #TODO: add the relevant participant fields if you wanna pass them thourgh apps
 PARTICIPANT_FIELDS = [
@@ -39,6 +42,9 @@ PARTICIPANT_FIELDS = [
     'Part_I_pgg_earnings',       # float: ECs from the randomly-selected PGG round (revealed at end of Part II)
     'Part_I_pgg_selected_round', # int : which PGG round was selected
     'Part_I_pgg_belief_bonus',   # float: PGG belief-elicitation bonus (0 or C.PGG_Guess_ECs)
+    # ── Final-page "receipts": JSON explaining how each payoff came about ────
+    'Part_I_pgg_detail',         # json: line items for the selected PGG round
+    'Part_I_belief_detail',      # json: guesses vs. true averages, bonus outcome
     # ── Part II cross-economy matching ───────────────────────────────────────
     'ingroup_code',        # str: participant.code of cross-economy ingroup partner
     'outgroup_code',       # str: participant.code of cross-economy outgroup partner
@@ -47,6 +53,7 @@ PARTICIPANT_FIELDS = [
     # ── Part II final payment ─────────────────────────────────────────────────
     'Part_II_game_selected',  # str: name of the randomly chosen game
     'Part_II_earnings',       # float: ECs earned from the selected game
+    'Part_II_earnings_detail',# json: line items for the selected Part II task
 ]
 SESSION_FIELDS = {}
 
@@ -55,7 +62,7 @@ SESSION_FIELDS = {}
 LANGUAGE_CODE = 'en'
 
 # e.g. EUR, GBP, CNY, JPY
-REAL_WORLD_CURRENCY_CODE = 'USD'
+REAL_WORLD_CURRENCY_CODE = 'EUR'
 USE_POINTS = True
 
 ADMIN_USERNAME = 'admin'

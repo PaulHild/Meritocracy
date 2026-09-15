@@ -54,7 +54,9 @@
 
     <div class="buttons-container" style="text-align: center; margin-top: 30px;">
         <a id="myBtn" onclick="open_modal(1)" class="btn btn-info">Open Instructions</a>
+        {% if C.DEBUG %}
         <button id="NextButton" class="btn btn-primary">Continue (debug)</button>
+        {% endif %}
     </div>
 </div>
 

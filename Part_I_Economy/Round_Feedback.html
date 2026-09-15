@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ static 'css/modal.css' }}">
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ static 'js/BarCharts.js' }}"></script>
 
 <div class="content-box box-neutral">
     <h2 class="section-title">
@@ -141,48 +142,9 @@
 </div>
 
 <script>
-    // Colour scheme — matches the legend dots in the multiplier table
-    const BAR_BG     = ['rgba(76,175,80,0.8)', 'rgba(91,155,213,0.8)', 'rgba(255,179,71,0.8)'];
-    const BAR_BORDER = ['#388E3C',              '#2E75B6',               '#E8923A'];
-    const MEMBERS    = ['You', 'Group member 2', 'Group member 3'];
-
     const performances       = {{ performances }};         // [you, m2, m3] — raw correct answers this round
     const earningsThisRound  = {{ earnings_this_round }};  // [you, m2, m3] — Competition ECs this round
     const accumulated        = {{ accumulated }};          // [you, m2, m3] — cumulative Competition ECs
-
-    function makeBarChart(canvasId, data, yLabel) {
-        const ctx = document.getElementById(canvasId).getContext('2d');
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: MEMBERS,
-                datasets: [{
-                    data:            data,
-                    backgroundColor: BAR_BG,
-                    borderColor:     BAR_BORDER,
-                    borderWidth:     1.5,
-                    borderRadius:    5,
-                }]
-            },
-            options: {
-                responsive: true,
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: ctx => ` ${ctx.parsed.y} ${yLabel}`
-                        }
-                    }
-                },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        title: { display: true, text: yLabel }
-                    }
-                }
-            }
-        });
-    }
 
     document.addEventListener('DOMContentLoaded', function () {
         makeBarChart('performanceChart',      performances,      'questions');

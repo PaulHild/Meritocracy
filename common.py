@@ -36,7 +36,6 @@ class CommonConstants(BaseConstants):
 
     # \u2500\u2500 Economy \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
     Economy_pie   = 500   # fixed pie size (ECs) competed over each round
-    Welfare_check = 50    # flat bonus added to weighted score in Welfare State
     PGG_Commons   = 300   # starting tokens in the common pool each round
     PGG_investible = 100   # tokens each player can invest in the common pool each round
     Pgg_lower_bound = 200
@@ -106,7 +105,6 @@ class CommonConstants(BaseConstants):
     Hare_safe_EC   = 40    # payoff for choosing Hare (regardless of others)
     Dictator_EC    = 100   # proposer endowment per ultimatum game (×2 games)
     Trust_EC       = 50    # sender endowment per trust game (×2 games)
-    PGG2_Commons   = 100   # one-shot anonymous PGG endowment
 
     # ── Part II: instruction template paths ──────────────────────────────────
     Instructions_solidarity = "_templates/global/Instructions_solidarity.html"
@@ -157,12 +155,13 @@ def assign_treatment_balanced():
 # %% Payoff helper
 def compute_pie_share(player_score, player_multiplier,
                       group_scores, group_multipliers,
-                      treatment, welfare_check=50, economy_pie=500):
+                      treatment, economy_pie=500):
     """
     Compute this player's EC payoff from the economy pie for one round.
 
       weighted_i = score_i * multiplier_i
-      Welfare State: weighted_i += welfare_check  (applied to every member)
+      Welfare State: weighted_i += mean(weighted)  (the same amount for every
+                     member, which compresses the shares toward equality)
       payoff = (weighted_self / sum(weighted_all)) * economy_pie
 
     Returns (player_payoff_ECs, player_weighted_score, total_weighted_score).

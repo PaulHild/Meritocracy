@@ -17,14 +17,17 @@ Game sequence:
     3. Ultimatum game (simultaneous; strategy method for rejection)
     4. Trust game (simultaneous; strategy method for trustee return)
 
+  Incentivised, matched in a random cycle:
+    Social Value Orientation — Murphy et al. (2011), 6-item slider
+
   Non-incentivised:
-    5. Social Value Orientation — Murphy et al. (2011), 6-item slider
-    6. Questionnaire — fairness, generalised trust, IOS
+    Questionnaire — fairness, generalised trust, IOS
 
   Fully anonymous (random reshuffled):
-    7. One-shot Public Goods Game (PGG2)
+    One-shot Public Goods Game (PGG2)
 
-Payment: one game randomly selected ex-post.
+Payment: one task randomly selected ex-post, the same one for everyone in the
+session (see Final_WaitPage).
 '''
 
 
@@ -73,8 +76,21 @@ class C(CC):
         'solidarity', 'stag',
         'ult_ingroup', 'ult_outgroup',
         'trust_ingroup', 'trust_outgroup',
-        'pgg2',
+        'pgg2', 'svo',
     ]
+
+    # Participant-facing task labels. Kept deliberately neutral: the labels
+    # must not name the underlying game (no "Solidarity Game", "Stag Hunt", …).
+    GAME_LABELS = {
+        'solidarity':     'Task 1',
+        'stag':           'Task 2',
+        'ult_ingroup':    'Task 3 with Partner A',
+        'ult_outgroup':   'Task 3 with Partner B',
+        'trust_ingroup':  'Task 4 with Partner A',
+        'trust_outgroup': 'Task 4 with Partner B',
+        'pgg2':           'Task 5',
+        'svo':            'Task 6',
+    }
 
     # Tier labels (for CrossGroup_Intro display)
     TIER_LABELS = {
@@ -162,6 +178,16 @@ class Player(BasePlayer):
     svo_choice_6 = models.IntegerField(min=0, max=8)
     svo_angle    = models.FloatField()   # arctan(mean_other/mean_self) × 180/π
 
+    # SVO incentivisation (Murphy et al. 2011). Participants are arranged in a
+    # random cycle: each allocates to the next participant and receives from the
+    # previous one. One of the 6 items is drawn per participant and their own
+    # choice on it is implemented — it fixes their own amount and the amount
+    # handed to the participant they allocate to.
+    svo_earnings       = models.FloatField(initial=0)
+    svo_item_drawn     = models.IntegerField(initial=0)   # 1-6
+    svo_receiver_code  = models.StringField(initial='')   # whom I allocate to
+    svo_allocator_code = models.StringField(initial='')   # who allocates to me
+
     # ── Questionnaire ────────────────────────────────────────────────────────
     q_fairness = models.IntegerField(
         min=1, max=7,
@@ -220,6 +246,17 @@ def _compute_svo_angle(player):
         return 0.0
     angle = math.atan(mean_other / mean_self) * (180 / math.pi)
     return round(angle, 2)
+
+
+# ── Helper: render a signed token transfer in plain words ──────────────────────
+def _tokens(delta):
+    """Describe a token transfer from the participant's point of view.
+    Positive = moved into the Group Account, negative = taken out of it."""
+    if delta > 0:
+        return '{} tokens into the Group Account'.format(delta)
+    if delta < 0:
+        return '{} tokens out of the Group Account'.format(abs(delta))
+    return 'nothing'
 
 
 # ── Helper: get partner player object from participant code ────────────────────
@@ -308,6 +345,16 @@ class CrossMatching_WaitPage(WaitPage):
         players = subsession.get_players()
         n = len(players)
 
+        # Each tier must hold at least 2 players, otherwise a player would be
+        # matched with themselves as their own ingroup partner. Tiers are n/3,
+        # so the session needs at least 6 participants.
+        if n < 6:
+            raise ValueError(
+                f"Part II needs at least 6 participants to form cross-economy "
+                f"pairs (each of the 3 earner tiers must hold at least 2 "
+                f"players); this session has {n}."
+            )
+
         # Sort by Part_I total ECs (descending)
         sorted_p = sorted(
             players,
@@ -356,24 +403,35 @@ class CrossMatching_WaitPage(WaitPage):
                 outgroup = pool[i % len(pool)]
                 p.participant.outgroup_code = outgroup.participant.code
 
-        # Record "how does my partner see me?" for payoff lookup
+        # Record "how does my partner see me?" for the strategy-method payoff
+        # lookup in Final_WaitPage.
+        #
+        # This is decided by EARNER TIER, not by comparing participant codes.
+        # Partner assignment is deliberately not mutual: the ingroup match is a
+        # circular shuffle within a tier (A→B, B→C), and the outgroup match
+        # sends High→Low, Medium→Low, Low→Medium. Comparing codes therefore
+        # almost never found a mutual match and silently fell through to
+        # 'outgroup', which made every ingroup payoff read the partner's
+        # OUTGROUP decisions and destroyed the ingroup/outgroup contrast.
+        #
+        # What the partner was actually asked is a function of type: a partner
+        # of the same tier answered the "ingroup" version of each question, a
+        # partner of a different tier answered the "outgroup" version.
         code_map = {p.participant.code: p for p in players}
         for p in players:
-            # How does p's ingroup partner see p?
             ingroup_partner = code_map.get(p.participant.ingroup_code)
             if ingroup_partner:
-                if ingroup_partner.participant.ingroup_code == p.participant.code:
-                    p.ingroup_partner_sees_me_as = 'ingroup'
-                else:
-                    p.ingroup_partner_sees_me_as = 'outgroup'
+                p.ingroup_partner_sees_me_as = (
+                    'ingroup' if ingroup_partner.earner_tier == p.earner_tier
+                    else 'outgroup'
+                )
 
-            # How does p's outgroup partner see p?
             outgroup_partner = code_map.get(p.participant.outgroup_code)
             if outgroup_partner:
-                if outgroup_partner.participant.ingroup_code == p.participant.code:
-                    p.outgroup_partner_sees_me_as = 'ingroup'
-                else:
-                    p.outgroup_partner_sees_me_as = 'outgroup'
+                p.outgroup_partner_sees_me_as = (
+                    'ingroup' if outgroup_partner.earner_tier == p.earner_tier
+                    else 'outgroup'
+                )
 
 
 # ── WaitPage: Final payoffs ────────────────────────────────────────────────────
@@ -392,6 +450,13 @@ class Final_WaitPage(WaitPage):
     def after_all_players_arrive(subsession: Subsession):
         all_players = list(subsession.get_players())
         code_map    = {p.participant.code: p for p in all_players}
+
+        # Per-player, per-game "receipt": the inputs and the arithmetic behind
+        # each possible payoff, captured while it is computed. Only the receipt
+        # for the task that is actually drawn is shown to the participant, but
+        # building all of them here keeps the explanation and the payoff in
+        # lockstep — there is no second, drifting copy of the payoff rules.
+        receipts = {p.participant.code: {} for p in all_players}
 
         # ── 1. PGG2: form random groups of 3, compute pool earnings ──────────
         shuffled = list(all_players)
@@ -412,6 +477,17 @@ class Final_WaitPage(WaitPage):
                 partners = [g for g in grp if g.participant.code != p.participant.code]
                 p.participant.pgg2_partner1_code = partners[0].participant.code
                 p.participant.pgg2_partner2_code = partners[1].participant.code
+
+                other_contribs = [g.pgg2_contribution for g in partners]
+                receipts[p.participant.code]['pgg2'] = [
+                    ['Your transfer to the Group Account', _tokens(contributions[i])],
+                    ['The other members transferred',
+                     ' and '.join(_tokens(c) for c in other_contribs) or '—'],
+                    ['Left in your Private Account',
+                     '{} tokens &times; 2 = {:.0f} ECs'.format(private_tokens, private_ec)],
+                    ['Total in the Group Account',
+                     '{} tokens &times; 1 = {:.0f} ECs'.format(group_total, group_total)],
+                ]
 
         # ── 2. Ultimatum payoffs (ex-post matching) ───────────────────────────
         for p in all_players:
@@ -466,6 +542,18 @@ class Final_WaitPage(WaitPage):
                 total_ult = proposer_earnings + responder_earnings
                 setattr(p, earn_attr, total_ult)
 
+                partner_label = 'Partner A' if partner_attr == 'ingroup_code' else 'Partner B'
+                receipts[p.participant.code][
+                    'ult_ingroup' if partner_attr == 'ingroup_code' else 'ult_outgroup'
+                ] = [
+                    ['As Proposer &mdash; you offered {} ECs to {}'.format(my_offer, partner_label),
+                     '{} &rarr; you keep {:.0f} ECs'.format(
+                         'accepted' if partner_accepts else 'rejected', proposer_earnings)],
+                    ['As Responder &mdash; {} offered you {} ECs'.format(partner_label, partner_offer_to_p),
+                     'you {} &rarr; you receive {:.0f} ECs'.format(
+                         'accepted' if p_accepts else 'rejected', responder_earnings)],
+                ]
+
         # ── 3. Trust payoffs (ex-post matching) ───────────────────────────────
         for p in all_players:
             for partner_attr, send_attr, my_return_attr, earn_attr in [
@@ -516,6 +604,90 @@ class Final_WaitPage(WaitPage):
                 total_trust = sender_earnings + trustee_earnings
                 setattr(p, earn_attr, total_trust)
 
+                partner_label = 'Partner A' if partner_attr == 'ingroup_code' else 'Partner B'
+                receipts[p.participant.code][
+                    'trust_ingroup' if partner_attr == 'ingroup_code' else 'trust_outgroup'
+                ] = [
+                    ['As Sender &mdash; you sent {} of your {} ECs to {}'.format(
+                        my_send, C.Trust_EC, partner_label),
+                     'it tripled to {} ECs; {} returned {} ECs &rarr; {:.0f} ECs'.format(
+                         tripled, partner_label, partner_returns, sender_earnings)],
+                    ['As Receiver &mdash; {} sent you {} ECs'.format(partner_label, partner_sent_to_p),
+                     'it tripled to {} ECs; you returned {} ECs &rarr; {:.0f} ECs'.format(
+                         tripled_received, my_return_amount, trustee_earnings)],
+                ]
+
+        # ── 3b. Receipts for the two within-group tasks ──────────────────────
+        for p in all_players:
+            members = p.group.get_players()
+            others  = [g for g in members if g.id_in_group != p.id_in_group]
+
+            if p.solidarity_role == 'unlucky':
+                pledges = [g.solidarity_pledge for g in others]
+                solidarity_lines = [
+                    ['You were the member who did not win the {} ECs'.format(C.Solidarity_EC),
+                     "you received the other two members' pledges"],
+                    ['The two lucky members pledged',
+                     ' and '.join('{} ECs'.format(x) for x in pledges)],
+                ]
+            else:
+                solidarity_lines = [
+                    ['You were one of the two members who won {} ECs'.format(C.Solidarity_EC),
+                     '{} ECs'.format(C.Solidarity_EC)],
+                    ['You had pledged to the member who did not win',
+                     '&minus; {} ECs'.format(p.solidarity_pledge)],
+                ]
+            receipts[p.participant.code]['solidarity'] = solidarity_lines
+
+            letter = {'stag': 'A', 'hare': 'B'}
+            receipts[p.participant.code]['stag'] = [
+                ['You chose', letter.get(p.stag_choice, '—')],
+                ['The other two group members chose',
+                 ' and '.join(letter.get(g.stag_choice, '—') for g in others)],
+            ]
+
+        # ── 3c. SVO payoffs (Murphy et al. 2011, incentivised) ───────────────
+        # A random CYCLE rather than random pairs: i allocates to i+1 and
+        # receives from i-1. A cycle works for any session size, including the
+        # odd multiples of 3 (9, 15, 21 …) that random pairing cannot cover.
+        svo_ring = list(all_players)
+        random.shuffle(svo_ring)
+        for idx, p in enumerate(svo_ring):
+            receiver = svo_ring[(idx + 1) % len(svo_ring)]
+            p.svo_receiver_code        = receiver.participant.code
+            receiver.svo_allocator_code = p.participant.code
+            p.svo_item_drawn           = random.randint(1, len(C.SVO_ITEMS))
+
+        def _svo_allocation(pl):
+            """Return (item, self_amount, other_amount) for the item drawn for
+            this player, using the option they chose on that item."""
+            item = pl.svo_item_drawn
+            choice = getattr(pl, 'svo_choice_{}'.format(item), None)
+            if not item or choice is None:
+                return item, 0, 0
+            self_vals, other_vals = C.SVO_ITEMS[item - 1]
+            return item, self_vals[choice], other_vals[choice]
+
+        for p in all_players:
+            own_item, own_self, own_to_other = _svo_allocation(p)
+
+            allocator = code_map.get(p.svo_allocator_code)
+            if allocator:
+                alloc_item, _, received = _svo_allocation(allocator)
+            else:
+                alloc_item, received = 0, 0
+
+            p.svo_earnings = float(own_self + received)
+
+            receipts[p.participant.code]['svo'] = [
+                ['Your own decision &mdash; question {} was drawn'.format(own_item),
+                 'you kept {} ECs and allocated {} ECs to another participant'.format(
+                     own_self, own_to_other)],
+                ['The decision of the participant allocating to you '
+                 '&mdash; their question {} was drawn'.format(alloc_item),
+                 'they allocated {} ECs to you'.format(received)],
+            ]
+
         # ── 4. Select random game for payment ────────────────────────────────
         game_field_map = {
             'solidarity':   'solidarity_earnings',
@@ -525,8 +697,10 @@ class Final_WaitPage(WaitPage):
             'trust_ingroup':  'trust_earnings_ingroup',
             'trust_outgroup': 'trust_earnings_outgroup',
             'pgg2':         'pgg2_earnings',
+            'svo':          'svo_earnings',
         }
-        # One draw per session (use first player's random draw; all get same game)
+        # One draw per session: every participant is paid for the same task.
+        # Move this line inside the loop below to draw per participant instead.
         selected_game = random.choice(list(game_field_map.keys()))
 
         for p in all_players:
@@ -534,6 +708,24 @@ class Final_WaitPage(WaitPage):
             p.total_part2_earnings = getattr(p, game_field_map[selected_game])
             p.participant.Part_II_game_selected = selected_game
             p.participant.Part_II_earnings      = p.total_part2_earnings
+
+            # Receipt for the drawn task, rendered on the final Results page so
+            # participants can see WHY they earned what they earned.
+            p.participant.Part_II_earnings_detail = json.dumps({
+                'label': C.GAME_LABELS.get(selected_game, selected_game),
+                'lines': receipts[p.participant.code].get(selected_game, []),
+                'total': round(p.total_part2_earnings, 1),
+            })
+
+            # oTree's own payoff field. Nothing assigned it before, so the admin
+            # Payments page and the participant.payoff export both read 0.
+            # Set once here, on the last app that knows the grand total:
+            # 1 EC = 1 point, and real_world_currency_per_point in settings.py
+            # converts points to EUR at C.EC_exchange_rate.
+            p.payoff = (
+                (getattr(p.participant, 'Part_I_total_ECs', 0) or 0)
+                + p.total_part2_earnings
+            )
 
 
 # ── Base page ──────────────────────────────────────────────────────────────────
@@ -923,7 +1115,6 @@ class PGG2_Instructions(MyPage):
     @staticmethod
     def vars_for_template(player: Player):
         v = MyPage.vars_for_template(player)
-        v['pgg2_commons']    = C.PGG2_Commons
         v['Instructions_pgg2'] = C.Instructions_pgg2_path
         tier = player.earner_tier
         if tier == 'high':
@@ -945,7 +1136,6 @@ class PGG2_Contribute(MyPage):
     @staticmethod
     def vars_for_template(player: Player):
         v = MyPage.vars_for_template(player)
-        v['pgg2_commons']      = C.PGG2_Commons
         v['Instructions_pgg2'] = C.Instructions_pgg2_path
         # For the in-round calculator modal (shared body template)
         v['member_rows'] = ['You', 'Member 2', 'Member 3']
@@ -970,15 +1160,7 @@ class Final_Results(MyPage):
         v = MyPage.vars_for_template(player)
 
         # All earnings breakdown
-        game_labels = {
-            'solidarity':     'Game 1 ',
-            'stag':           'Game 2',
-            'ult_ingroup':    'Game 3 with Partner A',
-            'ult_outgroup':   'Game 3 with Partner B',
-            'trust_ingroup':  'Game 4 with Partner A',
-            'trust_outgroup': 'Game 4 with Partner B',
-            'pgg2':           'Game 5 (Group Project)',
-        }
+        game_labels = C.GAME_LABELS
         all_earnings = {
             'solidarity':     round(player.solidarity_earnings, 1),
             'stag':           round(player.stag_earnings, 1),
@@ -987,6 +1169,7 @@ class Final_Results(MyPage):
             'trust_ingroup':  round(player.trust_earnings_ingroup, 1),
             'trust_outgroup': round(player.trust_earnings_outgroup, 1),
             'pgg2':           round(player.pgg2_earnings, 1),
+            'svo':            round(player.svo_earnings, 1),
         }
 
         v['game_selected']       = player.game_selected

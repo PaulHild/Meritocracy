@@ -185,7 +185,6 @@ def _compute_and_store_payoff(player):
         player.Round_score, player.participant.multiplier,
         scores, multipliers,
         player.participant.Treatment,
-        welfare_check=C.Welfare_check,
         economy_pie=C.Economy_pie,
     )
     player.Pie_payoff = payoff
@@ -199,7 +198,6 @@ def _effort_shares(player):
         player.Round_score, player.participant.multiplier,
         scores, multipliers,
         player.participant.Treatment,
-        welfare_check=C.Welfare_check,
         economy_pie=C.Economy_pie,
     )
     return player_w, total_w - player_w
@@ -272,23 +270,36 @@ def _record_calculator_click(player):
     r1.calculator_pgg_rounds = json.dumps(d)
 
 
+def _tokens_phrase(delta):
+    """Describe a token transfer from the participant's point of view.
+    Positive = moved into the Group Account, negative = taken out of it."""
+    if delta > 0:
+        return '{} tokens into the Group Account'.format(delta)
+    if delta < 0:
+        return '{} tokens out of the Group Account'.format(abs(delta))
+    return 'nothing'
+
+
+def _true_pgg_average(p):
+    """Mean tokens this player moved into the Group Account per round."""
+    total = sum(p.in_round(r).PGG_contribution for r in range(1, C.Economy_num_rounds + 1))
+    return total / C.Economy_num_rounds
+
+
 def _belief_bonus(player):
-    """Return True if the player's PGG belief guesses are both within 10 tokens of the
-    true *average* PGG contribution per round of Group Members 2 and 3.
-    Uses the same member ordering as _per_player_data (others in get_players() order)."""
+    """Return (earned, guesses, truths): whether the player's PGG belief guesses
+    are both within 10 tokens of the true *average* PGG contribution per round of
+    Group Members 2 and 3, plus the numbers behind that verdict so the final page
+    can show them. Uses the same member ordering as _per_player_data."""
     group_members = player.group.get_players()
     others = [p for p in group_members if p.id_in_group != player.id_in_group]
     m2, m3 = others[0], others[1]
 
-    def true_average(p):
-        total = sum(p.in_round(r).PGG_contribution for r in range(1, C.Economy_num_rounds + 1))
-        return total / C.Economy_num_rounds
+    guesses = [player.pgg_belief_member2, player.pgg_belief_member3]
+    truths  = [round(_true_pgg_average(m2), 1), round(_true_pgg_average(m3), 1)]
 
-    def within_10(guess, true):
-        return abs(guess - true) <= 10
-
-    return (within_10(player.pgg_belief_member2, true_average(m2)) and
-            within_10(player.pgg_belief_member3, true_average(m3)))
+    earned = all(abs(g - t) <= 10 for g, t in zip(guesses, truths))
+    return earned, guesses, truths
 
 
 _Q4_FIELD = {
@@ -935,7 +946,7 @@ class Final_WaitPage(WaitPage):
             p.Total_bonus_ECs = practice_ecs + competition_ecs + p.PGG_earnings
 
             # PGG belief bonus (guessed both group members' averages within 10 tokens)
-            p.pgg_belief_bonus = _belief_bonus(p)
+            p.pgg_belief_bonus, guesses, truths = _belief_bonus(p)
             if p.pgg_belief_bonus:
                 p.Total_bonus_ECs += C.PGG_Guess_ECs
 
@@ -952,6 +963,33 @@ class Final_WaitPage(WaitPage):
             p.participant.Part_I_pgg_belief_bonus   = (
                 C.PGG_Guess_ECs if p.pgg_belief_bonus else 0
             )
+
+            # ── "Receipts": the arithmetic behind the two Part I payoffs that
+            # are only revealed at the very end, so the final Results page can
+            # show participants WHY they earned what they earned.
+            others_contrib = [c for j, c in enumerate(contributions) if j != i]
+            p.participant.Part_I_pgg_detail = json.dumps({
+                'round': selected_round,
+                'lines': [
+                    ['Your transfer to the Group Account',
+                     _tokens_phrase(contributions[i])],
+                    ['The other two members transferred',
+                     ' and '.join(_tokens_phrase(c) for c in others_contrib)],
+                    ['Left in your Private Account',
+                     '{} tokens &times; 2 = {:.0f} ECs'.format(private_tokens, private_ec)],
+                    ['Total in the Group Account',
+                     '{} tokens &times; 1 = {:.0f} ECs'.format(group_total, group_total)],
+                ],
+                'total': round(p.PGG_earnings, 1),
+            })
+            p.participant.Part_I_belief_detail = json.dumps({
+                'earned': bool(p.pgg_belief_bonus),
+                'bonus':  C.PGG_Guess_ECs,
+                'rows': [
+                    {'member': 'Group member 2', 'guess': guesses[0], 'truth': truths[0]},
+                    {'member': 'Group member 3', 'guess': guesses[1], 'truth': truths[1]},
+                ],
+            })
 
 
 # ── Final Results (round 10 only) ─────────────────────────────────────────────────────
@@ -995,6 +1033,69 @@ class Final_Results(MyBasePage):
             'multiplier_reminder': _multiplier_reminder(player.participant.Treatment),
         })
         return variables
+
+
+# ── Custom data export ───────────────────────────────────────────────────────
+# oTree's standard export writes one row per player PER ROUND, so every
+# round-invariant field (the belief elicitation, the selected PGG round, the
+# totals, the calculator counters) is repeated 10 times with 9 of the copies
+# empty. This export gives one row per PARTICIPANT instead: round-invariant
+# variables appear once, and the genuinely per-round variables are laid out as
+# <name>_1 … <name>_10 columns.
+#
+# Download it from the oTree admin under Data → "Part_I" (custom export).
+# The standard per-round export is still available alongside it.
+
+_PER_ROUND_FIELDS = [
+    'Raven_score', 'Analogy_score', 'Math_score',
+    'Round_score', 'Pie_payoff', 'PGG_contribution',
+]
+
+
+def custom_export(players):
+    header = [
+        'session_code', 'participant_code', 'participant_label',
+        'Treatment', 'group_id', 'role', 'multiplier',
+        # comprehension (asked in round 1 only)
+        'Comprehension_1', 'Comprehension_2', 'Comprehension_wrong_answers',
+        # calculator engagement (round 1 only)
+        'competition_calc_interactions', 'pgg_calc_interactions',
+        'calculator_pgg_rounds',
+        # end-of-part outcomes (round 10 only)
+        'PGG_selected_round', 'PGG_earnings',
+        'pgg_belief_member2', 'pgg_belief_member3', 'pgg_belief_bonus',
+        'practice_ECs', 'competition_ECs', 'Total_bonus_ECs',
+    ]
+    for name in _PER_ROUND_FIELDS:
+        header += ['{}_{}'.format(name, r) for r in range(1, C.NUM_ROUNDS + 1)]
+    yield header
+
+    for p in players:
+        if p.round_number != 1:
+            continue
+        first = p
+        last  = p.in_round(C.NUM_ROUNDS)
+        part  = p.participant
+
+        row = [
+            p.session.code, part.code, part.label,
+            getattr(part, 'Treatment', None),
+            getattr(part, 'group_id', None),
+            getattr(part, 'role', None),
+            getattr(part, 'multiplier', None),
+            first.Comprehension_1, first.Comprehension_2,
+            first.Comprehension_wrong_answers,
+            first.competition_calc_interactions, first.pgg_calc_interactions,
+            first.calculator_pgg_rounds,
+            last.PGG_selected_round, last.PGG_earnings,
+            last.pgg_belief_member2, last.pgg_belief_member3, last.pgg_belief_bonus,
+            getattr(part, 'Part_I_practice_ECs', None),
+            getattr(part, 'Part_I_competition_ECs', None),
+            last.Total_bonus_ECs,
+        ]
+        for name in _PER_ROUND_FIELDS:
+            row += [getattr(p.in_round(r), name) for r in range(1, C.NUM_ROUNDS + 1)]
+        yield row
 
 
 # ── Page sequence ────────────────────────────────────────────────────────────────────────────
