@@ -25,13 +25,11 @@ Full page_sequence (WaitPages handled automatically by oTree):
   Trust_Send                          (trust_send_ingroup, trust_send_outgroup; multiples of 10, max 50)
   Trust_Return                        (trust_return_ingroup JSON, trust_return_outgroup JSON)
 
-  ── PGG2 (fully anonymous) ──
-  PGG2_Instructions                   (no form)
-  PGG2_Contribute                     (pgg2_contribution: 0–50)
-
-  ── Non-incentivised surveys ──
+  ── Incentivised, matched in a random cycle ──
   SVO_Intro                           (no form)
   SVO                                 (svo_choice_1 … svo_choice_6: 0–8)
+
+  ── Non-incentivised survey ──
   Questionnaire                       (q_fairness 1–7, q_trust 1–3, ios_score 1–7)
 
   ── Final ──
@@ -153,17 +151,7 @@ class PlayerBot(Bot):
             'trust_return_outgroup': _trust_return_json(trust_ret_frac),
         }, check_html=False)
 
-        # ── PGG2 (fully anonymous) ─────────────────────────────────────────────
-        yield Submission(PGG2_Instructions, {}, check_html=False)
-
-        yield Submission(PGG2_Contribute, {
-            # Slider goes -100 to +100; multiples of 10
-            'pgg2_contribution':        random.choice(range(0, 51, 10)),
-            # In form_fields — record varied modal usage instead of always False
-            'calculator_pgg2_clicked':  random.choice([True, False]),
-        }, check_html=False)
-
-        # ── Non-incentivised surveys ───────────────────────────────────────────
+        # ── Incentivised, matched in a random cycle ────────────────────────────
         yield Submission(SVO_Intro, {}, check_html=False)
 
         yield Submission(SVO, {

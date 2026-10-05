@@ -18,16 +18,18 @@ Game sequence:
     4. Trust game (simultaneous; strategy method for trustee return)
 
   Incentivised, matched in a random cycle:
-    Social Value Orientation — Murphy et al. (2011), 6-item slider
+    5. Social Value Orientation — Murphy et al. (2011), 6-item slider
 
   Non-incentivised:
     Questionnaire — fairness, generalised trust, IOS
 
-  Fully anonymous (random reshuffled):
-    One-shot Public Goods Game (PGG2)
-
 Payment: one task randomly selected ex-post, the same one for everyone in the
 session (see Final_WaitPage).
+
+A one-shot anonymous Public Goods Game (PGG2) used to sit after the trust game.
+It was removed: it promised each participant one ingroup and one outgroup
+partner, which is impossible in a group of 3 (requiring "exactly one same-tier
+partner" needs blocks of size 2, and 3 is odd).
 '''
 
 
@@ -43,7 +45,6 @@ class C(CC):
     Instructions_staghunt_path   = "_templates/global/Instructions_staghunt.html"
     Instructions_ultimatum_path  = "_templates/global/Instructions_ultimatum.html"
     Instructions_trust_path      = "_templates/global/Instructions_trust.html"
-    Instructions_pgg2_path       = "_templates/global/Instructions_pgg2.html"
 
     # SVO: Murphy et al. (2011) primary items — 6 items × 9 options each
     # Each tuple: (self_allocations, other_allocations)
@@ -71,16 +72,13 @@ class C(CC):
     # Trust strategy method: only non-zero send amounts (trustee rows)
     TRUST_NONZERO_AMOUNTS = list(range(10, 60, 10))  # [10,20,30,40,50]
 
-    # Games available for payment selection
-    PAYABLE_GAMES = [
-        'solidarity', 'stag',
-        'ult_ingroup', 'ult_outgroup',
-        'trust_ingroup', 'trust_outgroup',
-        'pgg2', 'svo',
-    ]
-
     # Participant-facing task labels. Kept deliberately neutral: the labels
     # must not name the underlying game (no "Solidarity Game", "Stag Hunt", …).
+    #
+    # These keys ARE the set of payment-eligible decisions: Final_WaitPage draws
+    # from game_field_map, whose keys must match this dict exactly. There is
+    # deliberately no second "list of payable games" — a stale duplicate of this
+    # set is how a removed game once lingered in the draw.
     GAME_LABELS = {
         'solidarity':     'Task 1',
         'stag':           'Task 2',
@@ -88,8 +86,7 @@ class C(CC):
         'ult_outgroup':   'Task 3 with Partner B',
         'trust_ingroup':  'Task 4 with Partner A',
         'trust_outgroup': 'Task 4 with Partner B',
-        'pgg2':           'Task 5',
-        'svo':            'Task 6',
+        'svo':            'Task 5',
     }
 
     # Tier labels (for CrossGroup_Intro display)
@@ -98,8 +95,6 @@ class C(CC):
         'medium': 'Medium Earner',
         'low':    'Low Earner',
     }
-
-    PGG_endowment = 100 #TODO: Adjust if necessary
 
 
 # ── Models ─────────────────────────────────────────────────────────────────────
@@ -162,12 +157,6 @@ class Player(BasePlayer):
     # ── Trust: payoffs ───────────────────────────────────────────────────────
     trust_earnings_ingroup  = models.FloatField(initial=0)
     trust_earnings_outgroup = models.FloatField(initial=0)
-
-    # ── PGG2 ────────────────────────────────────────────────────────────────
-    pgg2_contribution = models.IntegerField(min=-100, max=100, initial=0)
-    pgg2_earnings     = models.FloatField(initial=0)
-    # Whether the player opened the scenario-calculator modal during PGG2
-    calculator_pgg2_clicked = models.BooleanField(initial=False)
 
     # ── SVO (Murphy et al. 2011) — 6 items, each 0–8 (index into 9 options) ─
     svo_choice_1 = models.IntegerField(min=0, max=8)
@@ -246,17 +235,6 @@ def _compute_svo_angle(player):
         return 0.0
     angle = math.atan(mean_other / mean_self) * (180 / math.pi)
     return round(angle, 2)
-
-
-# ── Helper: render a signed token transfer in plain words ──────────────────────
-def _tokens(delta):
-    """Describe a token transfer from the participant's point of view.
-    Positive = moved into the Group Account, negative = taken out of it."""
-    if delta > 0:
-        return '{} tokens into the Group Account'.format(delta)
-    if delta < 0:
-        return '{} tokens out of the Group Account'.format(abs(delta))
-    return 'nothing'
 
 
 # ── Helper: get partner player object from participant code ────────────────────
@@ -438,12 +416,15 @@ class CrossMatching_WaitPage(WaitPage):
 class Final_WaitPage(WaitPage):
     """
     Session-level WaitPage. Computes all game payoffs:
-      1. PGG2 (form random groups)
-      2. Ultimatum (ex-post matching)
-      3. Trust (ex-post matching)
+      1. Ultimatum (ex-post matching)
+      2. Trust (ex-post matching)
+      3. SVO (random allocator/receiver cycle)
     Then randomly selects one game for payment.
     """
-    wait_for_all_groups = True  # must wait for all to form PGG2 random groups and compute payoffs
+    # Session-level, not group-level: the SVO cycle and both cross-economy
+    # matchings iterate subsession.get_players() across the whole session, so
+    # every player must have arrived before any payoff can be computed.
+    wait_for_all_groups = True
     body_text = "Computing your earnings — please wait…"
 
     @staticmethod
@@ -458,38 +439,7 @@ class Final_WaitPage(WaitPage):
         # lockstep — there is no second, drifting copy of the payoff rules.
         receipts = {p.participant.code: {} for p in all_players}
 
-        # ── 1. PGG2: form random groups of 3, compute pool earnings ──────────
-        shuffled = list(all_players)
-        random.shuffle(shuffled)
-        # Pad to multiple of 3
-        while len(shuffled) % 3 != 0:
-            shuffled.append(shuffled[0])
-        pgg2_groups = [shuffled[i:i + 3] for i in range(0, len(shuffled), 3)]
-
-        for grp in pgg2_groups:
-            contributions       = [p.pgg2_contribution for p in grp]
-            total_contributions = sum(contributions)
-            for i, p in enumerate(grp):
-                private_tokens  = 100 - contributions[i]
-                private_ec      = 2 * private_tokens
-                group_total     = C.PGG_Commons + total_contributions
-                p.pgg2_earnings = float(private_ec + group_total)
-                partners = [g for g in grp if g.participant.code != p.participant.code]
-                p.participant.pgg2_partner1_code = partners[0].participant.code
-                p.participant.pgg2_partner2_code = partners[1].participant.code
-
-                other_contribs = [g.pgg2_contribution for g in partners]
-                receipts[p.participant.code]['pgg2'] = [
-                    ['Your transfer to the Group Account', _tokens(contributions[i])],
-                    ['The other members transferred',
-                     ' and '.join(_tokens(c) for c in other_contribs) or '—'],
-                    ['Left in your Private Account',
-                     '{} tokens &times; 2 = {:.0f} ECs'.format(private_tokens, private_ec)],
-                    ['Total in the Group Account',
-                     '{} tokens &times; 1 = {:.0f} ECs'.format(group_total, group_total)],
-                ]
-
-        # ── 2. Ultimatum payoffs (ex-post matching) ───────────────────────────
+        # ── 1. Ultimatum payoffs (ex-post matching) ───────────────────────────
         for p in all_players:
             for partner_attr, offer_attr, my_reject_attr, earn_attr in [
                 ('ingroup_code',  'ult_offer_ingroup',
@@ -554,7 +504,7 @@ class Final_WaitPage(WaitPage):
                          'accepted' if p_accepts else 'rejected', responder_earnings)],
                 ]
 
-        # ── 3. Trust payoffs (ex-post matching) ───────────────────────────────
+        # ── 2. Trust payoffs (ex-post matching) ───────────────────────────────
         for p in all_players:
             for partner_attr, send_attr, my_return_attr, earn_attr in [
                 ('ingroup_code',  'trust_send_ingroup',
@@ -617,7 +567,7 @@ class Final_WaitPage(WaitPage):
                          tripled_received, my_return_amount, trustee_earnings)],
                 ]
 
-        # ── 3b. Receipts for the two within-group tasks ──────────────────────
+        # ── 2b. Receipts for the two within-group tasks ──────────────────────
         for p in all_players:
             members = p.group.get_players()
             others  = [g for g in members if g.id_in_group != p.id_in_group]
@@ -646,7 +596,7 @@ class Final_WaitPage(WaitPage):
                  ' and '.join(letter.get(g.stag_choice, '—') for g in others)],
             ]
 
-        # ── 3c. SVO payoffs (Murphy et al. 2011, incentivised) ───────────────
+        # ── 3. SVO payoffs (Murphy et al. 2011, incentivised) ────────────────
         # A random CYCLE rather than random pairs: i allocates to i+1 and
         # receives from i-1. A cycle works for any session size, including the
         # odd multiples of 3 (9, 15, 21 …) that random pairing cannot cover.
@@ -688,7 +638,9 @@ class Final_WaitPage(WaitPage):
                  'they allocated {} ECs to you'.format(received)],
             ]
 
-        # ── 4. Select random game for payment ────────────────────────────────
+        # ── 4. Select random task for payment ────────────────────────────────
+        # Keys MUST match C.GAME_LABELS exactly — that dict supplies the
+        # participant-facing name of whichever task is drawn.
         game_field_map = {
             'solidarity':   'solidarity_earnings',
             'stag':         'stag_earnings',
@@ -696,9 +648,12 @@ class Final_WaitPage(WaitPage):
             'ult_outgroup': 'ult_earnings_outgroup',
             'trust_ingroup':  'trust_earnings_ingroup',
             'trust_outgroup': 'trust_earnings_outgroup',
-            'pgg2':         'pgg2_earnings',
             'svo':          'svo_earnings',
         }
+        assert set(game_field_map) == set(C.GAME_LABELS), (
+            'game_field_map and C.GAME_LABELS have diverged: '
+            '{} vs {}'.format(sorted(game_field_map), sorted(C.GAME_LABELS))
+        )
         # One draw per session: every participant is paid for the same task.
         # Move this line inside the loop below to draw per participant instead.
         selected_game = random.choice(list(game_field_map.keys()))
@@ -1110,49 +1065,6 @@ class Questionnaire(MyPage):
         return v
 
 
-# ── Page: PGG2 instructions ────────────────────────────────────────────────────
-class PGG2_Instructions(MyPage):
-    @staticmethod
-    def vars_for_template(player: Player):
-        v = MyPage.vars_for_template(player)
-        v['Instructions_pgg2'] = C.Instructions_pgg2_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
-        return v
-
-
-# ── Page: PGG2 contribute ─────────────────────────────────────────────────────
-class PGG2_Contribute(MyPage):
-    form_fields = ['pgg2_contribution', 'calculator_pgg2_clicked']
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        v = MyPage.vars_for_template(player)
-        v['Instructions_pgg2'] = C.Instructions_pgg2_path
-        # For the in-round calculator modal (shared body template)
-        v['member_rows'] = ['You', 'Member 2', 'Member 3']
-        v['calc_prefix'] = 'pgg2modal'
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
-        return v
-
-
 # ── Page: Final results ────────────────────────────────────────────────────────
 class Final_Results(MyPage):
     @staticmethod
@@ -1168,7 +1080,6 @@ class Final_Results(MyPage):
             'ult_outgroup':   round(player.ult_earnings_outgroup, 1),
             'trust_ingroup':  round(player.trust_earnings_ingroup, 1),
             'trust_outgroup': round(player.trust_earnings_outgroup, 1),
-            'pgg2':           round(player.pgg2_earnings, 1),
             'svo':            round(player.svo_earnings, 1),
         }
 
@@ -1237,13 +1148,11 @@ page_sequence = [
     Trust_Send,
     Trust_Return,
 
-    # ── Anonymous PGG (after incentivised cross-economy games) ───────────────
-    PGG2_Instructions,
-    PGG2_Contribute,
-
-    # ── Non-incentivised surveys ──────────────────────────────────────────────
+    # ── Incentivised, matched in a random cycle ───────────────────────────────
     SVO_Intro,
     SVO,
+
+    # ── Non-incentivised survey ───────────────────────────────────────────────
     Questionnaire,
 
     # ── Final payoff computation and results ──────────────────────────────────

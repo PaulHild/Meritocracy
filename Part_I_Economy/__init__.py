@@ -137,7 +137,7 @@ class Player(BasePlayer):
         choices=[
             [False, 'Multipliers are the same for everyone in the group.'],
             [False, 'Multipliers were assigned randomly at the start of the experiment.'],
-            [True,  'Multipliers are assigned based on performance in the first two rounds.'],
+            [True,  'Multipliers are assigned based on performance in the practice round.'],
         ],
         label='How were multipliers assigned in your group?',
         widget=widgets.RadioSelect)
@@ -155,7 +155,7 @@ class Player(BasePlayer):
         choices=[
              [False, 'Multipliers are the same for everyone in the group.'],
             [True, 'Multipliers were assigned randomly at the start of the experiment.'],
-            [False,  'Multipliers are assigned based on performance in the first two rounds.'],
+            [False,  'Multipliers are assigned based on performance in the practice round.'],
         ],
         label='How were multipliers assigned in your group?',
         widget=widgets.RadioSelect)
@@ -509,7 +509,7 @@ class Round_RavensMatrix(MyBasePage):
             'score_field':      'Raven_score',
             'answers_field':    'Raven_answers',
             'participant_code': player.participant.code,
-            'puzzle_set':       player.round_number + 2,   # sets 1-2 used in Practice
+            'puzzle_set':       player.round_number + 2,   # set 1 used in Practice; set 2 unused
             'freeze_seconds':   C.Submit_freeze_duration,
         }
 
@@ -550,7 +550,7 @@ class Round_Analogies(MyBasePage):
             'analogy_score_field':   'Analogy_score',
             'analogy_answers_field': 'Analogy_answers',
             'participant_code':      player.participant.code,
-            'analogy_set':           player.round_number + 2,   # sets 1-2 used in Practice
+            'analogy_set':           player.round_number + 2,   # set 1 used in Practice; set 2 unused
             'freeze_seconds':        C.Submit_freeze_duration,
         }
 
@@ -591,7 +591,7 @@ class Round_Math(MyBasePage):
             'math_score_field':   'Math_score',
             'math_answers_field': 'Math_answers',
             'participant_code':   player.participant.code,
-            'math_set':           player.round_number + 2,   # sets 1-2 used in Practice
+            'math_set':           player.round_number + 2,   # set 1 used in Practice; set 2 unused
             'freeze_seconds':     C.Submit_freeze_duration,
         }
 

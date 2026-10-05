@@ -27,7 +27,10 @@ class CommonConstants(BaseConstants):
     Completion_fee = 10       # TODO: adjust completion fee
     Bonus_max = 20            # TODO: adjust maximum bonus
     Bonus_max_practice = 1.00
-    Practice_ECs = 5
+    # Raised from 5 to 10 when the second practice round was removed, so that
+    # total practice earnings stay roughly constant despite ~270s less scored
+    # testing (3 blocks x Practice_round_length).
+    Practice_ECs = 10
 
     RavensQuiz_template_path = "_templates/global/RavensQuiz.html"
     AnalogyQuiz_template_path = "_templates/global/AnalogyQuiz.html"
@@ -72,7 +75,7 @@ class CommonConstants(BaseConstants):
         '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
         f'<p>In each round, the three group members compete over a pot of <strong>{Economy_pie} ECs</strong>. '
         'Your share depends on your score in the Intelligence Test and on your <strong>personal multiplier</strong>.</p>'
-        '<p>Multipliers <strong>were assigned based on relative performance</strong> in the practice rounds: '
+        '<p>Multipliers <strong>were assigned based on relative performance</strong> in the practice round: '
         'the top performer in each group received <strong>&times;4</strong>, '
         'the middle performer <strong>&times;2</strong>, '
         'and the bottom performer <strong>&times;1</strong>.</p>'
@@ -115,7 +118,6 @@ class CommonConstants(BaseConstants):
     Instructions_staghunt   = "_templates/global/Instructions_staghunt.html"
     Instructions_ultimatum  = "_templates/global/Instructions_ultimatum.html"
     Instructions_trust      = "_templates/global/Instructions_trust.html"
-    Instructions_pgg2       = "_templates/global/Instructions_pgg2.html"
 
 
 # %% ExtraModel: cross-session treatment counter

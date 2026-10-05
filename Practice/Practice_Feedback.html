@@ -11,12 +11,11 @@
     <hr class="section-divider">
 
     <p>
-        In the previous round, you scored {{ player.Practice_score_1 }} points, earning you {{ last_round_ecs }} ECs.
+        In the practice round, you scored {{ player.Practice_score_1 }} points, earning you {{ last_round_ecs }} ECs.
 
         <br><br>
-        Next, you will play the second round.
-        Again, per point scored, you will earn {{C.Practice_ECs}} ECs.
-        Do your best!
+        That completes the practice stage. Next, you will be grouped with 2 other participants
+        before the main part of the experiment begins.
     </p>
 
     {% for field in form %}
@@ -39,7 +38,7 @@
         <!-- <a id="myBtn" onclick="open_modal(1)" class="btn btn-info">Introductory instructions</a>
         <a id="myBtn" onclick="open_modal(2)" class="btn btn-info">Practice Instructions</a> -->
       </div>
-        <button id="NextButton" class="btn btn-primary">Start second round</button>
+        <button id="NextButton" class="btn btn-primary">Continue</button>
     </div>
 </div>
 

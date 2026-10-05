@@ -34,10 +34,10 @@ PARTICIPANT_FIELDS = [
     'group_id',     # int: unique group index within this session (1 … n/3)
     'role',         # str: 'high' | 'mid' | 'low'  (performance tier)
     'multiplier',   # int: 4 | 2 | 1
-    'Practice_ECs_total',  # float: total ECs earned in both practice rounds
+    'Practice_ECs_total',  # float: ECs earned in the practice round
     # ── Part I → Part II cross-app ───────────────────────────────────────────
     'Part_I_total_ECs',          # float: Total_bonus_ECs from Part I (for tier ranking in Part II)
-    'Part_I_practice_ECs',       # float: ECs from the practice rounds
+    'Part_I_practice_ECs',       # float: ECs from the practice round
     'Part_I_competition_ECs',    # float: accumulated ECs from the 10 Competition rounds
     'Part_I_pgg_earnings',       # float: ECs from the randomly-selected PGG round (revealed at end of Part II)
     'Part_I_pgg_selected_round', # int : which PGG round was selected
@@ -48,8 +48,6 @@ PARTICIPANT_FIELDS = [
     # ── Part II cross-economy matching ───────────────────────────────────────
     'ingroup_code',        # str: participant.code of cross-economy ingroup partner
     'outgroup_code',       # str: participant.code of cross-economy outgroup partner
-    'pgg2_partner1_code',  # str: participant.code of PGG2 partner 1
-    'pgg2_partner2_code',  # str: participant.code of PGG2 partner 2
     # ── Part II final payment ─────────────────────────────────────────────────
     'Part_II_game_selected',  # str: name of the randomly chosen game
     'Part_II_earnings',       # float: ECs earned from the selected game

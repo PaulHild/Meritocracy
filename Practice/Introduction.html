@@ -17,21 +17,21 @@
  <div class="section-box box-warn">
     <div class="section-header">
       <div class="icon">🧪</div>
-      <h3>First rounds and grouping</h3>
+      <h3>Practice round and grouping</h3>
   </div>  
 
 
   <div class="section-box box-calm">
     <div class="section-header">
       <div class="icon">🧪</div>
-      <h4>First two rounds</h4>
+      <h4>Practice round</h4>
   </div>
            <ul>
-          <li>On the next few pages, you will play two rounds of the Intelligence Test. </li>
+          <li>On the next few pages, you will play one round of the Intelligence Test. </li>
             <ul>
               <li>In each question, for the first 3 seconds, you will not be able to submit an answer.</li>
             </ul>
-          <li>In both of these rounds, each correct answer will earn you <strong>{{C.Practice_ECs}} ECs</strong>.</li>
+          <li>In this round, each correct answer will earn you <strong>{{C.Practice_ECs}} ECs</strong>.</li>
           <ul>
             <!-- TODO: clarify the payment: do these also accumulate? -->
             <li>Remember that accumulated ECs will be converted to Euros at the end.</li>
@@ -45,10 +45,13 @@
       <h4>Grouping</h4>
   </div>
        <ul>
-    <li>After the first two rounds, you will be grouped with 2 other participants. </li>
-    <li>Grouping is based on how you perform in these two rounds. </li>
+    <li>After the practice round, you will be grouped with 2 other participants. </li>
+    <li>Grouping is based on how you perform in this round. </li>
     <li>At this point, we will not explain how the grouping works, but you should know that it is in your interest to perform at your best.</li>
-    <li>In other words, in addition to earning you ECs right now, <strong>your performance in these rounds affects your earnings later in the experiment.</strong></li>
+    <!-- NOTE: the sentence below is duplicated verbatim in
+         _templates/global/Instructions_Practice_1.html. Those two files are independent
+         copies of this text (not an include) and must be kept in sync by hand. -->
+    <li><strong>Your performance at the practice stage may affect your future earnings.</strong></li>
     <li>It is in your best interest to perform as well as you can.</li>
   </ul>
   </div>
@@ -83,7 +86,7 @@
 
     <div class="buttons-container">
         <a id="myBtn" onclick="open_modal(1)" class="btn btn-info">Introductory instructions</a>
-        <button id="NextButton" class="btn btn-primary">Start first round</button>
+        <button id="NextButton" class="btn btn-primary">Start practice round</button>
     </div>
 </div>
 

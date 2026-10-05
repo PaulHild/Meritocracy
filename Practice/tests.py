@@ -13,12 +13,7 @@ Covers the full page_sequence:
   Practice_round_1_Analogies     (score + answers)
   Practice_round_1_Interstitial_Math
   Practice_round_1_Math          (score + answers) → computes Practice_score_1
-  Practice_instructions_2        (display-only)
-  Practice_round_2_Ravens        (score + answers)
-  Practice_round_2_Interstitial_Analogy
-  Practice_round_2_Analogies     (score + answers)
-  Practice_round_2_Interstitial_Math
-  Practice_round_2_Math          (score + answers) → computes Practice_score_2
+  Practice_Feedback              (display-only; reveals Practice_score_1)
   Grouping_WaitPage              (auto — handled by oTree)
 
 Bots inject scores directly into the hidden form fields that JavaScript
@@ -75,7 +70,7 @@ class PlayerBot(Bot):
         yield Submission(Learning_Complete, {}, check_html=False)
         yield Submission(Introduction, {}, check_html=False)
 
-        # ── Practice Round 1 (set 1) ─────────────────────────────────────────
+        # ── Practice Round (set 1) ───────────────────────────────────────────
         yield Submission(Practice_round_1_Ravens, {
             'Practice_score_Raven_1':   _score(5),
             'Practice_answers_Raven_1': _answers(),
@@ -96,27 +91,6 @@ class PlayerBot(Bot):
         }, check_html=False)
         # before_next_page → _compute_practice_sum(player, 1) sets Practice_score_1
 
-        yield Submission(Practice_instructions_2, {}, check_html=False)
-
-        # ── Practice Round 2 (set 2) ─────────────────────────────────────────
-        yield Submission(Practice_round_2_Ravens, {
-            'Practice_score_Raven_2':   _score(5),
-            'Practice_answers_Raven_2': _answers(),
-        }, check_html=False)
-
-        yield Submission(Practice_round_2_Interstitial_Analogy, {}, check_html=False)
-
-        yield Submission(Practice_round_2_Analogies, {
-            'Practice_score_Analogy_2':   _score(5),
-            'Practice_answers_Analogy_2': _answers(),
-        }, check_html=False)
-
-        yield Submission(Practice_round_2_Interstitial_Math, {}, check_html=False)
-
-        yield Submission(Practice_round_2_Math, {
-            'Practice_score_Math_2':   _score(5),
-            'Practice_answers_Math_2': _answers(),
-        }, check_html=False)
-        # before_next_page → _compute_practice_sum(player, 2) sets Practice_score_2
+        yield Submission(Practice_Feedback, {}, check_html=False)
 
         # Grouping_WaitPage handled automatically by oTree

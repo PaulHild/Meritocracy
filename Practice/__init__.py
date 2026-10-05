@@ -47,7 +47,11 @@ class Player(BasePlayer):
     Learning_score_Math   = models.IntegerField(initial=0)
     Learning_answers_Math = models.LongStringField(initial='{}')
 
-    # ── Practice Round 1: sub-scores ──────────────────────────────────────────
+    # ── Practice Round: sub-scores ────────────────────────────────────────────
+    # The `_1` suffix is kept although there is only one practice round: it is
+    # baked into js_vars field names, the hidden_fields template loops, the bots
+    # and every exported data column. _compute_practice_sum() is parameterised by
+    # round number, so re-adding a round is a page_sequence edit, not a rewrite.
     Practice_score_Raven_1 = models.IntegerField(initial=0)
     Practice_answers_Raven_1 = models.LongStringField(initial='{}')
 
@@ -58,18 +62,6 @@ class Player(BasePlayer):
     Practice_answers_Math_1 = models.LongStringField(initial='{}')
 
     Practice_score_1 = models.IntegerField(initial=0)   # sum of Raven + Analogy + Math
-
-    # ── Practice Round 2: sub-scores ──────────────────────────────────────────
-    Practice_score_Raven_2 = models.IntegerField(initial=0)
-    Practice_answers_Raven_2 = models.LongStringField(initial='{}')
-
-    Practice_score_Analogy_2 = models.IntegerField(initial=0)
-    Practice_answers_Analogy_2 = models.LongStringField(initial='{}')
-
-    Practice_score_Math_2 = models.IntegerField(initial=0)
-    Practice_answers_Math_2 = models.LongStringField(initial='{}')
-
-    Practice_score_2 = models.IntegerField(initial=0)   # sum of Raven + Analogy + Math
 
 
 
@@ -103,22 +95,17 @@ class Introduction(MyBasePage):
     pass        
 
 
-class Practice_instructions_1(MyBasePage):
-    pass
+class Practice_Feedback(MyBasePage):
+    """Shown after the practice round, before grouping.
 
-
-class Practice_instructions_2(MyBasePage):
+    The only page in the experiment that reveals a participant's practice score —
+    the score that fixes their tier and multiplier for the rest of the session.
+    """
     @staticmethod
     def vars_for_template(player: Player):
         variables = MyBasePage.vars_for_template(player)
-
-        # Add or modify variables specific to ExtendedPage
-        last_round_ecs = player.Practice_score_1 * C.Practice_ECs
-        variables['last_round_ecs'] = last_round_ecs
+        variables['last_round_ecs'] = player.Practice_score_1 * C.Practice_ECs
         return variables
-
-class Practice_WaitPage(WaitPage):
-    pass
 
 
 # ── Helper: compute and store Practice_score_N sum ──────────────────────────
@@ -133,7 +120,7 @@ def _compute_practice_sum(player, round_num):
 
 
 # ══════════════════════════════════════════════════════════════════════════════
-# Learning Round  (3 questions each, Set 7 — shown before the practice rounds)
+# Learning Round  (3 questions each, Set 7 — shown before the practice round)
 # ══════════════════════════════════════════════════════════════════════════════
 
 class Learning_Explanation_Ravens(MyBasePage):
@@ -349,119 +336,11 @@ class Practice_round_1_Math(MyPage):
         _compute_practice_sum(player, 1)
 
 
-# ══════════════════════════════════════════════════════════════════════════════
-# Practice Round 2
-# ══════════════════════════════════════════════════════════════════════════════
-
-class Practice_round_2_Ravens(MyPage):
-    extra_fields = ['Practice_score_Raven_2', 'Practice_answers_Raven_2']
-    form_fields = MyBasePage.form_fields + extra_fields
-
-    timeout_seconds = C.Practice_round_length
-    timer_text = C.Timer_text
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        variables = MyBasePage.vars_for_template(player)
-        for _ in ['Practice_score_Raven_2', 'Practice_answers_Raven_2']:
-            variables['hidden_fields'].append(_)
-        return variables
-
-    @staticmethod
-    def js_vars(player: Player):
-        return {
-            'score_field':    'Practice_score_Raven_2',
-            'answers_field':  'Practice_answers_Raven_2',
-            'participant_code': player.participant.code,
-            'puzzle_set':     2,
-            'freeze_seconds': C.Submit_freeze_duration,
-        }
-
-
-class Practice_round_2_Interstitial_Analogy(MyBasePage):
-    timeout_seconds = C.Interstitial_length
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        variables = MyBasePage.vars_for_template(player)
-        variables['completed_part_name'] = 'Matrix Reasoning'
-        variables['next_part_name'] = 'Analogies'
-        variables['interstitial_seconds'] = C.Interstitial_length
-        return variables
-
-
-class Practice_round_2_Analogies(MyPage):
-    extra_fields = ['Practice_score_Analogy_2', 'Practice_answers_Analogy_2']
-    form_fields = MyBasePage.form_fields + extra_fields
-
-    timeout_seconds = C.Practice_round_length
-    timer_text = C.Timer_text
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        variables = MyBasePage.vars_for_template(player)
-        for _ in ['Practice_score_Analogy_2', 'Practice_answers_Analogy_2']:
-            variables['hidden_fields'].append(_)
-        return variables
-
-    @staticmethod
-    def js_vars(player: Player):
-        return {
-            'analogy_score_field':   'Practice_score_Analogy_2',
-            'analogy_answers_field': 'Practice_answers_Analogy_2',
-            'participant_code':      player.participant.code,
-            'analogy_set':           2,
-            'freeze_seconds':        C.Submit_freeze_duration,
-        }
-
-
-class Practice_round_2_Interstitial_Math(MyBasePage):
-    timeout_seconds = C.Interstitial_length
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        variables = MyBasePage.vars_for_template(player)
-        variables['completed_part_name'] = 'Analogies'
-        variables['next_part_name'] = 'Mathematics'
-        variables['interstitial_seconds'] = C.Interstitial_length
-        return variables
-
-
-class Practice_round_2_Math(MyPage):
-    extra_fields = ['Practice_score_Math_2', 'Practice_answers_Math_2']
-    form_fields = MyBasePage.form_fields + extra_fields
-
-    timeout_seconds = C.Practice_round_length
-    timer_text = C.Timer_text
-
-    @staticmethod
-    def vars_for_template(player: Player):
-        variables = MyBasePage.vars_for_template(player)
-        for _ in ['Practice_score_Math_2', 'Practice_answers_Math_2']:
-            variables['hidden_fields'].append(_)
-        return variables
-
-    @staticmethod
-    def js_vars(player: Player):
-        return {
-            'math_score_field':   'Practice_score_Math_2',
-            'math_answers_field': 'Practice_answers_Math_2',
-            'participant_code':   player.participant.code,
-            'math_set':           2,
-            'freeze_seconds':     C.Submit_freeze_duration,
-        }
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened=False):
-        _compute_practice_sum(player, 2)
-
-
-
 class Grouping_WaitPage(WaitPage):
     """
-    Wait for ALL players to finish Practice_round_2, then:
+    Wait for ALL players to finish the practice round, then:
       1. Assert n % 3 == 0 (fail loudly if not).
-      2. Sort players by Practice_score_2 descending → label high / mid / low tiers.
+      2. Sort players by Practice_score_1 descending → label high / mid / low tiers.
       3. Rank-match: the j-th best of each tier form group j.
       4. Assign treatment (globally balanced via TreatmentCounter).
       5. Assign multipliers based on treatment + role.
@@ -482,16 +361,23 @@ class Grouping_WaitPage(WaitPage):
 
         tier_size = n // 3
 
-        # ── Sort by Practice_score_2 descending ───────────────────────────────
+        # ── Sort by Practice_score_1 descending ───────────────────────────────
+        # Practice_score_1 is the ONLY practice score: there is a single practice
+        # round. Tiers, roles and multipliers all derive from it, so this sort key
+        # is the entire meritocracy manipulation — if it ever reads a field that
+        # nothing writes, every score is 0, the sort becomes a no-op, and tiers
+        # silently collapse to the random pre-shuffle order below.
+        #
         # Pre-shuffle first: Python's sort is stable, so without this, players
         # tied on the same score keep their arrival order (id_in_subsession).
-        # Ties are common — a tier boundary falls inside a tie in >90% of
-        # simulated sessions — and since the tiers are no longer shuffled below,
-        # arrival order would otherwise decide both tier membership and group
-        # composition.
+        # Ties are common — a tier boundary fell inside a tie in >90% of sessions
+        # simulated when there were two practice rounds, and with one round and
+        # half the testing time they are more frequent still — and since the
+        # tiers are no longer shuffled below, arrival order would otherwise
+        # decide both tier membership and group composition.
         ranked = list(players)
         random.shuffle(ranked)
-        ranked.sort(key=lambda p: p.Practice_score_2 or 0, reverse=True)
+        ranked.sort(key=lambda p: p.Practice_score_1 or 0, reverse=True)
 
         high_tier = ranked[:tier_size]
         mid_tier  = ranked[tier_size: 2 * tier_size]
@@ -551,7 +437,7 @@ class Grouping_WaitPage(WaitPage):
 
         # ── Store practice ECs for each player ────────────────────────
         for player in players:
-            practice_ecs = ((player.Practice_score_1 or 0) + (player.Practice_score_2 or 0)) * CC.Practice_ECs
+            practice_ecs = (player.Practice_score_1 or 0) * CC.Practice_ECs
             player.participant.Practice_ECs_total = practice_ecs
 
 
@@ -566,21 +452,14 @@ page_sequence = [
     Learning_Math,
     Learning_Complete,
     Introduction,
-    # Practice_instructions_1,
-    # ── Practice Round 1 ─────────────────────────────────────────────────────
+    # ── Practice Round (the single scored practice block, Set 1) ─────────────
     Practice_round_1_Ravens,
     Practice_round_1_Interstitial_Analogy,
     Practice_round_1_Analogies,
     Practice_round_1_Interstitial_Math,
     Practice_round_1_Math,
-    # ── Instructions between practice rounds ──────────────────────────────────
-    Practice_instructions_2,
-    # ── Practice Round 2 ─────────────────────────────────────────────────────
-    Practice_round_2_Ravens,
-    Practice_round_2_Interstitial_Analogy,
-    Practice_round_2_Analogies,
-    Practice_round_2_Interstitial_Math,
-    Practice_round_2_Math,
+    # ── Score feedback, then grouping ────────────────────────────────────────
+    Practice_Feedback,
     # ── Grouping ──────────────────────────────────────────────────────────────
     Grouping_WaitPage,
 ]
