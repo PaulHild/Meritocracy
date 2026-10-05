@@ -35,7 +35,11 @@ class CommonConstants(BaseConstants):
     Interstitial_template_path = "_templates/global/Interstitial.html"
 
     # \u2500\u2500 Economy \u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500
-    Economy_pie   = 500   # fixed pie size (ECs) competed over each round
+    Economy_pie   = 120   # fixed pie size (ECs) competed over each round
+    # Result of the worked example in the Part II instructions (a player
+    # scoring 50 against two scoring 100 takes 50/250 of the pot). Derived so
+    # the example cannot go stale if Economy_pie changes.
+    Pie_example_share = round(Economy_pie * 50 / 250)
     PGG_Commons   = 300   # starting tokens in the common pool each round
     PGG_investible = 100   # tokens each player can invest in the common pool each round
     Pgg_lower_bound = 200
@@ -57,7 +61,7 @@ class CommonConstants(BaseConstants):
     Explanation_Perfect_Meritocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
-        '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
+        f'<p>In each round, the three group members compete over a pot of <strong>{Economy_pie} ECs</strong>. '
         'Your share of the pot depends on your score in the Intelligence Test.</p>'
         '<p>All three members of your Group are treated identically — '
         'your share is determined purely by how many questions you answer correctly compared to the other two members.</p>'
@@ -66,7 +70,7 @@ class CommonConstants(BaseConstants):
     Explanation_Excessive_Meritocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
-        '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
+        f'<p>In each round, the three group members compete over a pot of <strong>{Economy_pie} ECs</strong>. '
         'Your share depends on your score in the Intelligence Test and on your <strong>personal multiplier</strong>.</p>'
         '<p>Multipliers <strong>were assigned based on relative performance</strong> in the practice rounds: '
         'the top performer in each group received <strong>&times;4</strong>, '
@@ -78,7 +82,7 @@ class CommonConstants(BaseConstants):
     Explanation_Welfare_State = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
-        '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
+        f'<p>In each round, the three group members compete over a pot of <strong>{Economy_pie} ECs</strong>. '
         'Your share depends on your score in the Intelligence Test.</p>'
         'The score is calculated as performance in the round plus the average performance of the three players.'
         
@@ -87,7 +91,7 @@ class CommonConstants(BaseConstants):
     Explanation_Aristocracy = (
         '<p>The computer has now matched you with two other participants. The three of you form a <strong>Group</strong>.</p>'
         '<p>The other two group members will remain anonymous to you, and your identity will not be revealed to them either, not even after the experiment. All of your choices are completely confidential.</p>'
-        '<p>In each round, the three group members compete over a pot of <strong>500 ECs</strong>. '
+        f'<p>In each round, the three group members compete over a pot of <strong>{Economy_pie} ECs</strong>. '
         'Your share depends on your score and your <strong>personal multiplier</strong>.</p>'
         '<p>Multipliers were assigned <strong>randomly</strong> among the three members of your Group: '
         'one member received <strong>&times;4</strong>, one <strong>&times;2</strong>, and one <strong>&times;1</strong>.</p>'
@@ -155,7 +159,7 @@ def assign_treatment_balanced():
 # %% Payoff helper
 def compute_pie_share(player_score, player_multiplier,
                       group_scores, group_multipliers,
-                      treatment, economy_pie=500):
+                      treatment, economy_pie=CommonConstants.Economy_pie):
     """
     Compute this player's EC payoff from the economy pie for one round.
 

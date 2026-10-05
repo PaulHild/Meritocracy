@@ -104,10 +104,10 @@ class Player(BasePlayer):
     Comprehension_2 = models.BooleanField(initial=True) 
     
     Comprehension_question_1 = models.BooleanField(choices=[
-        [False, 'My share of the 500 ECs pot only depends on my score alone, regardless of the scores of the other two.'],
+        [False, f'My share of the {C.Economy_pie} ECs pot only depends on my score alone, regardless of the scores of the other two.'],
         [True,'The higher my score is compared to the scores of the other two, the higher is my share of the pie.'], # Correct answer here
-        [False, 'My share of the 500 ECs is determined by the sum of everones\' scores.'],],
-    label = '[Competition stage] How does the Competition over 500 ECs work?',
+        [False, f'My share of the {C.Economy_pie} ECs is determined by the sum of everones\' scores.'],],
+    label = f'[Competition stage] How does the Competition over {C.Economy_pie} ECs work?',
     widget=widgets.RadioSelect)
     
     Comprehension_question_2 = models.BooleanField(choices=[

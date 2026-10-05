@@ -171,9 +171,10 @@
     document.addEventListener('DOMContentLoaded', function () {
         makeBarChart('breakdownChart', breakdownData, 'ECs', {
             labels: BREAKDOWN_LABELS, bgColors: BREAKDOWN_BG,
-            borderColors: BREAKDOWN_BORDER,
+            borderColors: BREAKDOWN_BORDER, aspectRatio: 1.5,
         });
-        makeBarChart('groupChart', groupTotals, 'ECs');
+        // Wider columns here (380px), so a gentler ratio keeps the height sane.
+        makeBarChart('groupChart', groupTotals, 'ECs', { aspectRatio: 1.5 });
     });
 </script>
 
