@@ -76,6 +76,7 @@ class Results(Page):
         total_ecs  = part1_ecs + part2_ecs
         eur_amount = round(total_ecs / C.EC_exchange_rate, 2)
 
+        competition_detail = _detail(p, 'Part_I_competition_detail')
         pgg_detail    = _detail(p, 'Part_I_pgg_detail')
         belief_detail = _detail(p, 'Part_I_belief_detail')
         part2_detail  = _detail(p, 'Part_II_earnings_detail')
@@ -91,7 +92,9 @@ class Results(Page):
             'part2_ecs':           round(part2_ecs, 1),
             'total_ecs':           round(total_ecs, 1),
             'eur_amount':          eur_amount,
-            # Explanations for the two withheld payoffs + the belief bonus.
+            # Explanations: the Competition Stage total, the two withheld
+            # payoffs, and the belief bonus.
+            'competition_detail':  competition_detail,
             'pgg_detail':          pgg_detail,
             'pgg_round':           (pgg_detail or {}).get('round'),
             'belief_detail':       belief_detail,

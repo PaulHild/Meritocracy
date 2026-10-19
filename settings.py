@@ -43,6 +43,7 @@ PARTICIPANT_FIELDS = [
     'Part_I_pgg_selected_round', # int : which PGG round was selected
     'Part_I_pgg_belief_bonus',   # float: PGG belief-elicitation bonus (0 or C.PGG_Guess_ECs)
     # ── Final-page "receipts": JSON explaining how each payoff came about ────
+    'Part_I_competition_detail', # json: line items for the Competition Stage total
     'Part_I_pgg_detail',         # json: line items for the selected PGG round
     'Part_I_belief_detail',      # json: guesses vs. true averages, bonus outcome
     # ── Part II cross-economy matching ───────────────────────────────────────

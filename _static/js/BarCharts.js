@@ -11,9 +11,23 @@ const BAR_BG = ['rgba(76,175,80,0.8)', 'rgba(91,155,213,0.8)', 'rgba(255,179,71,
 const BAR_BORDER = ['#388E3C', '#2E75B6', '#E8923A'];
 const MEMBERS = ['You', 'Group member 2', 'Group member 3'];
 
-// width / height. 1.2 makes each chart taller than it is wide, roughly
-// 250px tall in the 300px-wide feedback columns (was 150px).
-const DEFAULT_ASPECT_RATIO = 1.2;
+// width / height, so SMALLER means TALLER. Used only when the page has not set
+// window.CHART_ASPECT_RATIO and the caller passed no opts.aspectRatio.
+//
+// The real knob lives in common.py as C.Chart_aspect_ratio, which each chart
+// page assigns to window.CHART_ASPECT_RATIO. That keeps the height adjustable
+// from Python even though this file is served as a static asset and cannot read
+// oTree constants itself. The value below is only a fallback.
+const DEFAULT_ASPECT_RATIO = 0.8;
+
+// Resolved at call time, not load time, so it does not matter whether the page
+// sets the global before or after this script tag.
+function chartAspectRatio() {
+    if (typeof window !== 'undefined' && window.CHART_ASPECT_RATIO) {
+        return window.CHART_ASPECT_RATIO;
+    }
+    return DEFAULT_ASPECT_RATIO;
+}
 
 // Chart.js plugin: draw each bar's value just above the bar.
 // Written inline rather than pulling in chartjs-plugin-datalabels, so the pages
@@ -79,8 +93,10 @@ function makeBarChart(canvasId, data, yLabel, opts) {
             // Chart.js defaults to aspectRatio 2 (twice as wide as tall), which
             // left only ~60px of plot area in the three-across layout and made
             // real differences between members hard to see. Values below 1 are
-            // taller than wide; pass opts.aspectRatio to override per chart.
-            aspectRatio: opts.aspectRatio || DEFAULT_ASPECT_RATIO,
+            // taller than wide. Precedence: opts.aspectRatio for this one chart,
+            // else window.CHART_ASPECT_RATIO (set from C.Chart_aspect_ratio),
+            // else the fallback at the top of this file.
+            aspectRatio: opts.aspectRatio || chartAspectRatio(),
             layout: { padding: { top: 18 } },   // headroom for the value labels
             plugins: {
                 legend: { display: false },

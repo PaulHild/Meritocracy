@@ -38,12 +38,10 @@
                     </td>
                     <td style="padding:10px 16px; text-align:right;">{{ pgg_ecs }} ECs</td>
                 </tr>
-                {% if belief_bonus > 0 %}
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px 16px; color:#555;">&#127919; Bonus for guessing the other members&rsquo; transfers</td>
                     <td style="padding:10px 16px; text-align:right;">+{{ belief_bonus }} ECs</td>
                 </tr>
-                {% endif %}
                 <tr style="border-bottom:1px solid #eee;">
                     <td style="padding:10px 16px; color:#555;">
                         Part II &mdash; {{ part2_label }}
@@ -68,6 +66,35 @@
             </p>
         </div>
     </div>
+
+    <!-- ── Part I: how the Competition Stage total came about ───────────── -->
+    {% if competition_detail %}
+    <div class="section-box box-info" style="margin-top:24px;">
+        <div class="section-header">
+            <div class="icon">&#127942;</div>
+            <h3>How your Competition Stage earnings came about</h3>
+        </div>
+        <p style="color:#555;">
+            In each of the {{ C.Economy_num_rounds }} rounds, the three members of your group
+            competed over a pot of {{ C.Economy_pie }} ECs. Your share of that pot each round
+            was your score divided by the total score of all three members.
+        </p>
+        <table style="width:100%; border-collapse:collapse; margin-top:8px;">
+            <tbody>
+                {% for line in competition_detail.lines %}
+                <tr style="border-bottom:1px solid #eee;">
+                    <td style="padding:8px 16px; color:#555;">{{ line.0|safe }}</td>
+                    <td style="padding:8px 16px; text-align:right;">{{ line.1|safe }}</td>
+                </tr>
+                {% endfor %}
+                <tr style="background:#f8f9fa;">
+                    <td style="padding:10px 16px; font-weight:bold;">Your Competition Stage earnings</td>
+                    <td style="padding:10px 16px; text-align:right; font-weight:bold;">{{ competition_detail.total }} ECs</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
 
     <!-- ── Part I: the token-transfer round that was drawn ──────────────── -->
     {% if pgg_detail %}
@@ -159,6 +186,9 @@
                 </tr>
             </tbody>
         </table>
+        <p style="margin-top:12px; font-size:0.9em; color:#777;">
+            Your decisions in the other Part&nbsp;II tasks were not selected and do not affect your payment.
+        </p>
     </div>
     {% endif %}
 

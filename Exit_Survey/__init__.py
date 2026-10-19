@@ -24,21 +24,25 @@ class Player(BasePlayer):
     # prolific_id = models.StringField(default='None')
     age = models.IntegerField(label='Age', min=18, max=100)
     gender = models.StringField(
-        label='Gender',
-        choices=['Male', 'Female', 'Other/Prefer not to say'],
+        label='Your gender',
+        choices=['Female', 'Male', 'Diverse'],
         widget=widgets.RadioSelect)
-    gender_birth = models.StringField(
-        label='Gender at birth [If different than Gender]',
-        choices=['Male', 'Female', 'Other/Prefer not to say'],
-        widget=widgets.RadioSelect,
-        blank=True)
-    
+
+    # German-compatible qualifications rather than the US ladder (GED, "High
+    # school graduate", "Professional degree (JD, MD, MBA)") that was here
+    # before. English labels with the local term in parentheses.
     education = models.StringField(
-        label='Education level',
+        label='Highest education level completed',
         choices=[
-            "Haven't graduated high school", 'GED', 'High school graduate',
-            'Bachelors', 'Masters', 'Professional degree (JD, MD, MBA)',
-            'Doctorate', 'Other',
+            'No school-leaving certificate',
+            'Lower secondary (Hauptschulabschluss)',
+            'Intermediate secondary (Realschulabschluss / Mittlere Reife)',
+            'University entrance qualification (Abitur / Fachabitur)',
+            'Vocational training (Ausbildung)',
+            'Bachelor',
+            'Master / Diplom / Magister / Staatsexamen',
+            'Doctorate',
+            'Other',
         ],
         widget=widgets.RadioSelect)
     employment = models.StringField(
@@ -49,13 +53,16 @@ class Player(BasePlayer):
             'Out of labor force (e.g. retired or parent raising one or more children)',
         ],
         widget=widgets.RadioSelect)
+    # Personal net income per month, not annual household income: "household"
+    # is ambiguous for a student in a shared flat, and monthly net is the
+    # figure respondents here can actually state.
     income = models.StringField(
-        label='Approximately, what was your <strong>total household income</strong> in the last year, before taxes?',
+        label='Approximately, what is your <strong>personal net income per month</strong> '
+              '(what you have available after taxes and deductions)?',
         choices=[
-            '$0-$10,000', '$10,000-$20,000', '$20,000-$30,000',
-            '$30,000-$40,000', '$40,000-$50,000', '$50,000-$60,000',
-            '$60,000-$75,000', '$75,000-$100,000', '$100,000-$150,000',
-            '$150,000-$200,000', '$200,000+', 'Prefer not to answer',
+            'Under €500', '€500–€1,000', '€1,000–€1,500', '€1,500–€2,000',
+            '€2,000–€2,500', '€2,500–€3,000', '€3,000–€4,000', 'Over €4,000',
+            'Prefer not to answer',
         ])
     browser = models.StringField(blank=True)
 
@@ -66,7 +73,7 @@ from common import MyBasePage
 
 # ── Pages ──────────────────────────────────────────────────────────────────────
 class Demographics(MyBasePage):
-    form_fields = ['age', 'gender', 'gender_birth', 'education', 'employment', 'income', 'browser']
+    form_fields = ['age', 'gender', 'education', 'employment', 'income', 'browser']
 
     @staticmethod
     def vars_for_template(player: Player):

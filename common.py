@@ -32,6 +32,27 @@ class CommonConstants(BaseConstants):
     # testing (3 blocks x Practice_round_length).
     Practice_ECs = 10
 
+    # ── Feedback chart height ────────────────────────────────────────────────
+    # Chart.js aspectRatio = width / height, so SMALLER means TALLER.
+    # The feedback columns are ~300px wide, so canvas height = 300 / this value,
+    # of which ~78px goes to axis labels and padding. How many pixels a 5-point
+    # difference then occupies depends on the chart's y-axis range:
+    #
+    #   aspectRatio   canvas   Performance   Earnings/round   Accumulated
+    #        1.2       250px      96 px         10 px            1.0 px
+    #        1.0       300px     124 px         13 px            1.3 px
+    #        0.8       375px     166 px         18 px            1.8 px   <- default
+    #        0.7       429px     196 px         21 px            2.1 px
+    #        0.6       500px     236 px         25 px            2.5 px
+    #
+    # ~18px reads clearly at a glance, ~6px is merely noticeable. 0.8 therefore
+    # resolves 5 ECs on the per-round earnings chart. The accumulated chart
+    # cannot be fixed this way — 5 ECs out of ~840 would need a 3,100px canvas.
+    # Do NOT solve that by truncating the y-axis: see the beginAtZero note in
+    # _static/js/BarCharts.js.
+    Chart_aspect_ratio = 0.8
+    Chart_aspect_ratio_wide = 1.1   # Final_Results, whose columns are ~380px
+
     RavensQuiz_template_path = "_templates/global/RavensQuiz.html"
     AnalogyQuiz_template_path = "_templates/global/AnalogyQuiz.html"
     MathQuiz_template_path = "_templates/global/MathQuiz.html"

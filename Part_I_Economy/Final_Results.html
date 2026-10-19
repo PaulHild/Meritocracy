@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ static 'css/modal.css' }}">
 <script type="text/javascript" src="{{ static 'js/Script_modal.js' }}"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>window.CHART_ASPECT_RATIO = {{ C.Chart_aspect_ratio_wide }};</script>
 <script src="{{ static 'js/BarCharts.js' }}"></script>
 
 <div class="content-box box-neutral">
@@ -168,13 +169,15 @@
     const breakdownData = [{{ practice_ecs }}, {{ competition_ecs }}];
     const groupTotals   = {{ group_totals }};
 
+    // Height comes from C.Chart_aspect_ratio_wide via window.CHART_ASPECT_RATIO
+    // set at the top of this file — the columns here are wider (380px) than the
+    // per-round feedback columns, so they use their own constant.
     document.addEventListener('DOMContentLoaded', function () {
         makeBarChart('breakdownChart', breakdownData, 'ECs', {
             labels: BREAKDOWN_LABELS, bgColors: BREAKDOWN_BG,
-            borderColors: BREAKDOWN_BORDER, aspectRatio: 1.5,
+            borderColors: BREAKDOWN_BORDER,
         });
-        // Wider columns here (380px), so a gentler ratio keeps the height sane.
-        makeBarChart('groupChart', groupTotals, 'ECs', { aspectRatio: 1.5 });
+        makeBarChart('groupChart', groupTotals, 'ECs');
     });
 </script>
 

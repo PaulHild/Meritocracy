@@ -1,7 +1,6 @@
 from otree.api import *
 import random
 import json
-import math
 from common import CommonConstants as CC
 
 doc = '''
@@ -48,6 +47,17 @@ class C(CC):
 
     # SVO: Murphy et al. (2011) primary items — 6 items × 9 options each
     # Each tuple: (self_allocations, other_allocations)
+    #
+    # This table is the authoritative record of the measure. It determines real
+    # payments (see _svo_allocation in Final_WaitPage), and the data export
+    # stores only the chosen option INDEX (svo_choice_1…6), so any SVO angle
+    # computed later from the data has to be computed against this table.
+    #
+    # Sanity check: each item is a line segment between two points on the circle
+    # of radius 50 centred on (50,50), so both endpoints of every item must sit
+    # ~50 away from (50,50). Item 4's self column was previously [50]*9, which
+    # put its far endpoint at (50,16) — radius 34, off the circle. It is the
+    # same ramp as item 3 because both segments start at (50,100).
     SVO_ITEMS = [
         ([85, 85, 85, 85, 85, 85, 85, 85, 85],
          [85, 76, 68, 59, 50, 41, 33, 24, 15]),
@@ -55,7 +65,7 @@ class C(CC):
          [15, 19, 24, 28, 33, 37, 41, 46, 50]),
         ([50, 54, 59, 63, 68, 72, 76, 81, 85],
          [100, 98, 96, 94, 93, 91, 89, 87, 85]),
-        ([50, 50, 50, 50, 50, 50, 50, 50, 50],
+        ([50, 54, 59, 63, 68, 72, 76, 81, 85],
          [100, 89, 79, 68, 58, 47, 37, 26, 16]),
         ([100, 94, 88, 81, 75, 69, 63, 56, 50],
          [50, 56, 63, 69, 75, 81, 88, 94, 100]),
@@ -90,10 +100,11 @@ class C(CC):
     }
 
     # Tier labels (for CrossGroup_Intro display)
+    # Comparative, not absolute: the split is at the median, so someone just
+    # above it is a "Higher Earner" without the label overstating their position.
     TIER_LABELS = {
-        'high':   'High Earner',
-        'medium': 'Medium Earner',
-        'low':    'Low Earner',
+        'high': 'Higher Earner',
+        'low':  'Lower Earner',
     }
 
 
@@ -126,7 +137,7 @@ class Player(BasePlayer):
     stag_earnings = models.FloatField(initial=0)
 
     # ── Earner tier (determined in CrossMatching_WaitPage) ───────────────────
-    earner_tier = models.StringField(initial='')  # 'high' | 'medium' | 'low'
+    earner_tier = models.StringField(initial='')  # 'high' | 'low' (median split)
 
     # How each cross-economy partner sees this player (needed for payoff lookup)
     ingroup_partner_sees_me_as  = models.StringField(initial='')  # 'ingroup' | 'outgroup'
@@ -165,7 +176,9 @@ class Player(BasePlayer):
     svo_choice_4 = models.IntegerField(min=0, max=8)
     svo_choice_5 = models.IntegerField(min=0, max=8)
     svo_choice_6 = models.IntegerField(min=0, max=8)
-    svo_angle    = models.FloatField()   # arctan(mean_other/mean_self) × 180/π
+    # No svo_angle field: the angle is a pure function of svo_choice_1…6 and
+    # C.SVO_ITEMS, both of which are available at analysis time, so it is
+    # computed from the exported data rather than stored here.
 
     # SVO incentivisation (Murphy et al. 2011). Participants are arranged in a
     # random cycle: each allocates to the next participant and receives from the
@@ -214,27 +227,21 @@ def _parse_json(field_value, default=None):
         return default or {}
 
 
-# ── Helper: compute SVO angle ──────────────────────────────────────────────────
-def _compute_svo_angle(player):
-    """Compute SVO angle from 6 chosen allocations.
-    angle = arctan(mean_other / mean_self) × (180 / π)
+# ── Helper: participant-facing labels for a player's two partners ──────────────
+def _tier_labels(player):
+    """Labels for this player's ingroup and outgroup cross-economy partners.
+
+    With two earner tiers the ingroup partner is always from the player's own
+    tier and the outgroup partner always from the other one, so both labels
+    follow from earner_tier alone. Every page that shows a partner label calls
+    this, so the mapping lives in exactly one place.
     """
-    choices = [
-        player.svo_choice_1,
-        player.svo_choice_2,
-        player.svo_choice_3,
-        player.svo_choice_4,
-        player.svo_choice_5,
-        player.svo_choice_6,
-    ]
-    self_vals  = [C.SVO_ITEMS[i][0][c] for i, c in enumerate(choices)]
-    other_vals = [C.SVO_ITEMS[i][1][c] for i, c in enumerate(choices)]
-    mean_self  = sum(self_vals)  / len(self_vals)
-    mean_other = sum(other_vals) / len(other_vals)
-    if mean_self == 0:
-        return 0.0
-    angle = math.atan(mean_other / mean_self) * (180 / math.pi)
-    return round(angle, 2)
+    mine  = player.earner_tier or 'high'
+    other = 'low' if mine == 'high' else 'high'
+    return {
+        'ingroup_tier_label':  C.TIER_LABELS.get(mine,  mine),
+        'outgroup_tier_label': C.TIER_LABELS.get(other, other),
+    }
 
 
 # ── Helper: get partner player object from participant code ────────────────────
@@ -266,26 +273,29 @@ class EconomyGrouping_WaitPage(WaitPage):
         subsession.set_group_matrix(matrix)
 
 
-# ── WaitPage: Solidarity draw ─────────────────────────────────────────────────
-class Solidarity_WaitPage(WaitPage):
-    """Randomly selects 1 unlucky player; computes solidarity earnings."""
-    body_text = "Waiting for your 2 group members to submit their pledge…"
+# ── Helper: the solidarity draw, for one economy group ────────────────────────
+def _resolve_solidarity(group):
+    """Randomly select 1 unlucky member; compute solidarity earnings.
 
-    @staticmethod
-    def after_all_players_arrive(group: Group):
-        players = list(group.get_players())
-        random.shuffle(players)
-        unlucky = players[0]
-        lucky   = players[1:]
+    Runs in Final_WaitPage rather than behind its own WaitPage after the pledge.
+    Participants get no feedback on this task until the very end, so making them
+    wait for their 2 group members right after pledging bought nothing — it only
+    moved where they waited, since CrossMatching_WaitPage is session-level and
+    waits for everyone anyway.
+    """
+    players = list(group.get_players())
+    random.shuffle(players)
+    unlucky = players[0]
+    lucky   = players[1:]
 
-        # Unlucky receives the sum of both lucky players' pledges
-        total_pledged = sum(p.solidarity_pledge for p in lucky)
-        unlucky.solidarity_role     = 'unlucky'
-        unlucky.solidarity_earnings = float(total_pledged)
+    # Unlucky receives the sum of both lucky players' pledges
+    total_pledged = sum(p.solidarity_pledge for p in lucky)
+    unlucky.solidarity_role     = 'unlucky'
+    unlucky.solidarity_earnings = float(total_pledged)
 
-        for p in lucky:
-            p.solidarity_role     = 'lucky'
-            p.solidarity_earnings = float(C.Solidarity_EC - p.solidarity_pledge)
+    for p in lucky:
+        p.solidarity_role     = 'lucky'
+        p.solidarity_earnings = float(C.Solidarity_EC - p.solidarity_pledge)
 
 
 # ── WaitPage: Stag Hunt ───────────────────────────────────────────────────────
@@ -309,11 +319,21 @@ class StagHunt_WaitPage(WaitPage):
 # ── WaitPage: Cross-economy matching ─────────────────────────────────────────
 class CrossMatching_WaitPage(WaitPage):
     """
-    Session-level WaitPage. Sorts all players by Part_I total earnings,
-    divides into High / Medium / Low thirds, then assigns:
+    Session-level WaitPage. Sorts all players by Part_I total earnings, splits
+    them into Higher / Lower earning halves, then assigns:
       - ingroup:  a random same-tier partner
-      - outgroup: High/Medium → Low partner; Low → Medium partner
+      - outgroup: a partner from the other tier (Higher ↔ Lower)
     Also records how each partner sees the current player (for payoff lookup).
+
+    Two tiers rather than three, because the outgroup relation is then
+    symmetric. Under thirds the rule was High→Low, Medium→Low, Low→Medium,
+    which meant a high earner faced a ~3x larger earnings gap to their outgroup
+    partner than a medium earner did (simulated separation 504 vs 177 ECs), and
+    no participant ever faced a high earner as an outgroup partner at all
+    (outgroup in-degree was 0 / 1 / 2 for high / medium / low). With halves both
+    tiers get the same contrast and, when the halves are equal, the outgroup
+    match is a bijection: everyone is exactly one other participant's outgroup
+    partner.
     """
     wait_for_all_groups = True  # must wait for all to assign cross-economy pairs
     body_text = "Waiting for all participants before matching you with partners from other groups…"
@@ -324,12 +344,18 @@ class CrossMatching_WaitPage(WaitPage):
         n = len(players)
 
         # Each tier must hold at least 2 players, otherwise a player would be
-        # matched with themselves as their own ingroup partner. Tiers are n/3,
-        # so the session needs at least 6 participants.
+        # matched with themselves as their own ingroup partner. Tiers are n/2,
+        # so 4 would do — but Part I already requires n % 3 == 0, so the real
+        # floor is 6.
+        #
+        # An n divisible by 6 additionally makes the two halves exactly equal,
+        # which is what turns the outgroup match into a bijection. Odd multiples
+        # of 3 (9, 15, …) still work; the halves differ by one and a couple of
+        # participants are then the outgroup partner of two people or of none.
         if n < 6:
             raise ValueError(
                 f"Part II needs at least 6 participants to form cross-economy "
-                f"pairs (each of the 3 earner tiers must hold at least 2 "
+                f"pairs (each of the 2 earner tiers must hold at least 2 "
                 f"players); this session has {n}."
             )
 
@@ -340,16 +366,11 @@ class CrossMatching_WaitPage(WaitPage):
             reverse=True,
         )
 
-        # Divide into thirds
-        tier_size = n // 3
-        remainder = n % 3
-        # Give extra players to 'low' tier (safe fallback)
-        high_end   = tier_size
-        medium_end = tier_size * 2
+        # Split into halves; an odd player goes to the 'low' tier.
+        tier_size = n // 2
         tiers = {
-            'high':   sorted_p[:high_end],
-            'medium': sorted_p[high_end:medium_end],
-            'low':    sorted_p[medium_end:],
+            'high': sorted_p[:tier_size],
+            'low':  sorted_p[tier_size:],
         }
 
         # Tag each player with their tier
@@ -365,14 +386,12 @@ class CrossMatching_WaitPage(WaitPage):
                 ingroup = shuffled[(i + 1) % len(shuffled)]
                 p.participant.ingroup_code = ingroup.participant.code
 
-        # Assign outgroup:
-        #   High   → random Low partner
-        #   Medium → random Low partner
-        #   Low    → random Medium partner
+        # Assign outgroup: each tier draws from the other one.
+        #   Higher → random Lower partner
+        #   Lower  → random Higher partner
         outgroup_source = {
-            'high':   tiers['low'],
-            'medium': tiers['low'],
-            'low':    tiers['medium'],
+            'high': tiers['low'],
+            'low':  tiers['high'],
         }
         for tier_name, tier_group in tiers.items():
             pool = list(outgroup_source[tier_name])
@@ -387,7 +406,7 @@ class CrossMatching_WaitPage(WaitPage):
         # This is decided by EARNER TIER, not by comparing participant codes.
         # Partner assignment is deliberately not mutual: the ingroup match is a
         # circular shuffle within a tier (A→B, B→C), and the outgroup match
-        # sends High→Low, Medium→Low, Low→Medium. Comparing codes therefore
+        # sends Higher→Lower and Lower→Higher. Comparing codes therefore
         # almost never found a mutual match and silently fell through to
         # 'outgroup', which made every ingroup payoff read the partner's
         # OUTGROUP decisions and destroyed the ingroup/outgroup contrast.
@@ -416,6 +435,7 @@ class CrossMatching_WaitPage(WaitPage):
 class Final_WaitPage(WaitPage):
     """
     Session-level WaitPage. Computes all game payoffs:
+      0. Solidarity (the unlucky draw, per economy group)
       1. Ultimatum (ex-post matching)
       2. Trust (ex-post matching)
       3. SVO (random allocator/receiver cycle)
@@ -438,6 +458,11 @@ class Final_WaitPage(WaitPage):
         # building all of them here keeps the explanation and the payoff in
         # lockstep — there is no second, drifting copy of the payoff rules.
         receipts = {p.participant.code: {} for p in all_players}
+
+        # ── 0. Solidarity draw, per economy group ────────────────────────────
+        # Must run before section 2b, which reads solidarity_role.
+        for group in subsession.get_groups():
+            _resolve_solidarity(group)
 
         # ── 1. Ultimatum payoffs (ex-post matching) ───────────────────────────
         for p in all_players:
@@ -821,20 +846,8 @@ class CrossGroup_Intro(MyPage):
     def vars_for_template(player: Player):
         v = MyPage.vars_for_template(player)
         tier = player.earner_tier
-        v['my_tier_label']      = C.TIER_LABELS.get(tier, tier.capitalize())
-        # Ingroup tier label
-        ingroup_code = getattr(player.participant, 'ingroup_code', '')
-        outgroup_code = getattr(player.participant, 'outgroup_code', '')
-        # Determine partner tier labels
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:  # low
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v['my_tier_label'] = C.TIER_LABELS.get(tier, tier.capitalize())
+        v.update(_tier_labels(player))
         v['dictator_ec'] = C.Dictator_EC
         v['trust_ec']    = C.Trust_EC
         return v
@@ -847,16 +860,7 @@ class Ultimatum_Instructions(MyPage):
         v = MyPage.vars_for_template(player)
         v['dictator_ec'] = C.Dictator_EC
         v['Instructions_ultimatum'] = C.Instructions_ultimatum_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
 
@@ -870,16 +874,7 @@ class Ultimatum_Propose(MyPage):
         v['dictator_ec'] = C.Dictator_EC
         v['ult_offers']  = C.ULT_OFFERS
         v['Instructions_ultimatum'] = C.Instructions_ultimatum_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
     @staticmethod
@@ -902,16 +897,7 @@ class Ultimatum_Respond(MyPage):
         v['dictator_ec']  = C.Dictator_EC
         v['ult_offers']   = C.ULT_OFFERS
         v['Instructions_ultimatum'] = C.Instructions_ultimatum_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
 
@@ -939,16 +925,7 @@ class Trust_Instructions(MyPage):
         v = MyPage.vars_for_template(player)
         v['trust_ec']    = C.Trust_EC
         v['Instructions_trust'] = C.Instructions_trust_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
 
@@ -962,16 +939,7 @@ class Trust_Send(MyPage):
         v['trust_ec']          = C.Trust_EC
         v['trust_send_amounts'] = C.TRUST_SEND_AMOUNTS
         v['Instructions_trust'] = C.Instructions_trust_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
     @staticmethod
@@ -1001,16 +969,7 @@ class Trust_Return(MyPage):
             for amt in C.TRUST_NONZERO_AMOUNTS
         }
         v['Instructions_trust'] = C.Instructions_trust_path
-        tier = player.earner_tier
-        if tier == 'high':
-            v['ingroup_tier_label']  = 'High Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        elif tier == 'medium':
-            v['ingroup_tier_label']  = 'Medium Earner'
-            v['outgroup_tier_label'] = 'Low Earner'
-        else:
-            v['ingroup_tier_label']  = 'Low Earner'
-            v['outgroup_tier_label'] = 'Medium Earner'
+        v.update(_tier_labels(player))
         return v
 
 
@@ -1039,10 +998,6 @@ class SVO(MyPage):
             items.append({'num': i + 1, 'field': f'svo_choice_{i + 1}', 'options': options})
         v['svo_items'] = items
         return v
-
-    @staticmethod
-    def before_next_page(player: Player, timeout_happened=False):
-        player.svo_angle = _compute_svo_angle(player)
 
 
 # ── Page: Questionnaire ────────────────────────────────────────────────────────
@@ -1130,7 +1085,8 @@ page_sequence = [
 
     Solidarity_Instructions,
     Solidarity_Pledge,
-    Solidarity_WaitPage,
+    # No WaitPage after the pledge: the unlucky draw is resolved in
+    # Final_WaitPage, since nothing is revealed to participants until the end.
 
     StagHunt_Instructions,
     StagHunt,

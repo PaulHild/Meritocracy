@@ -253,6 +253,53 @@ def _multiplier_reminder(treatment):
     return ''
 
 
+def _competition_detail(player, competition_ecs):
+    """Line items explaining how the Competition Stage total came about.
+
+    The Competition Stage is the largest Part I component and carries the whole
+    treatment manipulation, but on the final page it was a single unexplained
+    number. These lines are shown there alongside the token-transfer and
+    belief-bonus explanations.
+
+    The share is expressed against the total pot available across all rounds
+    (rounds x Economy_pie), which is exact: per-round shares sum to exactly this
+    fraction of the total pot. It deliberately does NOT present
+    own_weighted / group_weighted as a single division, because summing ten
+    per-round ratios is not the same number and showing that would be wrong.
+    """
+    treatment  = getattr(player.participant, 'Treatment', '') or ''
+    multiplier = getattr(player.participant, 'multiplier', 1) or 1
+    rounds     = C.Economy_num_rounds
+    total_pot  = rounds * C.Economy_pie
+    answers    = sum(player.in_round(r).Round_score or 0 for r in range(1, rounds + 1))
+
+    lines = [[
+        'Your correct answers across all {} rounds'.format(rounds),
+        '{}'.format(answers),
+    ]]
+
+    if treatment == 'Excessive_Meritocracy':
+        lines.append(['Your multiplier, from your rank in the practice round',
+                      '&times;{}'.format(multiplier)])
+        lines.append(['Your weighted score ({} &times; {})'.format(answers, multiplier),
+                      '{}'.format(answers * multiplier)])
+    elif treatment == 'Aristocracy':
+        lines.append(['Your multiplier, assigned at random',
+                      '&times;{}'.format(multiplier)])
+        lines.append(['Your weighted score ({} &times; {})'.format(answers, multiplier),
+                      '{}'.format(answers * multiplier)])
+    elif treatment == 'Welfare_State':
+        lines.append(["Added to every member's score each round",
+                      "the group's average performance that round"])
+
+    share = (competition_ecs / total_pot * 100) if total_pot else 0
+    lines.append([
+        'Your share of the {} ECs competed over across all {} rounds'.format(total_pot, rounds),
+        '{:.1f}%'.format(share),
+    ])
+    return {'lines': lines, 'total': round(competition_ecs, 1)}
+
+
 def _record_calculator_click(player):
     """If the player opened the PGG calculator modal this round, flip the
     corresponding key in the round-1 calculator_pgg_rounds JSON dict to 1."""
@@ -962,6 +1009,9 @@ class Final_WaitPage(WaitPage):
             p.participant.Part_I_pgg_selected_round = p.PGG_selected_round
             p.participant.Part_I_pgg_belief_bonus   = (
                 C.PGG_Guess_ECs if p.pgg_belief_bonus else 0
+            )
+            p.participant.Part_I_competition_detail = json.dumps(
+                _competition_detail(p, competition_ecs)
             )
 
             # ── "Receipts": the arithmetic behind the two Part I payoffs that

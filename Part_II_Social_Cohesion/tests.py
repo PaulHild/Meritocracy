@@ -10,7 +10,7 @@ Full page_sequence (WaitPages handled automatically by oTree):
   ── Within-economy games ──
   Solidarity_Instructions             (no form)
   Solidarity_Pledge                   (solidarity_pledge: 0/10/…/50)
-  Solidarity_WaitPage                 (auto)
+  (no WaitPage after the pledge — resolved in Final_WaitPage)
   StagHunt_Instructions               (no form)
   StagHunt                            ('stag' | 'hare')
   StagHunt_WaitPage                   (auto)
@@ -107,7 +107,7 @@ class PlayerBot(Bot):
             # Pledge in [0, 50] (Solidarity_EC=50) to avoid negative earnings
             'solidarity_pledge': random.choice([0, 10, 20, 30, 40, 50]),
         }, check_html=False)
-        # Solidarity_WaitPage: auto
+        # Solidarity has no WaitPage: the unlucky draw runs in Final_WaitPage
 
         yield Submission(StagHunt_Instructions, {}, check_html=False)
         yield Submission(StagHunt, {
@@ -163,7 +163,8 @@ class PlayerBot(Bot):
             'svo_choice_5': random.randint(0, 8),
             'svo_choice_6': random.randint(0, 8),
         }, check_html=False)
-        # before_next_page → _compute_svo_angle() sets svo_angle
+        # The SVO angle is not stored; it is computed from svo_choice_1…6 and
+        # C.SVO_ITEMS at analysis time.
 
         yield Submission(Questionnaire, {
             'q_fairness': random.randint(1, 7),   # 7-pt Likert
